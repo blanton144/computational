@@ -1,7 +1,10 @@
-[Syllabus](pdf/syllabus.pdf) 
+Critical information on this course can be found in the
+[syllabus](pdf/syllabus.pdf). 
 
-[Example Latex .pdf file](pdf/example.pdf)
+For Latex, you can find an [example Latex .tex file](example.tex)
+(i.e. the Latex source that you edit) and an
+[example Latex .pdf file](pdf/example.pdf) (the result).
 
-[Example Latex .tex file](example.tex)
+Below are the lecture notes and associated information.
 
 | Intro | [notes](pdf/intro.pdf) | [notes with answers](pdf/intro-answers.pdf) | [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/exex/blob/master/docs/notebooks/intro.ipynb) | 
