@@ -1,3 +1,14 @@
 \newcommand{\todo}[1]{{\bf #1}}
 
 \newif\ifanswers
+
+\newenvironment{ditemize}
+{ \begin{list}{}{%
+\setlength{\topsep}{0pt}% 
+\setlength{\partopsep}{3pt}% 
+\setlength{\itemsep}{1pt}\setlength{\parsep}{1pt}% 
+\setlength{\itemindent}{0pt}\setlength{\listparindent}{12pt}%
+\setlength{\leftmargin}{24pt}\setlength{\rightmargin}{0in}%
+\setlength{\labelsep}{6pt}\setlength{\labelwidth}{6pt}%
+\renewcommand{\makelabel}{\makebox[\labelwidth][l]{$\bullet$\hspace{\fill}}}}}
+{\end{list}}

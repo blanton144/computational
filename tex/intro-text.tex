@@ -24,6 +24,10 @@ projects. You will work on these in pairs, and you will let me know
 which teams you are on by Sept 26, at which point I will assign
 topics.
 
+Your recitations will be spent working on homeworks and projects, with
+the TA available to help. The first recitation will be spent setting
+up your laptops appropriately to perform the work for the course.
+
 We must choose a language to work in. There are many available
 computer languages. Useful ones are C, C++, Fortran, Java, Python, and
 Julia. There are other field-specific languages in use as well
@@ -38,11 +42,25 @@ convenient, and in any case in this course we will concern ourselves
 mostly with the concepts of computational physics rather than aiming
 at the most efficient possible implementations.
 
-In addition, you will use a specific, quite useful 
+In addition, you will use a quite useful tool called Jupyter
+Notebooks. This is a browser-based tool, which allows a similar
+interface to work on the command line, but retains a clean record of
+what you did. It is good for testing code, for exploratory work, and
+for presenting and sharing results.
 
-To install Python on your computer and enough of its packages to
-function, I recommend the Anaconda Python 3 distribution. Other
-packages can be installed as described in the book. 
+It is not good for building a big pipeline or software system. For
+that it is better to use a more specifically designed ``Integrated
+Development Environment'' or IDE. Within Unix you also have its tools
+plus editors like Emacs. I mention this because I want you to know
+that eventually (even within this course) you will need to graduate to
+building Python modules or other software systems outside the Notebook
+environment.
+
+To install Python and Jupyter Notebooks on your computer and enough of
+its packages to function, I recommend the
+\href{https://www.continuum.io/downloads}{\color{red} Anaconda Python
+  3.6 (or later) distribution}. Other packages can be installed as
+described in the book.
 
 Unfortunately, for a class like this we have to go through the basics
 of getting everybody set up on their computers and using the tools of
@@ -51,19 +69,21 @@ to the fun stuff.
 
 To do so, I want to describe what each of you will need in your
 environment. The end point requirements are:
-\begin{itemize}
+\begin{ditemize}
 \item git
+\item Latex
 \item Python
 \item Jupyter
-\end{itemize}
+\end{ditemize}
 and as long as those work on your system you should be OK. In
 principle, these should all be able to work on Windows, Linux, or Mac
 OS X. Probably Linux and Mac OS X are the easiest though.
 
-For {\tt git}, you will also need to create a GitHub account. You
-should create this account, and then start a GitHub repository
-specifically for this course. I recommend that you structure your repo
-as follows:
+For {\tt git}, you will need to install the {\tt git} software and you
+will also need to create a GitHub account. You should create this
+account, and then start a GitHub repository specifically for this
+course following the instructions on github. I recommend that you
+structure your repo as follows:
 \begin{verbatim}
  cp210/
   scr/
@@ -74,7 +94,5 @@ as follows:
 where you can stored scratch work you want to save in {\tt scr}, any
 work within Latex within {\tt tex}, and put your homework for the TA
 to find them in {\tt homeworks}, named as described. 
-
-
 
 

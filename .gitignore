@@ -1,0 +1,10 @@
+*.aux
+*.bbl
+*.blg
+*.out
+*.log
+*~
+*/#*#
+#*
+.ipynb_checkpoints
+docs/notebooks/*.fits
