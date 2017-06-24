@@ -1,3 +1,5 @@
+\section{Introduction \& tools}
+
 The goals of Computational Physics are to learn the principles of
 using computers to perform calculations in physics. These principles
 include how numbers are represented, and the basic tools for
@@ -106,4 +108,193 @@ To install Python and Jupyter Notebooks on your computer and enough of
 its packages to function, I recommend the
 \href{https://www.continuum.io/downloads}{\color{red} Anaconda Python
   3.6 (or later) distribution}. Other packages can be installed as
-described in the book.
+described in the book. Key for all science done with Python is the
+NumPy package.
+
+I will illustrate on the projector how a Jupyter notebook works and
+some of the basic features of Python.
+
+\section{Representation of integers on computers}
+
+A basic fact about computation that you need to understand regards how
+numbers are represented on computers. All information stored on
+computers is stored in units of ``bytes.''
+
+\noindent{\bf What is a byte?}
+
+\begin{answer}
+  A byte is 8 bits. Each bit can be 0 or 1. It is like a Boolean:
+  either 0 or 1, or False or True. You can express a byte as a series
+  of eight bits, for example this one {\tt 01000110}.
+\end{answer}
+
+\noindent{\bf How can integers be represented by bytes? }
+
+\begin{answer}
+  The sequence of bits can be interpreted as a base-2 number. That is,
+  the integer can be generated from the 8 bits as:
+\begin{equation}
+i = \sum_{i=0}^7 b_i \times 2^i
+\end{equation}
+E.g. assuming the ``lowest significance'' bit is on the right side of
+01000110, this becomes:
+\begin{equation}
+i = 2^1 + 2^2 + 2^6 = 2 + 4 + 64 = 70
+\end{equation}
+If you store a number on a computer this way it is known as an
+``unsigned 8-bit integer.''
+\end{answer}
+
+\noindent{\bf What is the highest integral that can be represented by
+    a byte in this way?}
+
+\begin{answer}
+  It is set by the following formula using $n=8$:
+  \begin{equation}
+    i_{\rm max} = \sum_{i=0}^{n-1} 2^i = 2^n - 1
+  \end{equation}
+  which is $2^8 - 1 = 256 - 1 = 255$. If you try to increment an
+  unsigned 8-bit integer beyond this limit, you will wrap back around to
+  0.
+\end{answer}
+
+\noindent{\bf How might I represent negative numbers?}
+
+\begin{answer}
+  Usually this is done by reassigning the upper range (in this
+  case 128\ldots 255) to the negative range (in this case $-128$\ldots
+  -1). If this is done, then the data type is known as a ``signed
+  8-bit integer.''
+
+  There are two interesting things this does. First, because it is the
+  upper half of the range, for negative numbers the highest
+  significance bit is always set. Second, it means that if you are
+  incrementing a signed 8-bit integer and go beyond 127, you will
+  ``wrap around'' to -128.
+\end{answer}
+
+Most programming languages have a range of different integer types
+that you may use. Specifically, 8-bit, 16-bit, 32-bit, and 64-bit are
+the common ones (in addition to Boolean, or 1-bit).  These can be used
+to represent increasingly large ranges of signed or unsigned integers.
+
+32-bit is the usual standard integer type. However, an unsigned 32-bit
+integer can only count up to about 4 billion --- this can actually be
+a practical limit. 
+
+\section{Representation of floating point numbers on computers}
+
+Of course, for computation we need to be able to express
+non-integers. Bits can be used to do so. The resulting numbers are
+known as ``floating point'' numbers, e.g. in NumPy {\tt float32}
+(single precision) or {\tt float64} (double precision), depending on
+the number of bits. Please note that these definitions of single- and
+double-precision are {\it mostly} standard these days but you may run
+into older definitions at times.
+
+The book makes a big point about all modern computational physics
+relying entirely on 64-bit precision. This reveals a limitation in
+these authors' experience: there are plenty of contexts where 32-bit
+precision is sufficient and 64-bit precision would be wasteful of
+computing time, I/O time, or memory. You cannot escape the use of
+judgment in determining whether or not to use high precision or not!
+It will not matter much in this course however.
+
+The IEEE has defined standards for storing floating point numbers.  To
+express a large enough dynamic range (more than just a factor of a few
+billion for 32 bits), floating point numbers use something akin to
+``scientific notation.'' Just like we write numbers like:
+\begin{equation}
+1.677 \times 10^{-34}
+\end{equation}
+to avoid the use of a lot of zeros every time we write them down, a
+similar technique is used when expressing numbers on computers. In
+particular, there are three types of bits. First, there is a ``sign''
+bit ($\pm$). Second, there is mantissa, which is the analog of the
+``1.677'' above. Third, there is the exponent, which is the analog of
+the ``$-34$'' above.
+
+More specifically, floating point numbers are broken up (e.g. for
+32-bits) in the following way: bit 31 is the sign bit $s$; bits 30--23
+express the 8-bit integer exponent $e$, and bits 22--0 are the
+mantissa $f$. For a normal number, its value is:
+\begin{equation}
+\pm \left(1 + \sum_{i=0}^{22} 2^{-(i-23)} \right) 2^{e-127}
+\end{equation}
+
+In reality, normal numbers are cases where $1\le e \le 254$. Special
+cases are :
+\begin{ditemize}
+\item $e=0$, $f\ne 0$, so called ``subnormal'' numbers, where the
+  ``1'' above is replaced with 0, and $e-127$ by $-126$.
+\item $e=0$, $f=0$, a signed zero
+\item $e=255$, $f=0$, a signed $\infty$
+\item $e=255$, $f\ne 0$, ``NaN'' or ``Not a Number'' (e.g. the result
+  of $0/0$).
+\end{ditemize}
+
+Inherent in any finite-bit representation on a computer is the effect
+of truncation error in calculations. This is of enormous importance to
+understand, because it affects the accuracy and stability of numerical
+calculations. 
+
+\noindent {\bf What is the range of numbers that can expressed in
+  single precision?}
+
+\begin{answer}
+The highest number is about $2^{128}$ (i.e. with exponent of 127, and
+the mantissa all 1s) or $3.4\times 10^{38}$. 
+
+The lowest number is about $2^{-126 -23}$, i.e. a subnormal number
+with $e=0$, with only the lowest significant bit set, or $1.4\times
+10^{-45}$. 
+\end{answer}
+
+\noindent {\bf Imagine adding a small number ($10^{-8}$) to a larger
+  one ($1$) on a computer. How does truncation error affect this?}
+
+\begin{answer}
+Broadly, it will mean a loss of precision in this addition; in this
+specific case, you will lose all precision, because the result will be
+exactly one at single precision!
+
+This happens because when the computer adds these numbers, it first
+needs to get them to the same exponent. Once that is true, it can just
+add their mantissas. 
+
+But if there is too large a dynamic range in the numbers it means that
+the mantissa shifts so far to the right that it is completely zeroed
+out. For single-precision, this 23 bits, or a relative amplitude
+$2^{-23} \sim 10^{-7}$. In this case, adding a number smaller than
+about this to $1$ will result in no change at all to one, which I will
+demonstrate here!
+
+Note that it is {\it relative} scale of the numbers that matters. As
+long as you are within about $10^7$ of the edge the range of
+single-precision numbers, it isn't the absolute scale of the numbers
+that matters.
+
+Finally, we're not going to be learning about exactly how arithmetic
+is performed on computers, which is an entire curriculum on its own.
+We just need to know this particular feature because it has such a
+great effect on our calculations.
+\end{answer}
+
+\noindent {\bf If I have a large set of small numbers (e.g. 100
+  million numbers all of order $10^{-8}$, how does this affect how the
+  computer should best combine them to minimize truncation error?}
+  
+\begin{answer}
+It should definitely not just start adding them up one by one. By the
+time the sum has reached close to unity it will start losing precision
+--- only a little bit per increment but it adds up. This is
+catastrophic in this particular case for single precision.
+
+Doing this at double precision is better behaved, but you will notice
+that it still loses precision unnecessarily.
+
+If I do this with a NumPy method {\tt sum()} to add up elements of an
+array, I get back much better answers in both single- and
+double-precision. The summation in this case is done in a more stable
+manner apparently!
+\end{answer}

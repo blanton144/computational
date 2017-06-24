@@ -7,6 +7,7 @@ vpath %.tex $(TEXDIR)
 ALL= \
 	$(PDFDIR)/syllabus.pdf \
 	$(PDFDIR)/example.pdf \
+	$(PDFDIR)/ps-1.pdf \
 	$(PDFDIR)/intro.pdf \
 	$(PDFDIR)/intro-answers.pdf  
 
@@ -18,6 +19,10 @@ $(PDFDIR)/%.pdf $(PDFDIR)/%-answers.pdf: $(TEXDIR)/%.tex \
 	cd $(TEXDIR); pdflatex $(*F)-answers; bibtex $(*F)-answers; pdflatex $(*F)-answers; pdflatex $(*F)-answers
 	mv $(TEXDIR)/$(*F).pdf $(PDFDIR)
 	mv $(TEXDIR)/$(*F)-answers.pdf $(PDFDIR)
+
+$(PDFDIR)/%.pdf: $(TEXDIR)/%.tex
+	cd $(TEXDIR); pdflatex $(*F); pdflatex $(*F); pdflatex $(*F)
+	mv $(TEXDIR)/$(*F).pdf $(PDFDIR)
 
 $(PDFDIR)/example.pdf: $(TEXDIR)/example.tex $(TEXDIR)/scatter.png
 	cd $(TEXDIR); pdflatex example; pdflatex example; pdflatex example
