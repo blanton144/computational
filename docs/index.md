@@ -7,4 +7,4 @@ For Latex, you can find an [example Latex .tex file](example.tex)
 
 Below are the lecture notes and associated information.
 
-| Intro | [notes](pdf/intro.pdf) | [notes with answers](pdf/intro-answers.pdf) | [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/exex/blob/master/docs/notebooks/intro.ipynb) | 
+| Intro | [notes](pdf/intro.pdf) | [notes with answers](pdf/intro-answers.pdf) | [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/intro.ipynb) | 
