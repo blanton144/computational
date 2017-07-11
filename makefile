@@ -8,6 +8,8 @@ ALL= \
 	$(PDFDIR)/syllabus.pdf \
 	$(PDFDIR)/example.pdf \
 	$(PDFDIR)/ps-1.pdf \
+	$(PDFDIR)/arrays.pdf \
+	$(PDFDIR)/arrays-answers.pdf \
 	$(PDFDIR)/intro.pdf \
 	$(PDFDIR)/intro-answers.pdf  
 
