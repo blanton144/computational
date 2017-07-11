@@ -8,3 +8,4 @@ For Latex, you can find an [example Latex .tex file](example.tex)
 Below are the lecture notes and associated information.
 
 | Intro | [notes](pdf/intro.pdf) | [notes with answers](pdf/intro-answers.pdf) | [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/intro.ipynb) | 
+| Arrays | [notes](pdf/arrays.pdf) | [notes with answers](pdf/arrays-answers.pdf) | [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/arrays.ipynb) | 
