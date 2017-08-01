@@ -1,0 +1,288 @@
+\section{Why random numbers?}
+
+One of the most important things to be able to do with a computer is
+to draw random numbers. Technically, at least in most cases, these are
+really {\it pseudo-random}, not truly random. The reason we want to be
+able to do this is that often our calculation, or tests of our
+calculation, or simulation of experimental results, requires some
+random values. You may be surprised at how common this is. In fact, a
+famous and extremely useful book in early computation and cryptography
+was
+\href{https://en.wikipedia.org/wiki/A_Million_Random_Digits_with_100,000_Normal_Deviates}{\it
+  a published book} of random numbers used for this purpose, if you
+can believe that.
+
+Most computer random number generators are not truly random, but {\it
+  pseudorandom}. In fact, they are usually initialized by a seed, and
+then there is a deterministic procedure which produces a sequence of
+numbers. This means that your ``random'' sequence is in fact
+reproducible if you start from the same seed (this can be a very good
+and important thing!). You should be careful about picking the seed,
+if you want it to be different each time.
+
+There are ways of generating more truly random numbers but these
+typically involve utilizing some truly stochastic physical process.
+
+\section{Probability Distributions}
+
+When we draw a random number, we draw it from some {\it distribution}
+$P(x)$, which is the probability per unit $x$ of drawing
+$x$. Distributions like $P(x)$ are constrained to have the property:
+\begin{equation}
+\int_{-\infty}^{\infty} {\rm d}x\,P(x) = 1
+\end{equation}
+That is, when you draw a random number, the probability that you
+have drawn a number between negative and positive infinity should be
+unity.
+
+For example, standard random number routines often draw randomly from
+a uniform distribution with $P(x) = 1$ for $0<x<1$. This means that if
+you draw a large number of random numbers, and plot their histogram,
+it will eventually be flat. Other distributions can be arranged, as we
+will see.
+
+\section{Linear Congruent Method}
+
+This is a common simple random number generator which gives integers
+between 0 and $M-1$. If you start with some integer $x_i$, you
+generate the next as:
+\begin{equation}
+x_{i+1} = (a x_i +c) \mathrm{~mod~} M
+\end{equation}
+where $a$, $c$, and $M$ are parameters. 
+
+In the notebook, I show a couple of examples of this, with both bad
+and good choices for $a$ and $c$.
+
+Of course, if you use more than $M$ random numbers, your random number
+sequence is going to start repeating itself --- under this method, any
+time you repeat a number, you are restarting the loop because you will
+get back the same next number, and the same after that, etc.
+
+The choice of $a$ and $M$ are restricted such that their
+multiplication should not exceed the highest integer available.
+
+To get a uniform distribution between 0 and 1, you then can divide the
+$x$ values by $M$.
+
+{\bf need ran4 description, or something here}
+
+\section{Assessment of Randomness and Uniformity}
+
+For any new random number generator, you should test it has the
+properties you want. I have found it fairly rare for random number
+generators to be bad.
+
+The first thing worth doing is checking that the distribution is
+actually uniform. In the notebook, I show how to do this with a
+histogram. You can also check the randomness in the following way,
+also demonstrated in the notebook. Make an {\it ensemble} of random
+sets, and bin in a set of small-ish bins, but expecting a few values
+to land in each bin.
+
+The {\it expectation value} of the number of values falling in each
+bin is:
+\begin{equation}
+{\bar N}_{\rm bin} = E(N_{\rm bin}) = \frac{N}{n_{\rm bins}}
+\end{equation}
+for $N$ points over $n_{\rm bins}$ bins. 
+
+For a reasonable number of bins and a large enough $N$ the {\it
+  distribution} of values in each bin will be approximately
+uncorrelated with each other and will be a {\it Poisson
+  distribution}. This distribution can be written:
+\begin{equation}
+P(N_{\rm bin}) = \frac{{\bar N}_{\rm bin}^{N_{\rm bin}}}{N_{\rm bin}!}
+\exp\left(-  {\bar N}_{\rm bin}\right)
+\end{equation}
+
+The variance of a Poisson distribution is:
+\begin{equation}
+{\rm Var}\left(N_{\rm bin}\right) = {\bar N}_{\rm bin}
+\end{equation}
+so the standard deviation is $\sqrt{{\bar N}_{\rm bin}}$.
+
+We can estimate this standard deviation from the ensemble to make sure
+it has this scaling. 
+
+This method depends on the binning. In particular, it can miss
+correlations between numbers on smaller scales than the bin
+size. Also, it doesn't look for direct correlations. 
+
+A method described in the book which is very good to understand is to
+look at the near neighbor correlations: 
+\begin{equation}
+C(k) = \frac{1}{N} \sum_{i=1}^{N} x_i x_{i+k}
+\end{equation}
+for various choices $k$.  As the book describes, the expectation value
+for this quantity is $1/4$, independent of $k$. If you take an
+ensemble of cases with different $N$, the uncertainty should go down
+as $1/\sqrt{N}$. Testing these facts tests the uniformity and
+randomness of the distribution.
+
+\section{Application: random walk}
+
+Pretty much the simplest application you can imagine is a random
+walk. Let's imagine you start at $x=0$. Then take a random step
+between $-0.5$ and $0.5$, then another, etc., up to $N$ total.
+
+\noindent {\bf What sort of physical process does this correspond to?}
+
+\begin{answer}
+  A diffusion process, which can either be literally diffusion of
+  particles or of heat or some other quantity. Mathematically, this is
+  expressed (in 1D) as:
+  \begin{equation}
+    \frac{\partial n}{\partial t} = D \frac{\partial^2 n}{\partial
+      x^2}
+  \end{equation}
+   where $n(x, t)$ is the distribution of particles. So a random walk
+   type of calculation is one way to numerically simulate a diffusion
+   process. 
+\end{answer}
+
+\noindent {\bf Qualitatively, if you had an ensemble of random walks,
+  how does the distribution of $x$ evolve as the number of steps
+  increases? Quantitatively, how do you think the width of the
+  distribution increases with $N$?}
+
+\begin{answer}
+The distribution starts very peaked around $x=0$, then starts to
+spread out as $N$ gets larger. The width increases as $\sqrt{N}$.
+\end{answer}
+
+\noindent {\bf Can you derive quantitatively this scaling?}
+
+\begin{answer}
+  For $N$ steps, $x$ will be:
+  \begin{equation}
+    x(N) = \sum_{i=1}^{N} {\rm d}x_i
+  \end{equation}
+  where d$x_i$ are random variables with mean zero and variance $r^2$,
+  uncorrelated with each other. We can calculate the expectation value
+  of $x(N)$ over an ensemble:
+  \begin{equation}
+    E\left(x(N)\right) = \sum_{i=1}^{N} E({\rm d}x_i) = 0
+  \end{equation}
+  We can calculate the variance as well (using the fact that the means
+  are zero and that the cross terms are zero):
+  \begin{eqnarray}
+    {\rm Var}\left(x^2(N)\right)
+    &=& {\rm Var}\left[\sum_{i=1}^{N} {\rm d}x_i\right] \cr
+    &=& \left\langle\left(\sum_{i=1}^{N} {\rm
+      d}x_i\right)^2\right\rangle \cr
+    &=& \left\langle\sum_{i=1}^{N} {\rm d}x_i^2 + {\rm
+        ~cross~terms~d}x_i{\rm d}x_j \right\rangle \cr
+    &=& \sum_{i=1}^{N} \left\langle {\rm d}x_i^2 \right\rangle \cr
+    &=& N r^2
+  \end{eqnarray}
+  So the standard deviation is $\sqrt{N} r$.
+\end{answer}
+
+\noindent {\bf What is $r$ for the example?}
+
+\begin{answer}
+It is a uniform distribution of width 1, which means its variance is
+$1/12$, as we calculated early in our discussion of numerical
+errors. So $r= \sqrt{1/12}$.
+\end{answer}
+
+I implement this example in the notebook. You can see in the plots
+there a very general result, which is that the distribution, though it
+starts out (for $N=1$) uniform, rather quickly becomes Gaussian. This
+is a specific exampe of the very general Central Limit Theorem, which
+states that the distribution of the sum of random, uncorrelated
+variables tends to Gaussian no matter what the distribution of the
+variables (as long as they have means and variances, I think).
+
+\section{Nonuniform random distributions}
+
+Nonuniform random distributions are also useful. Luckily they can in
+many cases be generated by starting with a uniform distribution. 
+
+Generically, this can be done as follows. The distribution of uniform
+points is:
+\begin{equation}
+f_r(r) {\rm d}r = {\rm d}r \quad \mathrm{for~} 0 < r < 1
+\end{equation}
+and we want some other distribution of, say, $x$: $f_x(x) {\rm d}x$.
+
+For each little differential, the equality must hold:
+\begin{equation}
+\left| f_r(r) {\rm d}r \right| = \left|f_x(x) {\rm d}x \right|
+\end{equation}
+where the absolute values are necessary because the $x$ and $r$ may be
+negatively correlated.
+
+Then for some desired $f_x(x)$:
+\begin{equation}
+\left| \frac{{\rm d}x}{{\rm d}r} \right| = \left|\frac{1}{f_x(x)}\right|
+\end{equation}
+from which we can derive a transformation $x(r)$.
+
+Then if we choose $r$ uniformly, we can apply the transformation
+$x(r)$ and the resulting variable is distributed as $f_x(x)$.
+
+For example, we can derive that to achieve:
+\begin{equation}
+f_x(x) = \exp(-x)
+\end{equation}
+for $x>0$, we need the transformation $x(r) = -\ln r$.
+
+Now, in practice this isn't always so simple. A very common case is
+generating Gaussian random variables. NumPy actually has a routine to
+do this, but it is useful to understand what sort of things underlie
+these routines. In the case of NumPy, what underlies it is something
+called the Box-Muller transformation.
+
+If you try to implement the method described above in order to get a
+normal distribution:
+\begin{equation}
+f_x(x) \propto \exp\left(-x^2/2\right)
+\end{equation}
+you will find:
+\begin{equation}
+r(x) = \int_{-\infty}^{x} {\rm d}x' \exp(-x'^2/2)
+\end{equation}
+and this integral doesn't have any simple analytic form, which means
+you can't invert it to get $x(r)$. 
+
+Instead, you can generate two random uniform variables together, and
+transform in the 2D plane to two independent random normal
+variables:
+\begin{eqnarray}
+y_1 &=& \sqrt{-2 \ln x_1} \cos 2\pi x_2 \cr
+y_2 &=& \sqrt{-2 \ln x_1} \sin 2\pi x_2
+\end{eqnarray}
+
+The basic idea is that you want a separable 2D distribution:
+\begin{equation}
+f(y_1, y_2) {\rm d}y_1 {\rm d}y_2 = \exp( - y_1^2/2) \exp(- y_2^2/2)
+\end{equation}
+which can be written in terms of the radial coordinate $y =
+\sqrt{y_1^2 + y_2^2}$ and angular coordinate $\theta$:
+\begin{equation}
+f(y, \theta) {\rm d}y {\rm d}\theta = 
+\exp(-y^2/2) y {\rm d}y {\rm d}\theta
+\end{equation}
+
+Then we can write:
+\begin{eqnarray}
+\frac{{\rm d}y}{{\rm d}r} &=& \frac{1}{f(y)} \cr
+{{\rm d}r} &=& {\rm d}y {f(y)} \cr
+{{\rm d}r} &=& {\rm d}y y \exp(-y^2/2) \cr
+r(y) &=& \left|\int_y^{\infty} {\rm d}y' y' \exp(-y'^2/2)\right|
+\end{eqnarray}
+which {\it is} integrable analytically! So:
+\begin{equation}
+r(y) = 2 \exp(- y^2 /2)
+\end{equation}
+or 
+\begin{equation}
+y(r) = -2 \ln(r /2)
+\end{equation}
+
+
+
+The actual implementation avoids use of trig functions in a clever
+way, but I won't describe that here.
