@@ -102,6 +102,24 @@ The variance of a Poisson distribution is:
 \end{equation}
 so the standard deviation is $\sqrt{{\bar N}_{\rm bin}}$.
 
+Note that for large $\bar N$, the Poisson distribution becomes
+Gaussian.  This is a specific example of the very general Central
+Limit Theorem, which states that the distribution of the sum of
+random, uncorrelated variables tends to Gaussian as the number of
+variables gets high, no matter what the distribution of the variables
+(as long as they have means and variances, I think).
+
+\noindent {\bf Explain based on the central limit theorem why a
+  Poisson distribution becomes Gaussian in the limit of large $\bar
+  N$.}
+
+\begin{answer}
+You can think of a Poisson distribution with mean $\bar N$ as a sum of
+$\bar N$ uncorrelated variables, each with a Poisson distribution with
+mean $1$.  Thus, a Poisson distribution at large $\bar N$ satisfies
+the conditions for the Central Limit Theorem.
+\end{answer}
+
 We can estimate this standard deviation from the ensemble to make sure
 it has this scaling. 
 
@@ -189,11 +207,14 @@ errors. So $r= \sqrt{1/12}$.
 
 I implement this example in the notebook. You can see in the plots
 there a very general result, which is that the distribution, though it
-starts out (for $N=1$) uniform, rather quickly becomes Gaussian. This
-is a specific exampe of the very general Central Limit Theorem, which
-states that the distribution of the sum of random, uncorrelated
-variables tends to Gaussian no matter what the distribution of the
-variables (as long as they have means and variances, I think).
+starts out (for $N=1$) uniform, rather quickly becomes Gaussian.
+
+\noindent {\bf Why does the distribution become Gaussian?}
+
+\begin{answer}
+This another example of the Central Limit Theorem, where the sum is
+over the many individual errors.
+\end{answer}
 
 \section{Nonuniform random distributions}
 
@@ -275,14 +296,12 @@ r(y) &=& \left|\int_y^{\infty} {\rm d}y' y' \exp(-y'^2/2)\right|
 \end{eqnarray}
 which {\it is} integrable analytically! So:
 \begin{equation}
-r(y) = 2 \exp(- y^2 /2)
+r(y) = \exp(- y^2 /2)
 \end{equation}
 or 
 \begin{equation}
-y(r) = -2 \ln(r /2)
+y(r) = -2 \ln(r)
 \end{equation}
-
-
 
 The actual implementation avoids use of trig functions in a clever
 way, but I won't describe that here.
