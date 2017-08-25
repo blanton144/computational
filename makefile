@@ -10,6 +10,8 @@ ALL= \
 	$(PDFDIR)/ps-1.pdf \
 	$(PDFDIR)/ps-2.pdf \
 	$(PDFDIR)/ps-3.pdf \
+	$(PDFDIR)/integration.pdf \
+	$(PDFDIR)/integration-answers.pdf \
 	$(PDFDIR)/differentiation.pdf \
 	$(PDFDIR)/differentiation-answers.pdf \
 	$(PDFDIR)/random.pdf \
