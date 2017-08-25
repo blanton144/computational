@@ -1,0 +1,256 @@
+\section{Basic idea of differentiation}
+
+\noindent {\bf What is the definition of a derivative?}
+
+\begin{answer}
+The ``slope of a line'' is how much a function changes when its
+argument changes a little bit. Formally this can be written:
+\begin{equation}
+\frac{{\rm d}f}{{\rm d}x} = \lim_{{\rm d}x \rightarrow 0} \frac{f(x+{\rm d}x)
+  - f(x)}{{\rm d}x}
+\end{equation}
+\end{answer}
+
+\noindent {\bf Can you suggest a way to estimate a derivative
+  numerically?}
+
+\begin{answer}
+  Just pick a small ${\rm d}x$, and evaluate the above expression! To
+  get a very precise derivative, you want ${\rm d}x$ to be
+  small. However, round-off error implies that you can't make it {\it
+    too} small! This method is called the ``forward difference''
+  approximation. 
+\end{answer}
+
+\noindent {\bf How can you estimate the level of approximation error
+  for a given choice of ${\rm d}x$?}
+
+\begin{answer}
+  You can use the Taylor Series expansion:
+  \begin{equation}
+    f(x + {\rm d}x) = f(x)
+    + {\rm d}x \left.\frac{{\rm d}f}{{\rm d}x}\right|_{x} 
+    + \frac{1}{2!} {\rm d}x^2 \left.\frac{{\rm d}^2f}{{\rm d}x^2}\right|_{x} 
+    + \frac{1}{3!} {\rm d}x^3 \left.\frac{{\rm d}^3f}{{\rm d}x^3}\right|_{x} 
+    + \ldots
+  \end{equation}
+  The definition of the derivative is just a rearrangement of this:
+  \begin{eqnarray}
+    \left.\frac{{\rm d}f}{{\rm d}x}\right|_{x} &=&
+     \frac{f(x+{\rm d}x) - f(x)}{{\rm d}x}
+     - \frac{1}{2!} {\rm d}x \left.\frac{{\rm d}^2f}{{\rm d}x^2}\right|_{x} 
+     - \frac{1}{3!} {\rm d}x^2 \left.\frac{{\rm d}^3f}{{\rm d}x^3}\right|_{x} 
+     - \ldots \cr
+    &=&
+     \left.\frac{{\rm d}f}{{\rm d}x}\right|_{\rm fd} 
+     - \frac{1}{2!} {\rm d}x \left.\frac{{\rm d}^2f}{{\rm d}x^2}\right|_{x} 
+     - \frac{1}{3!} {\rm d}x^2 \left.\frac{{\rm d}^3f}{{\rm d}x^3}\right|_{x} 
+     - \ldots
+  \end{eqnarray}
+  Clearly as ${\rm d}x\rightarrow 0$, the second and subsequent terms
+  drop to zero, which is the nature of the definition of the
+  derivative. But for finite ${\rm d}x$, there is a contribution from
+  these terms, so the first term is just an approximation.
+
+  The second term scales as ${\rm d}x$ and is related to the second
+  derivative of the function. That is, this approximation does not
+  account for the {\it change} of the slope across the range ${\rm
+    d}x$.
+\end{answer}
+
+An obvious issue with forward differencing is that there is no reason
+to choose ``forward'' over ``backward'' differencing, yet in general
+they will yield different answers. This asymmetry is an undesirable
+feature, since there are many cases where you would like to be able to
+do the same operation forwards or backwards and get the same answer.
+
+\section{Practical differentiation estimates}
+
+A better method of approximating the derivative with the same number
+of function evaluations is the ``central difference'' algorithm.  This
+approximation is:
+\begin{equation}
+  \left.\frac{{\rm d}f}{{\rm d}x}\right|_{\rm cd} =
+  \frac{f(x+{\rm d}x / 2) - f(x-{\rm d}x / 2)}{{\rm d}x}
+\end{equation}
+This is obviously symmetric, and you are performing still only two
+function evaluations. 
+
+Beyond that, it has a nice advantage that is revealed when you
+estimate the approximation error associated with it. 
+
+\noindent {\bf How can you estimate the approximation error?}
+
+\begin{answer}
+You can {\it again} use the Taylor Series. First on the first term:
+  \begin{equation}
+    f(x + {\rm d}x / 2) = f(x)
+    + \frac{{\rm d}x}{2} \left.\frac{{\rm d}f}{{\rm d}x}\right|_{x} 
+    + \frac{1}{2!} \frac{{\rm d}x^2}{4} \left.\frac{{\rm d}^2f}{{\rm d}x^2}\right|_{x} 
+    + \frac{1}{3!} \frac{{\rm d}x^3}{8} \left.\frac{{\rm d}^3f}{{\rm d}x^3}\right|_{x} 
+    + \mathcal{O}({\rm d}x^4)
+  \end{equation}
+and then on the second term:
+  \begin{equation}
+    f(x - {\rm d}x / 2) = f(x)
+    - \frac{{\rm d}x}{2} \left.\frac{{\rm d}f}{{\rm d}x}\right|_{x} 
+    + \frac{1}{2!} \frac{{\rm d}x^2}{4} \left.\frac{{\rm d}^2f}{{\rm d}x^2}\right|_{x} 
+    - \frac{1}{3!} \frac{{\rm d}x^3}{8} \left.\frac{{\rm d}^3f}{{\rm d}x^3}\right|_{x} 
+    + \mathcal{O}({\rm d}x^4)
+  \end{equation}
+
+  When you subtract these two expressions, {\it only} the terms with
+  opposite signs remain:
+  \begin{equation}
+    f(x + {\rm d}x / 2) - f(x - {\rm d}x / 2) = 
+    {\rm d}x \left.\frac{{\rm d}f}{{\rm d}x}\right|_{x} 
+    + \frac{1}{3!} \frac{{\rm d}x^3}{4} \left.\frac{{\rm d}^3f}{{\rm d}x^3}\right|_{x} 
+    + \mathcal{O}({\rm d}x^5)
+  \end{equation}
+  So this can be rearranged:
+  \begin{equation}
+    \left.\frac{{\rm d}f}{{\rm d}x}\right|_{x}  = 
+    \frac{f(x + {\rm d}x / 2) - f(x - {\rm d}x / 2)}{{\rm d}x}
+    + \frac{1}{3!} \frac{{\rm d}x^2}{4} \left.\frac{{\rm d}^3f}{{\rm d}x^3}\right|_{x} 
+    + \mathcal{O}({\rm d}x^4)
+  \end{equation}
+\end{answer}
+
+The key result is that the approximation error scales as ${\rm d}x^2$
+instead of ${\rm d}x$. This means that for small ${\rm d}x$ the
+approximation is much better. For example, if you happen to be
+estimating the derivative of a parabola, for which all third and
+higher derivatives are zero, the estimate of the derivative will have
+no approximation error.
+
+There is a yet more clever option. Consider the estimate:
+\begin{equation}
+  D_1 = \frac{f(x + {\rm d}x / 2) - f(x - {\rm d}x / 2)}{{\rm d}x} =
+  \left.\frac{{\rm d}f}{{\rm d}x}\right|_{x}  = 
+  - \frac{1}{3!} \frac{{\rm d}x^2}{4} \left.\frac{{\rm d}^3f}{{\rm d}x^3}\right|_{x} 
+  + \mathcal{O}({\rm d}x^4)
+\end{equation}
+
+If I reduce ${\rm d}x$ by a factor of two I get:
+\begin{equation}
+D_2 = \frac{f(x + {\rm d}x / 4) - f(x - {\rm d}x / 4)}{{\rm d}x} =
+  \left.\frac{{\rm d}f}{{\rm d}x}\right|_{x}  
+  - \frac{1}{4} \frac{1}{3!} \frac{{\rm d}x^2}{4} \left.\frac{{\rm d}^3f}{{\rm d}x^3}\right|_{x} 
+  + \mathcal{O}({\rm d}x^4)
+\end{equation}
+
+Now if I take a new estimate:
+\begin{equation}
+D = \frac{4 D_2  - D_1}{3}
+\end{equation}
+You see that the first terms leave exactly the derivative, and the
+second order terms cancel leaving:
+\begin{equation}
+D = \left.\frac{{\rm d}f}{{\rm d}x}\right|_{x}  + \mathcal{O}({\rm
+  d}x^4)
+\end{equation}
+This very good approximation of course comes at the expense of more
+function evaluations!
+
+\section{Error assessment}
+
+The question arises as to what to choose for ${\rm d}x$. The optimal
+choice will be about when the round-off error is similar to the
+approximation error. 
+
+For the central difference approximation, this yields:
+\begin{equation}
+\epsilon_{\rm approx} = \frac{f''' {\rm d}x^2}{24}
+\end{equation}
+
+Assuming the function is of order unity, or at least far enough from
+overflow or underflow, the round-off error in the numerator is the
+machine precision $\epsilon_{\rm m}$, and so the final round-off is:
+\begin{equation}
+\epsilon_{\rm ro} = \frac{\epsilon_{\rm m}}{{\rm d}x}
+\end{equation}
+
+Setting these two equal to each other yields:
+\begin{equation}
+{\rm d}x = \left(\frac{24 \epsilon_{\rm m}}{f'''}\right)^{1/3}
+\end{equation}
+Note a few things. The ${\rm d}x$ value goes as the cube root of the
+machine precision, and the approximation error goes as the square of
+${\rm d}x$. This means that as you increase machine precision the best
+approximation error improves as the $2/3$ power.
+
+The choice of ${\rm d}x$ for double precision ($\epsilon_{\rm m} \sim
+3\times 10^{-15}$ is about ${\rm d}x \sim 10^{-5}$.
+
+Finally, it is important to realize that under most circumstances you
+do not know beforehand exactly what $f'''$ is. After all, if you did,
+you would not be doing this derivative calculation!
+
+\section{Scaling a problem}
+
+Note that in a lot of analyses like that above we assume the
+quantities we are dealing with are far away from overflow or
+underflow. Indeed, it is good practice to maximize one's dynamic range
+by dealing in units that are transformed. 
+
+For example, in a gravitational context we might calculate a force
+from the gradient of the potential.
+
+\noindent {\bf What is the force equation for gravity in spherical
+  symmetry?}
+
+\begin{answer}
+In spherical symmetry, this is
+just the radial gradient:
+\begin{equation}
+F = \frac{{\rm d}^2r}{{\rm d}t^2} = - \frac{{\rm d}\phi}{{\rm d}r} =
+\frac{{\rm d}}{{\rm d}r} \frac{GM}{r}
+\end{equation}
+\end{answer}
+
+Imagine we are calculating the acceleration on an object near the
+surface of the Sun.  Near the surface of the Sun we have $G - 6.67
+\times 10^{-11}$ m$^3$ kg$^{-1}$ s$^{-2}$, $M= 2\times 10^{30}$ kg, $r
+\sim 10^9$ m. So $\phi \sim 10^{28}$, and $F\sim 10^{19}$.
+
+Two things to note: first, it would be ``nicer'' if these numbers were
+closer to unity. In the course of a full calculation of, say, an
+orbit, these numbers will vary. Also, we will be calculating other
+numbers (like the position and velocity of the object). We want to
+minimize the chance that any of these numbers will overflow or
+underflow. So we should make the natural units of the problem that the
+{\it computer} sees as close to unity as we can.
+
+This is especially true if we are working in single rather than double
+precision. It is not {\it usually} a good reason to work in double
+precision just to prevent overflow and underflow. Usually single
+precision is sufficient from that point of view with a wise choice of
+units.
+
+Second, there are scaling relations that this set of equations has to
+obey, as we will see in a second. We can solve one problem and for a
+large set of situations can scale our results to that new situation.
+
+Specifically we can redefine:
+\begin{eqnarray}
+r' &=& \frac{r}{R_\odot} \cr
+t' &=& \sqrt{\frac{GM_\odot}{R_\odot}}
+\end{eqnarray}
+and we find:
+\begin{equation}
+\frac{{\rm d}^2r'}{{\rm d}t'^2} = 
+\frac{{\rm d}}{{\rm d}r'} \frac{1}{r'}
+\end{equation}
+with $r' \sim 1$ (given that we are working near the surface of the
+Sun). Now there are no stray units. If the derivative on the right
+hand side yields something far from unity, then this is an unavoidable
+aspect of the problem, but we have done our best to keep things in
+range.
+
+Also, if we tabulate results in terms of $r'$ and $t'$, we can adjust
+to a different length scale $R_{\rm new}$ and mass $M_{\rm new}$
+through the above equations, instead of recalculating the whole
+problem.
+
+Pulling the dimensions out of a problem like this is a generic
+strategy in numerical physics.
