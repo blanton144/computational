@@ -1,4 +1,140 @@
 \section{Basic idea of integration}
 
-\noindent {\bf What is the definition of a derivative?}
+Integration of functions is an important calculation in computational
+physics, both as a fundamental task and as a component of larger
+problems. Many integrals do not have closed forms and require
+numerical computation.
 
+\noindent {\bf What is the definition of an integral?}
+
+\begin{answer}
+An integral is defined by the limit:
+\begin{equation}
+\int_a^b {\rm d}x f(x) = \lim_{{\rm d}x \rightarrow 0} \left[{\rm d}x
+  \sum_{i=1}^{(b-a)/{\rm d}x} f(x_i) \right]
+\end{equation}
+where $x_i$ are spaced between $a$ and $b$ with separations ${\rm
+  d}x$.
+\end{answer}
+
+\noindent {\bf What is a simple numerical estimate of an integral?}
+
+\begin{answer}
+Just to perform this sum with some finite ${\rm d}x$:
+\begin{equation}
+\int_a^b {\rm d}x f(x) = \left[{\rm d}x \sum_{i=1}^{(b-a)/{\rm d}x}
+  f(x_i) \right]
+\end{equation}
+where $x_i$ are spaced between $a$ and $b$ with separations ${\rm
+  d}x$.
+\end{answer}
+
+This is just a particular case of the more general form that most
+integration methods take, which is that it can be approximated as some
+linear combination of evaluations of the function:
+\begin{equation}
+  \int_a^b {\rm d}x f(x) = \sum_{i=1}^N 
+  f(x_i) w_i
+\end{equation}
+
+\section{Trapezoid rule}
+
+The simple estimate above can be thought of as approximating the
+function as piecewise constant. Obviously there are better
+approximations that can be made! Better algorithms for integration
+generally boil down to better models of the function. In this respect,
+integration is closely allied to interpolation of functions.
+
+The trapezoid rule is the result of integrating a linear interpolation
+of the function. Each term in the integral will become:
+\begin{equation}
+\frac{1}{2} {\rm d}x \left( f_i + f_{i+1} \right) 
+\end{equation}
+The next term is:
+\begin{equation}
+\frac{1}{2} {\rm d}x \left( f_{i+1} + f_{i+2} \right) 
+\end{equation}
+For equally spaced points, then $w_i = {\rm d}x$, except for $w_1=
+w_{N} = {\rm d}x/2$.
+
+\noindent {\bf For what sort of function is the trapezoid rule exactly
+  correct?} 
+
+\begin{answer}
+For a linear function. Of course, this property is not very useful!!
+\end{answer}
+
+\section{Simpson's rule}
+
+Simpson's rule represents the next level of sophistication in
+interpolation. Here, the function is approximated locally around the
+points $i-1$, $i$, $i+1$, as a quadratic:
+\begin{equation}
+f(x) = \alpha' + \beta' x + \gamma' x^2
+\end{equation}
+This is not a very convenient form. Let us instead use:
+\begin{equation}
+  f(x) = \alpha + \beta \left(\frac{x - x_i}{{\rm d}x}\right) +
+  \gamma \left(\frac{x - x_i}{{\rm d}x}\right)^2 = 
+  \alpha + \beta y
+  \gamma y^2
+\end{equation}
+with a change of variable to $y = (x-x_i)/{\rm d}x$.  For a set of
+three points, $i-1$, $i$, and $i+1$, you can fit the parabola using
+the fact:
+\begin{eqnarray}
+f_{i-1} &=& \alpha - \beta + \gamma \cr
+f_{i} &=& \alpha \cr
+f_{i+1} &=& \alpha + \beta + \gamma
+\end{eqnarray}
+This can be easily solved:
+\begin{eqnarray}
+\alpha &=& f_i \cr
+\gamma &=& \frac{f_{i+1}+f_{i-1}}{2} - f_i \cr
+\beta &=& \frac{f_{i+1}-f_{i-1}}{2}
+\end{eqnarray}
+
+\noindent {\bf What is the integral over the region defined by these
+  three points?}
+
+\begin{answer}
+The integral over the region defined by these three points :
+\begin{eqnarray}
+  \int_{x_{i-1}}^{x_{i+1}} {\rm d}x f(x) &=& {\rm d}x \int_{-1}^{1} {\rm
+    d}y \left(\alpha + \beta y + \gamma y^2\right) \cr
+  &=& {\rm d}x \left[\alpha y + \frac{\beta}{2} y^2 + \frac{\gamma}{3}
+    y^3\right]_{-1}^{1}  \cr
+  &=& {\rm d}x \left[2 \alpha + \frac{2\gamma}{3}\right]
+\end{eqnarray}
+Plugging in $\alpha$ and $\gamma$:
+\begin{equation}
+  \int_{x_{i-1}}^{x_{i+1}} {\rm d}x f(x)
+  = {\rm d}x \left(2 f_i +
+  \frac{f_{i+1} + f_{i-1}}{3} - \frac{2}{3} f_i\right) 
+  = {\rm d}x \left(\frac{1}{3} f_{i-1}
+  + \frac{4}{3} f_i 
+  + \frac{1}{3} f_{i+1}\right)
+\end{equation}
+\end{answer}
+
+Simpson's rule comes from using this approximation across the length
+from $a$ to $b$, by dividing the interval into an even number of
+segments, and integrating each separately. This yields a full
+summation:
+\begin{equation}
+  \int_a^b {\rm d}x f(x) = \sum_{i=1}^N = {\rm d}x \left[\frac{1}{3}
+    f_1 + \frac{4}{3} f_2 + \frac{2}{3} f_3 + \frac{4}{3} f_4 + \ldots
+    + \frac{2}{3} f_{N-2} + \frac{4}{3} f_{N-1} + \frac{1}{3} f_N
+    \right]
+\end{equation}
+
+Because this is applied to two segments at a time, it requires an even
+number of segments, which means $N$ must be odd.
+
+\section{Gaussian quadrature}
+
+\section{Romberg Integration}
+
+\section{Dealing with singularities and infinities}
+
+\section{NumPy implementation}
