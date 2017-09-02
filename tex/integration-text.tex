@@ -77,7 +77,7 @@ This is not a very convenient form. Let us instead use:
   f(x) = \alpha + \beta \left(\frac{x - x_i}{{\rm d}x}\right) +
   \gamma \left(\frac{x - x_i}{{\rm d}x}\right)^2 = 
   \alpha + \beta y
-  \gamma y^2
+  + \gamma y^2
 \end{equation}
 with a change of variable to $y = (x-x_i)/{\rm d}x$.  For a set of
 three points, $i-1$, $i$, and $i+1$, you can fit the parabola using
@@ -131,10 +131,161 @@ summation:
 Because this is applied to two segments at a time, it requires an even
 number of segments, which means $N$ must be odd.
 
+\noindent {\bf The weights for the three points used in in Simpson's
+  rule are set to exactly integral a quadratic function --- a second
+  degree polynomial. What must $N$ be to exactly integrate an
+  $M$-degree polynomial?}
+
+\begin{answer}
+$N = M + 1$. We can show this as follows. Each of the $N$ points $x_k$
+  yields a linear equality:
+\begin{equation}
+\label{eq:weights}
+ f_k = \sum_{j=0}^M \alpha_j x^j
+\end{equation}
+that can be used to determine the coefficients of the function, and
+thus its integral.  So this yields a system of $N$ linear equations,
+with $M+1$ unknowns. So to guarantee a solution, you need $N=M+1$.
+\end{answer}
+
+These methods are good methods, but it turns out we can be even
+cleverer. But before we do so, we have a little bit of work to do.
+
+\section{Rescaling of integrals}
+
+It may appear trivial, but just as in differentiation, there are
+rescaling of integrals that can be performed for various reasons of
+convenience or otherwise. 
+
+The simplest rescaling is linear, which just rescales the limits of
+the integral:
+\begin{equation}
+ I = \int_a^b {\rm d}x f(x) = \frac{b-a}{b'-a'} \int_{a'}^{b'} {\rm d}x' f(x(x'))
+\end{equation}
+which simply follows from the tranformation:
+\begin{eqnarray}
+x' &=& (x-a) \left(\frac{b' - a'}{b-a}\right) + a' \cr
+{\rm d}x' &=& {\rm d}x \left(\frac{b' - a'}{b-a}\right)
+\end{eqnarray}
+or:
+\begin{eqnarray}
+x &=& (x'-a') \left(\frac{b - a}{b'-a'}\right) + a' \cr
+{\rm d}x &=& {\rm d}x' \left(\frac{b - a}{b'-a'}\right)
+\end{eqnarray}
+
+This is a pretty trival rescaling, but it can be useful if you can
+rescale an integral to a previously calculated integral. We will use
+this below in the specific case: $a'=-1$, $b'=1$:
+\begin{equation}
+ I = \int_a^b {\rm d}x f(x) = \frac{b-a}{2} \int_{-1}^{1} {\rm d}x' f(x(x'))
+\end{equation}
+This will allow us to develop some useful algorithms for the specific
+range $-1$ to $1$, which can then be generalized to any finite range.
+
+If we want to alter $[-1, 1]$ to an infinite range that is possible
+too.  For example:
+\begin{eqnarray}
+x &=& a \frac{1+x'}{1-x'}  \cr
+dx &=& a \left(\frac{1}{1-x'} + \frac{1+x'}{(1-x')^2}\right) \cr
+&=& a {\rm d}x' \frac{1 -x' + 1 + x'}{(1-x')^2}  \cr
+&=& {\rm d}x' \frac{2a}{(1-x')^2}  \cr
+\end{eqnarray}
+which lets us rewrite an infinite range:
+\begin{equation}
+ I = \int_0^\infty {\rm d}x f(x) = \int_{-1}^{1} {\rm d}x' \frac{2a
+   x'}{(1-x')^2} f(x(x'))
+\end{equation}
+In this case, $a$ is a choice to be made, and $x=a$ when $x'=0$. So
+there are better choices for $a$ than others -- you want it to be
+somewhere near where the integral is expected to reach about half its
+total.
+
+The other forms of weighting are given in the book, and may be derived
+similarly. 
+
 \section{Gaussian quadrature}
 
-\section{Romberg Integration}
+Now we have all the tools to derive one of the workhorse algorithms
+for integrating function, which is Gaussian quadrature. Gaussian
+quadrature has the advantage that it yields a systematic way to write
+an algorithm for integration which utilizes $N$ points, that is {\it
+  exact} for any polynomial of order $2N-1$ or less. Note that this is
+much better than we found before, the path we were on for Simpson's
+rule, which utilized $N+1$ points to exactly integrate a polynomial of
+$N$ points. It turns out that the improvement is gained by choosing
+the points carefully.
 
-\section{Dealing with singularities and infinities}
+We will show how to do this for the integral:
+\begin{equation}
+\int_{-1}^{1} {\rm d}x f(x)
+\end{equation}
+where $f(x)$ is a $2N-1$ degree polynomial (or less).  Clearly we can
+rescale the limits as necessary above for the problem at hand.
+
+We are seeking an exact formula for the integral of this function
+which is:
+\begin{equation}
+\int_{-1}^{1} {\rm d}x f(x) = \sum_{i=1}^N w_i f(x_i)
+\end{equation}
+
+The derivation of this is neat. Note that the derivation in the book
+is extremely confusing and contains at least one error.
+
+We will use the Legendre polynomials to aid us. In fact, it will be
+the roots of the Legendre polynomials (where they are zero) that turn
+out to be the locations of the integration points.
+
+{\bf NEED TO INTRODUCE LEGENDRE POLYNOMIALS HERE}
+
+We start by noting that $f(x)$  can be in general factored in the
+following way:
+\begin{equation}
+f(x) = q(x) P_N(x) + r(x)
+\end{equation}
+where we choose $q(x)$ to be an $N-1$-degree polynomial. The first
+term is therefore a polynomial of order $2N-1$, or less. Since we can
+choose the coefficients of the $q(x)$ polynomial to be whatever we
+want, we can always match the coefficients of all the polynomial terms
+of order $N$ or greater in $f(x)$. This leaves a remainder $r(x)$
+which is an $N-1$-degree polynomial (or less).
+
+The integral:
+\begin{equation}
+\int_{-1}^{1} {\rm d}x q(x) P_N(x) = 0
+\end{equation}
+because the Legendre polynomials are always orthogonal to lower-order
+polynomials.
+
+So:
+\begin{equation}
+\int_{-1}^{1} {\rm d}x f(x) = \int_{-1}^{1} {\rm d}x r(x)
+\end{equation}
+Since $r(x)$ is an $N-1$-degree polynomial or less, there is a way to
+integrate the function with $N$ points or less, as we found above.
+
+The locations of these points can be found as follows. The integral is
+now known to be writable as:
+\begin{equation}
+\int_{-1}^{1} {\rm d}x f(x) = \sum_{i=1}^{N} w_i f(x_i) =
+\sum_{i+1}^{N} w_i q(x_i) P_N(x_i) + 
+\sum_{i+1}^{N} w_i r(x_i)
+\end{equation}
+If we choose the points $x_i$ to be the $N$ roots of the Legendre
+polynomial of order $N$, then:
+\begin{equation}
+\int_{-1}^{1} {\rm d}x f(x) = \sum_{i=1}^{N} w_i r(x_i)
+\end{equation}
+where:
+\begin{equation}
+r(x) = \sum_{j=0}^{N-1} \alpha_j x_j
+\end{equation}
+This is great, and we also know how to set the $w_i$. These are
+derived in the same way as for Simpson's rule.  Using the appropriate
+linear set of equations analogous to Equation \ref{eq:weights}, you
+can express the solution for the coefficients $\alpha_j$ in terms of
+values of the function $f(x_i)$, which by design is equal to $r(x_i)$
+at the chosen points, and then given the closed form of the integral
+of the polynomial, this translates into a form for $w_i$.
 
 \section{NumPy implementation}
+
