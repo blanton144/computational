@@ -11,4 +11,4 @@ Below are the lecture notes and associated information.
 | Arrays | [notes](pdf/arrays.pdf) | | [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/arrays.ipynb) | 
 | Numerics | [notes](pdf/numerics.pdf) | | [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/numerics.ipynb) | 
 | Random | [notes](pdf/random.pdf) | | [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/random.ipynb) | 
-| Differentiation | [notes](pdf/differentiation.pdf) | [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/differentiation.ipynb) | 
+| Differentiation | [notes](pdf/differentiation.pdf) | | [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/differentiation.ipynb) | 
