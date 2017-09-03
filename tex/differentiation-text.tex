@@ -188,8 +188,10 @@ you would not be doing this derivative calculation!
 
 \section{Numpy implementation}
 
-In NumPy, the function that implements a derivative is {\tt
-  gradient}, which I will demonstrate in the notebook. 
+In NumPy, the function that implements a derivative is {\tt gradient},
+which only works on a function tabulated as an array --- i.e. it uses
+central difference on a set of precomputed points. This is in fact an
+extremely common use case for derivative calculation.
 
 \section{Scaling a problem}
 
