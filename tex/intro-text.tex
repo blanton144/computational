@@ -241,7 +241,7 @@ More specifically, floating point numbers are broken up (e.g. for
 express the 8-bit integer exponent $e$, and bits 22--0 are the
 mantissa $f$. For a normal number, its value is:
 \begin{equation}
-\pm \left(1 + \sum_{i=0}^{22} 2^{-(i-23)} \right) 2^{e-127}
+\pm \left(1 + \sum_{i=0}^{22} 2^{-(f-23)} \right) 2^{e-127}
 \end{equation}
 
 In reality, normal numbers are cases where $1\le e \le 254$. Special

@@ -43,9 +43,9 @@ will see.
 
 \section{Linear Congruent Method}
 
-This is a common simple random number generator which gives integers
-between 0 and $M-1$. If you start with some integer $x_i$, you
-generate the next as:
+This is was once a common simple random number generator which gives
+integers between 0 and $M-1$. If you start with some integer $x_i$,
+you generate the next as:
 \begin{equation}
 x_{i+1} = (a x_i +c) \mathrm{~mod~} M
 \end{equation}
@@ -65,7 +65,18 @@ multiplication should not exceed the highest integer available.
 To get a uniform distribution between 0 and 1, you then can divide the
 $x$ values by $M$.
 
-{\bf need ran4 description, or something here}
+The linear congruent method or its variants is not anymore a good
+standard. The NumPy random routines use something different, which is
+called the Mersenne Twister algorithm. This is basically a more
+complex, but still linear transformation. It still has the property
+that the random generator has a particular {\it state} at each step,
+that is updated over time. In the case of linear congruent, the state
+is fully expressed by the last random number. The {\it improvement}
+over linear congruent is that the transformation is based on a longer
+sequence than just the last random number. This means that there are
+more internal states of the random generator, so a longer period ---
+i.e. a given random number generated won't {\it always} be followed by
+the same successor each time.
 
 \section{Assessment of Randomness and Uniformity}
 
