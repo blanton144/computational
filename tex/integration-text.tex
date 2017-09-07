@@ -235,7 +235,64 @@ We will use the Legendre polynomials to aid us. In fact, it will be
 the roots of the Legendre polynomials (where they are zero) that turn
 out to be the locations of the integration points.
 
-{\bf NEED TO INTRODUCE LEGENDRE POLYNOMIALS HERE}
+\noindent {\bf What are the Legendre Polynomials? Where have you seen
+  them before.}
+
+\begin{answer}
+  They usually arise in the physics curriculum because they are the
+  solutions to Laplace's Equation ($\nabla^2 \Phi =0$) under
+  cylindrical symmetry. They also have some interesting properties. We
+  will refer to them here as $P_n(x)$, where $-1 < x < 1$, and $n$ is
+  the order of the Legendre Polynomial. They have the property that
+  each Legendre Polynomial is a polynomial of order $n$:
+
+  \begin{equation}
+    P_n(x) = \sum_{i=0}^n a_n x^n 
+  \end{equation}
+
+  Specifically, they are:
+  \begin{equation}
+    P_n = \frac{1}{2^n n!} \frac{{\rm d}^n(x^2 -1)^n}{{\rm d} x^n}
+  \end{equation}
+
+  Or:
+  \begin{eqnarray}
+    P_0(x) &=& 1 \cr
+    P_1(x) &=& x \cr
+    P_2(x) &=& \frac{1}{2}(3x^2 -1) \cr
+    P_3(x) &=& \frac{1}{2}(5x^3 - 3x) \cr
+    P_4(x) &=& \frac{1}{8}(35^4 - 30x^2 + 3) \cr
+    &\ldots& 
+  \end{eqnarray}
+
+  They form a complete set in function space (any function can be
+  expressed as a sum of a sufficient number of Legendre Polynomials).
+  A related property is that any polynomial of order $n$ can be
+  expressed as a sum of Legendre Polynomials with orders $\le n$.
+\end{answer}
+
+\noindent {\bf All the Legendre Polynomials are orthogonal to each
+  other. What does that mean?}
+
+\begin{answer}
+  \begin{equation}
+    \int_{-1}^{1} {\rm d}x P_n(x) P_m(x) = \delta_{nm}
+    \frac{2}{2n+1}
+  \end{equation}
+\end{answer}
+
+\noindent {\bf If all the Legendre Polynomials are orthogonal to each
+  other, and any polynomial of order $n$ can be expressed as a sum of
+  Legendre Polynomials with order $\le n$, then what is this integral:
+  
+  \begin{equation}
+    \int_{-1}^{1} {\rm d}x P_{n+1}(x) x^m 
+    \frac{2}{2n+1}
+  \end{equation}
+  
+  \begin{answer}
+    0
+  \end{answer}
 
 We start by noting that $f(x)$  can be in general factored in the
 following way:
