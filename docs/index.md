@@ -8,7 +8,7 @@ For Latex, you can find an [example Latex .tex file](example.tex)
 Lecture notes and associated information:
 
 | Intro | [notes](pdf/intro.pdf) | [notes with answers](pdf/intro-answers.pdf) | [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/intro.ipynb) | 
-| Arrays | [notes](pdf/arrays.pdf) | | [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/arrays.ipynb) | 
+| Arrays | [notes](pdf/arrays.pdf) | [notes with answers](pdf/arrays-answers.pdf) | [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/arrays.ipynb) | 
 | Numerics | [notes](pdf/numerics.pdf) | | [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/numerics.ipynb) | 
 | Random | [notes](pdf/random.pdf) | | [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/random.ipynb) | 
 | Differentiation | [notes](pdf/differentiation.pdf) | | [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/differentiation.ipynb) | 
