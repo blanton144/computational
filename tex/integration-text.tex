@@ -275,6 +275,17 @@ out to be the locations of the integration points.
   other. What does that mean?}
 
 \begin{answer}
+  It means that their dot products are zero. Functions live in a linear
+  vector space. E.g. it is infinite-dimensional, and one set of basis
+  functions are Dirac $\delta$-functions. You can define a dot product
+  in that space as:
+  \begin{equation}
+    q(x) \cdot r(x) = \int_{-1}^{1} {\rm d}x q(x) r(x)
+  \end{equation}
+  As we will see below, this choice is not unique!
+
+  In any case, it means that the statement that Legendre Polynomials
+  are orthogonal means the following:
   \begin{equation}
     \int_{-1}^{1} {\rm d}x P_n(x) P_m(x) = \delta_{nm}
     \frac{2}{2n+1}
@@ -344,7 +355,56 @@ values of the function $f(x_i)$, which by design is equal to $r(x_i)$
 at the chosen points, and then given the closed form of the integral
 of the polynomial, this translates into a form for $w_i$.
 
+The notebook shows an implementation given the weights and locations
+determined for $N=4$, and demonstrates performance up to $2N-1$.
 
+Rather than determine weights and locations yourself to higher order,
+the SciPy routines in its {\tt integrate} module already contain this
+information. In particular, {\tt fixed\_quad} performs the fixed-order
+Gaussian quadrature that we find here.
 
-\section{NumPy implementation}
+\section{Generalizations of Gaussian quadrature}
 
+The Gaussian quadrature method is good for smooth functions. However,
+if it is not smooth, or in particular has singularities, it will be an
+issue. In addition, there turns out to be plenty of scope in
+generalizing the method to handle certain non-polynomial functions
+exactly.
+
+Specifically, it turns out that you can generally find {\it exact}
+expressions for integrals of the following form:
+\begin{equation}
+\int_{-1}^{1} {\rm d}x W(x) f(x) 
+\end{equation}
+where $W(x)$ is a known function and $f(x)$ is a polynomial. 
+
+The proof involves redefining the dot product between two functions
+$q(x)$ and $r(x)$:
+\begin{equation}
+  q(x) \cdot r(x) = \int_{-1}^{1} {\rm d}x W(x) q(x) r(x)
+\end{equation}
+Then it turns out we can find a complete basis set of polynomals that
+are orthogonal under this definition. Legendre Polynomials are just
+one case of this, for $W(x)=1$. The locations are determined by the
+roots of these new polynomials, and the weights are determined in an
+analogous manner.
+
+As an example, look at the problem:
+\begin{equation}
+\int_{-1}^{1} {\rm d}x \frac{1}{\sqrt{1-x^2}} = \pi
+\end{equation}
+If we use regular Gaussian quadrature, our answers are very bad.
+
+But we can define $W(x)=1/\sqrt{1-x^2}$ and $f(x)=1$. This is called
+{\it Gauss-Chebyshev} quadrature. SciPy doesn't have this directly,
+but it does have a routine that gives you the weights.  This works
+very well for integrating over this singularity.
+
+Another generally useful form has $W(x) = \exp(-x^2)$. This yields
+Gauss-Hermite polynomials, and Gauss-Hermite quadrature. A slightly
+altered Gaussian is a common form for a number of real-world
+distributions. 
+
+\section{Adaptive quadrature}
+
+\section{Multidimensional integrals}
