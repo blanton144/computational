@@ -405,6 +405,113 @@ Gauss-Hermite polynomials, and Gauss-Hermite quadrature. A slightly
 altered Gaussian is a common form for a number of real-world
 distributions. 
 
-\section{Adaptive quadrature}
+\section{A physical example: nuclear reaction rates}
+
+One example of a process that involves an integral that needs to be
+estimated numerically is that of nuclear reactions in stars. 
+
+Nuclear fusion reactions in stars are driven by the following
+process. The center of the star consists of very hot ionized gas. The
+nuclei of the atoms in the gas have high enough energies that two of
+them can get close enough to one another to tunnel through their
+Coulomb repulsion into their energetically preferred bound state (or
+to otherwise interact). The rates of these reactions are driven by the
+number densities of the nuclear species, their temperatures, and their
+Coulomb charges. 
+
+Specifically, the cross-section for the reactions can be written:
+\begin{equation}
+\sigma(E) = \frac{S(E)}{E} \exp\left[-(E_c / E)^{1/2}\right]
+\end{equation}
+where we will set the slowly varying function $S(E)=1$ for simplicity
+and:
+\begin{equation}
+E_c = \frac{2\pi^2 Z_1^2 Z_2^2 e^4 \mu}{\hbar^2}
+\end{equation}
+
+Then the reaction rate per unit volume, which ultimately determines in
+the case of our Sun how much energy is produced, and thus how brightly
+it shines, is:
+\begin{equation}
+r_{12} = \frac{n_1 n_2}{(\pi \mu)^{1/2}}
+\left(\frac{2}{kT}\right)^{3/2}  \int_0^\infty {\rm d}E S(E)
+\exp\left[-(E_c/E)^{1/2}\right] \exp\left(-E/kT\right)
+\end{equation}
+Basically, this is an integral over all of the relative kinetic
+energies the particles can have, weighted by the cross section of
+interaction.
+This governs the rates for any two species, but of course in reality
+the Sun's core contains many different simultaneous reactions. We will
+just calculate a small part of this problem.
+
+We may be interested in a very important dependence, which is the
+dependence of this reaction rate on temperature. This dependence is
+part of what sets the overall structure of stars. 
+
+For two protons, the value:
+\begin{equation}
+E_c = \frac{2 \pi^2 e^4 m_p}{2 \hbar^2} \approx 7.9 \times 10^{-14}
+\mathrm{\quad kg~m}^2\mathrm{~s}^{-2}
+\end{equation}
+
+The temperatures are of order $10^7$ K, so:
+\begin{eqnarray}
+  kT &\sim&
+  1.3806 \times 10^{-23} \times 10^{7} \mathrm{\quad kg~m}^2\mathrm{~s}^{-2}\cr
+&\sim& 
+  1.3806 \times 10^{-16} \mathrm{\quad kg~m}^2\mathrm{~s}^{-2}
+\end{eqnarray}
+So typically $E_c/kT \sim 1000$.
+
+For convenience and to keep us as safe as possible from underflows and
+overflows, we want to integrate over variables that are closer to
+unity, not $10{-15}$. Also, if we look at the integrand it is clear
+that $E_c$ and $kT$ do not matter individually (except as overall
+scale factors), just their ratio; we can avoid doing some integrals if
+we cast results just in terms of the ratio.  So it makes sense to
+perform the transformation:
+\begin{eqnarray}
+ x &=& E / kT \cr
+ {\rm d}x &=& {\rm d}E / kT
+\end{eqnarray}
+and then define $R = E_c /kT$,
+which then gives us:
+\begin{eqnarray}
+r_{12} &=& \frac{2 n_1 n_2}{(\pi \mu)^{1/2}}
+\left(\frac{2}{kT}\right)^{1/2}
+\int_0^\infty {\rm d}x S(E(x))
+\exp\left[-(R/x)^{1/2}\right] \exp\left(- x \right) \cr
+&=& \frac{2 n_1 n_2}{(\pi \mu)^{1/2}}
+\left(\frac{2}{kT}\right)^{1/2} I(R)
+\end{eqnarray}
+where
+\begin{equation}
+I(R) = \int_0^\infty {\rm d}x S(E(x))
+\exp\left[-(R/x)^{1/2}\right] \exp\left(- x \right) 
+\end{equation}
+Now, the integration involves just $R$, and the rest of the scaling of
+the reaction rate is just multiplication.
+
+The integral has the form:
+\begin{equation}
+I(R) = \int_0^{\infty} {\rm d}x f(x; R) \exp(-x)
+\end{equation}
+where
+\begin{equation}
+f(x; R) = 
+\exp\left[-(R/x)^{1/2}\right]
+\end{equation}
+This is amenable to a form of Gaussian quadrature, specifically
+Gauss-Laguerre quadrature. This means:
+\begin{equation}
+I(R) \approx \sum_{i=1}^N w_i f(x_i; R)
+\end{equation}
+
+If we want to know how $r_{12}$ scales with temperature:
+\begin{equation}
+r_{12} \propto R^{1/2} I(R)
+\end{equation}
+
+\section{Monte Carlo}
 
 \section{Multidimensional integrals}
