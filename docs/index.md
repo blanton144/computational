@@ -18,3 +18,4 @@ Problem sets:
 
 | [PS 1](pdf/ps-1.pdf) | 
 | [PS 2](pdf/ps-2.pdf) | 
+| [PS 3](pdf/ps-3.pdf) | 
