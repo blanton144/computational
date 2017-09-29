@@ -514,4 +514,38 @@ r_{12} \propto R^{1/2} I(R)
 
 \section{Monte Carlo}
 
+Another way to estimate integrals is the Monte Carlo technique, which
+is useful especially for multidimensional integrals, but we introduce
+in the 1D case.
+
+The basic idea here is to distribute a bunch of random $x$ between $a$
+and $b$. Then to issue random $y$ values between the minimum and
+maximum of $f(x)$ (or any values more extreme than those). The
+estimate then becomes:
+\begin{equation}
+\int_a^b {\rm d}x f(x) \approx (b-a) (f_{\rm max} - $f_{\rm min}$)
+\frac{N(y<f(x))}{N}
+\end{equation}
+
+\noindent {\bf Can you guess what the error in this estimate is?}
+
+\begin{answer}
+It will scale as $\sqrt{N(y<f(x))}$, because this is a Poisson-like
+process.  Specifically:
+\begin{equation}
+\langle\delta I^2 \rangle^{1/2} \approx (b-a) (f_{\rm max} - $f_{\rm min}$)
+\frac{\sqrt{N(y<f(x))}}{N}
+\end{equation}
+and so
+\begin{equation}
+\frac{\langle\delta I^2 \rangle^{1/2}}{I} \approx 
+\frac{1}{\sqrt{N(y<f(x))}}
+\end{equation}
+This means you need a {\it ton} of points to get good
+precision. Getting to a part in $10^{10}$ would require $10^{20}$
+points. So this isn't a good strategy in 1-dimension!
+\end{answer}
+
+
+
 \section{Multidimensional integrals}
