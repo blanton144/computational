@@ -523,7 +523,7 @@ and $b$. Then to issue random $y$ values between the minimum and
 maximum of $f(x)$ (or any values more extreme than those). The
 estimate then becomes:
 \begin{equation}
-\int_a^b {\rm d}x f(x) \approx (b-a) (f_{\rm max} - $f_{\rm min}$)
+\int_a^b {\rm d}x f(x) \approx (b-a) (f_{\rm max} - f_{\rm min})
 \frac{N(y<f(x))}{N}
 \end{equation}
 
@@ -533,7 +533,7 @@ estimate then becomes:
 It will scale as $\sqrt{N(y<f(x))}$, because this is a Poisson-like
 process.  Specifically:
 \begin{equation}
-\langle\delta I^2 \rangle^{1/2} \approx (b-a) (f_{\rm max} - $f_{\rm min}$)
+\langle\delta I^2 \rangle^{1/2} \approx (b-a) (f_{\rm max} - f_{\rm min})
 \frac{\sqrt{N(y<f(x))}}{N}
 \end{equation}
 and so
@@ -543,9 +543,134 @@ and so
 \end{equation}
 This means you need a {\it ton} of points to get good
 precision. Getting to a part in $10^{10}$ would require $10^{20}$
-points. So this isn't a good strategy in 1-dimension!
+points. So this isn't a good strategy in 1-dimension! In fact, there
+are better methods in higher dimensions too.
 \end{answer}
 
+The better method is {\it mean value integration}. This uses the fact
+that in some range $a<x<b$:
+\begin{equation}
+\langle f(x) \rangle = \frac{\int_a^b \dd{x}  f(x)}{b-a}
+\end{equation}
+So if we estimate:
+\begin{equation}
+\langle f(x) \rangle \approx \frac{1}{N}\sum_{i=1}^N f(x_i)
+\end{equation}
+for uniformly, randomly chosen $a<x_i<b$, we can estimate the integral
+as:
+\begin{equation}
+I = \int_a^b \dd{x}  f(x) \approx (b-a) \langle f(x)\rangle
+\end{equation}
 
+The error in $I$ also scales as $1/\sqrt{N}$ as for the stone-throwing
+case, but you get to use all of the points.  Specifically:
+\begin{equation}
+\langle \delta I^2 \rangle = \frac{\sigma_f^2}{N} 
+\end{equation}
+where:
+\begin{equation}
+\sigma_f^2 = \int_a^b \dd{x} (f(x) - \langle f\rangle)^2
+\end{equation}
 
 \section{Multidimensional integrals}
+
+The real value of the Monte Carlo method is in
+multidimensions. Traditional methods have difficulty in
+multidimensions. In the general case in 2D:
+\begin{equation}
+I = \int \dd{x} \int \dd{y} f(x, y)
+\end{equation}
+one case in principle construct function that evaluates using some
+method:
+\begin{equation}
+I_y(x) = \int \dd{y} f(x, y)
+\end{equation}
+and then build that into an outer integral:
+\begin{equation}
+I = \int \dd{x} I_y(x)
+\end{equation}
+But if there are (e.g.) 100 evaluations of $I_y(x)$, and each of those
+requires 100 evaluations of $f(x,y)$, that is 10000 evaluations. That
+is, the number of evaluations goes as $N^d$, where $d$ is the number
+of dimensions. 
+
+It is very important to not blindly evaluate multi-dimensional
+integrals if you do not have to! E.g. if the function is separable:
+\begin{equation}
+f(x, y) = f_x(x) f_y(y)
+\end{equation}
+obviously you can avoid 2D integrals entirely. What is not always as
+obvious are cases where you can change variables to avoid an inner
+integral or simplify it. This is not obviously separable:
+\begin{equation}
+  I = \int_0^\infty \dd{x} \int_0^\infty \dd{y} f(x, y) =
+  \int_0^\infty \dd{x} \int_0^\infty \dd{y} f(xy) =
+  \int_0^\infty \dd{x} \int_0^\infty \dd{y} \exp(- xy) \sin^3(xy)
+\end{equation}
+but if I change variables:
+\begin{eqnarray}
+y' &=& xy \cr
+\dd{y'} &=& x\dd{y}
+\end{eqnarray}
+then it is
+\begin{equation}
+  I = \int_0^\infty \dd{x} \int_0^\infty \dd{y} f(xy) =
+  \int_0^\infty \dd{x} \frac{1}{x} \int_0^\infty \dd{y'} f(y') =
+  \left(\int_0^\infty \dd{x} \frac{1}{x}\right)
+  \left(\int_0^\infty \dd{y'} f(y') \right)
+\end{equation}
+Note how this required the change of variables to not affect the
+limits of integration!! The point is, before you do the integral
+numerically do as much math as you can on it!
+
+But in those cases where you cannot avoid multidimensional integrals
+of high dimension (often three and certainly higher) Monte Carlo
+methods are the way to go.
+
+\noindent {\bf How do you use the mean value integration method in
+  multidimensions?}
+
+\begin{answer}
+The mean value method works fine in such cases; you just need to draw
+points in the $N$-dimensional space being integrated.
+\end{answer}
+
+There are two useful techniques to improve the MC method for
+integration. The first is {\it variance reduction}. If we have some
+function $g(x)$ which is similar to $f(x)$ but can be integrated
+analytically, then it is useful to calculate:
+\begin{equation}
+  I = \int \dd^N{\vec{x}} f(\vec{x})
+  = \int \dd^N{\vec{x}} (f(\vec{x}) - g(\vec{x})) + 
+  \int \dd^N{\vec{x}} g(\vec{x})
+\end{equation}
+where the first term is performed with MC, and the second term is
+analytic. 
+
+\noindent {\bf Explain why this method reduces the error.}
+
+\begin{answer}
+Because the error is related to $\sigma_f$. If you perform an
+integration over $f-g$, and $\sigma_{f-g}$ is smaller than $\sigma_f$,
+then you are reducing the random error.
+\end{answer}
+
+A similar method of reducing the error is {\it importance
+  sampling}. This is slightly different. You use a random distribution
+with a probability $P(x)$ (not uniform). Then you note:
+\begin{equation}
+  I = \int \dd^N{\vec{x}} f(\vec{x}) = 
+  \int \dd^N{\vec{x}} P(\vec{x}) \frac{f(\vec{x})}{P(\vec{x})}
+\end{equation}
+If you have $N$ random points $x_i$ distributed as $P(x)$, then:
+\begin{equation}
+ I \approx \frac{1}{N} \sum_{i}  \frac{f(\vec{x})}{P(\vec{x})}
+\end{equation}
+
+If $f(x)/P(x)$  is more uniform than $f(x)$ then the error in the
+result is smaller, for the same reason as in the variance reduction
+method. 
+
+An example of either case is a function $f(x)$ which is close to
+$\exp(-x^2)$.
+

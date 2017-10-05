@@ -12,7 +12,7 @@ Lecture notes and associated information:
 | Numerics | [notes](pdf/numerics.pdf) | [notes with answers](pdf/numerics-answers.pdf) | [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/numerics.ipynb) | 
 | Random | [notes](pdf/random.pdf) | [notes with answers](psf/random-answers.pdf) | [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/random.ipynb) | 
 | Differentiation | [notes](pdf/differentiation.pdf) | [notes with answers](psf/differentiation-answers.pdf)| [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/differentiation.ipynb) | 
-| Integration | [notes](pdf/integration.pdf) | | [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/integration.ipynb) | 
+| Integration | [notes](pdf/integration.pdf) | [notes](pdf/integration-answers.pdf)| [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/integration.ipynb) | 
 
 Problem sets: 
 

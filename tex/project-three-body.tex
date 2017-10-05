@@ -1,0 +1,77 @@
+\documentclass[11pt, preprint]{aastex}
+
+\include{computational_defs}
+
+\begin{document}
+
+\title{\bf Computational Physics Project / Three-body problem}
+
+This project involves integrating gravitational orbits of the sort
+that you might find in planetary or stellar systems. 
+
+The general equations governing these systems are simple:
+\begin{eqnarray}
+\dot{\vec{v}_i} &=& - \sum_{j \ne i} \frac{Gm_j}{r_{ij}^2} \cr
+\dot{\vec{x}_i} &=& \vec{v}_i
+\end{eqnarray}
+
+For $N=2$, this is a classic Keplerian problem with known solutions.
+A good introduction to this is given in the textbook {\it Principles
+  of Astrophysics}, by Charles Keeton. Specifically, if $r$ is the
+distance between the two particles, and $\phi$ is an angle in the
+plane of motion measured with respect to the apocenter of the orbit,
+then:
+\begin{equation}
+r = \frac{a(1-e^2)}{1+e \cos\phi}
+\end{equation}
+where $a$ is the semimajor axis of the orbit, and $e$ is the
+eccentricity. The period of the orbit is:
+\begin{equation}
+P = \sqrt{\frac{4\pi^2 a^3}{G(m_1 + m_2)}}
+\end{equation}
+and the angle $\phi$ and time $t$ are related by:
+\begin{equation}
+  \frac{t}{P} = \frac{1}{2\pi}\left\{
+    2\tan^{-1}\left[\left(\frac{1-e}{1+e}\right)^{1/2}
+      \tan\frac{\phi}{2}\right]
+    - \frac{e(1-e^2)^{1/2} \sin\phi}{1+e\cos\phi}\right\}
+\end{equation}
+
+\section{Testing the two-body problem}
+
+In the first section of this project, you will write a general program
+to integrate orbits, and test it on the two body problem.
+
+\begin{itemize}
+\item Write a module with an integrator using the techniques in Landau
+  Chapter 8 that will solve the general system of equations for $N$
+  bodies.
+\item Test the integrator on the two body problem. Use initial
+  conditions for which the system is bound. Assess the period of the
+  orbit, how well it approximates an ellipse, and showing that it
+  (approximately) closes.
+\end{itemize}
+
+\section{Exploring the three-body problem}
+
+Now you should be able explore how three-body systems behave. 
+
+\begin{itemize}
+\item Start with two large, equal mass particles, and one much smaller
+  mass particle. Start the equal mass particles on circular orbits,
+  and verify sure that they stay on those orbits. Then explore a
+  couple of different initial conditions for the third particle.
+\item Try the Lagrange Points (look the description up on Wikipedia)
+  and put the small particle at those locations, with an angular
+  velocity the same as the orbital angular velocity of the large mass
+  particles. What happens?
+\item Make one large mass particle, one somewhat smaller mass particle
+  (like a factor of 100) in orbit around the large mass particle, and
+  then a third particle. Try different initial conditions for the
+  third particle, including some which are close to the orbit of the
+  second particle. Show what happens as the orbits get close together.
+\item Make three similar mass particles and follow their orbits. Can
+  you find initial conditions which are stable? 
+\end{itemize}
+
+\end{document}

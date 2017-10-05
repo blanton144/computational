@@ -22,7 +22,9 @@ ALL= \
 	$(PDFDIR)/numerics.pdf \
 	$(PDFDIR)/numerics-answers.pdf \
 	$(PDFDIR)/intro.pdf \
-	$(PDFDIR)/intro-answers.pdf  
+	$(PDFDIR)/intro-answers.pdf \
+	$(PDFDIR)/project-three-body.pdf \
+	$(PDFDIR)/project-gravity-mesh.pdf  
 
 all: $(ALL) $(DOCDIR)/example.tex
 
