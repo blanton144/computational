@@ -11,8 +11,11 @@ ALL= \
 	$(PDFDIR)/ps-2.pdf \
 	$(PDFDIR)/ps-3.pdf \
 	$(PDFDIR)/ps-4.pdf \
+	$(PDFDIR)/ps-5.pdf \
 	$(PDFDIR)/integration.pdf \
 	$(PDFDIR)/integration-answers.pdf \
+	$(PDFDIR)/linear-algebra.pdf \
+	$(PDFDIR)/linear-algebra-answers.pdf \
 	$(PDFDIR)/differentiation.pdf \
 	$(PDFDIR)/differentiation-answers.pdf \
 	$(PDFDIR)/random.pdf \

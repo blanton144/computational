@@ -1,0 +1,51 @@
+\documentclass[11pt, preprint]{aastex}
+
+\include{computational_defs}
+
+\begin{document}
+
+\title{\bf Computational Physics / PHYS-UA 210 / Problem Set \#5
+\\ Due October 13, 2017 }
+
+You {\it must} label all axes of all plots, including giving the {\it
+  units}!!
+
+\begin{enumerate}
+  \item Exercise 3 in S5.16 of Landau.
+  \item Exercise 4 in S5.16 of Landau.
+  \item A common type of multidimensional integral I need to do is as
+    follows. We observe galaxy images focused on a 2D telescope focal
+    plane, using optical fibers in the focal plane that carry the
+    light to a bank of spectrographs. Each fiber has a circular
+    aperture in the focal plane, so the light detected from the galaxy
+    is that within some radius of its center. Two pretty good models
+    for some galaxies are the following (the exponential, and de
+    Vaucouleurs models): 
+    \begin{eqnarray}
+     I_{\rm exp}(r) = A \exp\left[- \left(1.678 r/r_{50}\right)\right] \cr
+     I_{\rm deV}(r) = A \exp\left[- \left(3466 r/r_{50}\right)^{1/4}\right]
+    \end{eqnarray}
+    The galaxy is not necessarily azimuthally symmetric, it can appear
+    ``squashed'' on the sky, due to our viewing it at an angle. This
+    can be accounted for by saying:
+    \begin{equation}
+      r = \sqrt{x^2 + \left(\frac{a}{b} \right)^2 y^2}
+    \end{equation}
+    where $b/a < 1$ is called the {\it axis ratio}. Alternatively, one
+    can express this as:
+    \begin{eqnarray}
+      r = r' \sqrt{\cos^2\theta +
+        \left(\frac{a}{b}\right)^2\sin^2\theta} \cr
+      r' = \sqrt{x^2 + y^2}
+    \end{eqnarray}
+    where $\tan \theta = y/x$. 
+    
+   Using $r_{50}$ = 2 arcseconds, and assuming a fiber radius of 1
+   arcsecond, calculate the fraction of the light that goes into the
+   fiber as a function of $b/a$ for each model, within the range $0.1$
+   to $1$. First, think about whether you want to integrate over $x$
+   and $y$ or over $r'$ and $\theta$. Check your convergence carefully
+   for $n=4$!
+\end{enumerate}
+
+\end{document}

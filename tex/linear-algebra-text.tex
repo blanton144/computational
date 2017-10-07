@@ -1,0 +1,184 @@
+\section{Linear Algebra in Computation}
+
+A huge fraction of numerical computation involves linear algebra at
+some level or another. This includes simple application of matrix
+multiplication, but also applications of matrix inversion,
+decompositions, and other important operations.  Vectors and
+higher-dimensional objects in linear algebra are held as arrays in
+NumPy (and other languages).
+
+You are aware of the usual matrix notation:
+\begin{eqnarray}
+x_i &\rightarrow& \vec{x} \cr
+Q_{ij} &\rightarrow& {\bf Q}
+\end{eqnarray}
+so for example:
+\begin{equation}
+y_i = \sum_j Q_{ij} x_j
+\end{equation}
+may also be written:
+\begin{equation}
+\vec{y} = {\bf Q}\cdot \vec{x}
+\end{equation}
+
+If you have an array in Python or another language, you can perform
+these operations explicitly, but it is better to use the explicit
+matrix operations in NumPy and associated packages. It will be far
+faster. If you delve deep into high-order objects (e.g. $T_{ijkl}$)
+you can definitely run into cases where the standard routines won't do
+the operation you want, but most cases will work fine.
+
+I show some examples in the workbook.
+
+\section{Linear systems of equations}
+
+Many physical and statistical problems boil down to solving a linear
+system of the form:
+\begin{equation}
+{\bf A} \cdot \vec{x} = \vec{b}
+\end{equation}
+where ${\bf A}$ and $\vec{b}$ are known, and we want to know
+$\vec{x}$.
+
+\noindent {\bf If ${\bf A}$ is an $M\times N$ matrix (and therefore
+  $\vec{x}$ is an $N$-vector) then under what conditions is there a
+  unique, exact solution $\vec{x}$ to this equation?}
+
+\begin{answer}
+If ${\bf A}$ is invertible. This generally means that ${\bf A}$ has to
+be $N\times N$ (so $M=N$), and that the {\it rank} of this square
+matrix is $N$. Rank $N$ implies the rows (and columns) of ${\bf A}$
+are all linearly independent.
+
+Another way of looking at this is asking what is the dimension of the
+space spanned by the rows of ${\bf A}$. If any row of ${\bf A}$ is a
+linear combination of other rows of ${\bf A}$, then it doesn't
+introduce a new linearly independent dimension.
+
+These sorts of issues in matrices are known as {\it degeneracies}. In
+these cases, there can be multiple choices of $\vec{x}$ that satisfy
+the linear system. These different choices are said to be degenerate
+with each other.
+
+A matrix with these sorts of degeneracies is called {\it singular}.
+\end{answer}
+
+\noindent {\bf How can we check if matrices are singular?}
+
+\begin{answer}
+  One answer is to check the determinant:
+\begin{equation}
+\label{eq:det}
+\det(A) = \sum_{i_0, i_1, \ldots, i_{N-1} = 1}^{N} \epsilon_{i_0, i_1,
+  \ldots, i_{N-1}} a_{0,i_0} a_{1,i_1} \ldots a_{{N-1}, i_{N-1}}
+\end{equation}
+where we use the Levi-Civita symbol. This explicit calculation is not
+{\it usually} how one calculates the determinant.
+
+If the determinant is zero, the matrix is singular. We will see later
+how this connects to the eigenvalues and eigenvectors of certain types
+of matrices.
+\end{answer}
+
+You have probably done solved linear systems by hand using a
+Gauss-Jordan type of technique.  This is not what is done
+numerically. Instead, the simplest matrix inversion technique of
+practical use is {\it LU decomposition}.
+
+LU decomposition yields a lower triangular matrix ${\bf L}$ and and
+upper triangular matrix ${\bf U}$, which satisfy:
+\begin{equation}
+{\bf L} \cdot {\bf U} = {\bf A}
+\end{equation}
+
+This then means we can solve:
+\begin{equation}
+\label{eq:lyb}
+{\bf L} \cdot \vec{y} = {\bf b}
+\end{equation}
+and then:
+\begin{equation}
+\label{eq:uxy}
+{\bf U} \cdot \vec{x} = {\bf y}
+\end{equation}
+and the resulting $\vec{x}$ satisfies:
+\begin{equation}
+{\bf A} \cdot \vec{x} = {\bf L} \cdot {\bf U} \cdot \vec{x}  = {\bf L}
+\cdot \vec{y} = \vec{b}
+\end{equation}
+
+Hooray, but how does that help us. Well, with a triangular matrix, the
+equations \ref{eq:lyb} and \ref{eq:uxy} can easily be solved by
+backsubstitution.  That is, you can start at:
+\begin{equation}
+y_0 = \frac{b_0}{L_{00}}
+\end{equation}
+and then find:
+\begin{equation}
+y_i = \frac{b_i - \sum_{j=0}^{i-1} L_{ij} y_j}{L_{11}}
+\end{equation}
+
+\noindent {\bf How many operations does the solution take once you
+  have {\bf L} and {\bf U}?}
+
+\begin{answer}
+It takes $\mathcal{O}(N^2)$. For each row, you have to do of order $N$
+operations, and there are $N$ rows. 
+\end{answer}
+
+It turns out that the LU decomposition can be done efficiently, with
+the same scaling with $N$. Now, in most implementations, in fact what
+is done is that the rows of ${\bf A}$ are shuffled in the procedure so
+as to keep the numerics stable.
+
+Also, the decomposition is not unique. There are $N^2 + N$ values to
+set in ${\bf L}$ and ${\bf U}$ but only $N^2$ values in ${\bf A}$. A
+typical choice is to let the diagonal of ${\bf L}$ be just 1s. 
+
+\noindent {\bf This gives me a way of solving the equations. How do I
+  determine the inverse of ${\bf A}$?}
+
+\begin{answer}
+By calling it $N$ times for each column $j$, each time with $b_i =
+\delta_{ij}$. 
+\end{answer}
+
+\noindent {\bf If I have an LU decomposition of ${\bf A}$, how can I
+  calculate the determinant of ${\bf A}$?}
+
+\begin{answer}
+If we have a lower or upper triangular matrix, the determinant is just
+the product of all the diagonals. All other terms in the determinant
+vanish, because if you involve one non-diagonal element, you end up
+involving an element on the other triangle of the matrix. This is
+clear in equation \ref{eq:det}, where the contribution of the diagonal
+terms yields a Levi-Civita value of 1, but introducing a term with
+non-diagonal factors means you need to swap two of the
+indices. E.g. if I swap 2 and 3, then I get factors $a_{32}$ and
+$a_{23}$. For both ${\bf L}$ and ${\bf U}$, one or the other of these
+are zero.
+
+Then we have:
+\begin{eqnarray}
+\det {\bf L} &=& 1 \cr
+\det {\bf U} &=& \prod_{i=0}^{N-1} U_{ii}
+\end{eqnarray}
+
+And finally we use the general rule for determinants of matrix
+products:
+\begin{equation}
+\det {\bf A} =  \det {\bf L}  \cdot {\bf U} = 
+\det {\bf L} \det {\bf U}
+\end{equation}
+\end{answer}
+
+I show in the notebook an example of using the {\tt linalg} routine
+{\tt solve}, which utilizes this technique to solve a set of linear
+equations. 
+
+\section{Sparse matrices}
+
+There are many applications where you have in principle very large
+matrices, but they are in fact very sparse.  
+
+{\bf band-diagonal}
