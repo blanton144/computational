@@ -1,3 +1,7 @@
+These notes draw heavily on {\it Numerical Recipes}, a valuable
+resource for entry-level understanding of numerical methods relevant
+to physics.
+
 \section{Linear Algebra in Computation}
 
 A huge fraction of numerical computation involves linear algebra at
@@ -175,6 +179,91 @@ products:
 I show in the notebook an example of using the {\tt linalg} routine
 {\tt solve}, which utilizes this technique to solve a set of linear
 equations. 
+
+\section{Singular Value Decomposition}
+
+The above methods are great if you have an invertible $N\times N$
+matrix. But what if the solution to ${\bf A}\cdot \vec{x} = \vec{b}$
+is not unique, or doesn't exist? Or, what if ${\bf A}$ is sufficiently
+close to singular that round-off error starts makes the solution for
+the inverse numerically unstable. What do we do? The answer is {\it
+  singular value decomposition} (SVD), which provides a stable way to
+deal with all of these cases.
+
+SVD  relies on the fact that any $M\times N$ matrix can be written
+as:
+\begin{equation}
+{\bf A} = {\bf U}\cdot{\bf W}\cdot{\bf V}^T
+\end{equation}
+where ${\bf U}$ is $M\times N$ with columns that are all orthonormal,
+${\bf W}$ is an $N\times N$ diagonal matrix, and ${\bf V}^T$ is the
+transpose of an $N \times N$ orthonormal matrix.
+
+The components of the diagonal matrix ${\bf W}$ are the {\it singular
+  values}.  By convention in these decompositions, they are arranged
+in descending order. If $M<N$ (or if for any other reason the row rank
+is less than $N$), then there are fewer independent equations than
+unknowns, and there will be $w_j$ values that take the value zero.
+
+The condition of orthonormality on ${\bf V}$ means:
+\begin{equation}
+{\bf V}^T \cdot {\bf V} = 1
+\end{equation}
+
+And on ${\bf U}$ this means if $M\ge N$:
+\begin{equation}
+{\bf U}^T \cdot {\bf U} = 1
+\end{equation}
+but if $M<N$ then some of the $w_j$ are zero, so:
+\begin{equation}
+\sum_{i=0}^{M-1} U_{ik} U_{in} = \delta_{kn}
+\end{equation}
+for $k\le M-1$ and $n\le M-1$, but for higher $k$ and $n$ the sum
+yields zero.
+
+Performing this decomposition can be done very stably, using routines
+within {\tt linalg}. Exactly how it is done is outside our scope here. 
+
+What is the point of doing this? Consider ${\bf A}\cdot\vec{x} =
+\vec{b}$. $\vec{x}$ is an $N$-dimensional vector, and $\vec{b}$ is
+$M$-dimensional. ${\bf A}$ maps between these two spaces, but it may
+not be able to map to the full $M$-dimensional space.  It may have the
+property that it can only map to a subspace.
+
+A trivial example is:
+\begin{equation}
+  A = \left(\begin{array}{cc}
+    1 & -1\cr
+    -1 & 1
+    \end{array}\right)
+\end{equation}
+Any vector $\vec{x}$ I multiple by ends up on the line $b_0 =
+-b_1$. ${\bf A}$ maps from a two-dimensional space into a
+one-dimensional one.
+
+\noindent {\bf Is this ${\bf A}$ invertible?}
+
+\begin{answer}
+  Nope. Clearly any given $\vec{b}$ must map onto mulitple $\vec{x}$
+  values, so it cannot be (and, accordingly, clearly has a determinant
+  of zero).
+\end{answer}
+
+The {\it range} of ${\bf A}$ is the subspace ${\bf A}$ can map
+into. The {\it rank} of ${\bf A}$ is the dimension of the range.  If
+the rank is less than the number of dimensions ($N$) of $\vec{x}$,
+then what happens to all the other dimensions? It indicates that there
+is a {\it null space} for which $ {\bf A}\cdot \vec{x} = 0$. The
+dimension of the null space is $N$ minus the rank.
+
+What SVD does is basically an analysis of ${\bf A}$ which tells you
+the range and null space, and the rank of the matrix. Specifically,
+the columns of ${\bf U}$ corresponding to non-zero $w_j$ form an
+orthonormal basis of the range of ${\bf A}$ --- clearly the ${\bf
+  W}\cdot{\bf V}^T$ that multiplies into ${\bf U}$ must yield
+something that lives in this subspace. The columns of ${\bf V}$
+corresponding to zero $w_j$ span the null space.  The rank is the
+number of non-zero $w_j$. 
 
 \section{Sparse matrices}
 

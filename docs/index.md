@@ -24,7 +24,7 @@ Problem sets:
 
 Semester projects:
 
-| [Gravity on a mesh](pdf/project-gravity.pdf) | 
+| [Gravity on a mesh](pdf/project-gravity-mesh.pdf) | 
 | [Three-body gravity](pdf/project-three-body.pdf) | 
 | [Telescope diffraction](pdf/project-telescope.pdf) | 
 | [LIGO detection](pdf/project-ligo.pdf) | 
