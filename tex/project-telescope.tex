@@ -1,0 +1,86 @@
+\documentclass[11pt, preprint]{aastex}
+
+\include{computational_defs}
+
+\begin{document}
+
+\title{\bf Computational Physics Project / Telescope Diffraction Limit}
+
+This project involves a calculation of the diffraction pattern due to
+the finite aperture of a telescope.
+
+If a plane wave enters a well-focused telescope along its axis of
+symmetry (on-axis), then geometric optics tells us that all of the
+light will be focused at a single point. However, because light is a
+wave, in fact it will form a finite-sized image at the focus. The size
+and shape of the image is related to the aperture of the telescope.
+
+Specifically, the image formed (the point spread function) can be
+shown to be the squared amplitude of the Fourier transform of the
+complex pupil function:
+\begin{equation}
+P(r, \phi) \exp\left(-ik W(r,\phi)\right)
+\end{equation}
+where $P$ is a function of position on the aperture, in a coordinate
+system centered on the aperture axis of symmetry, and $W$ is a phase
+shift (induced, for example, by imperfections in the shape of the
+mirror. $k= 2\pi/\lambda$ is the wavenumber of the light wave.
+
+In the simplest case, $P(r, \phi)$ is just $1$ within some radius
+$D/2$, and $0$ outside.  In this case, the image formed is:
+\begin{equation}
+I = C\left(\frac{J_1(x)}{x}\right)^2
+\end{equation}
+where $J_1$ is the first-order Bessel function, and $x=\pi
+D\theta/\lambda$, and $\theta$ is a radial coordinate in the focal
+plane related to the input angle of light into the telescope (we call
+it $\theta$ because it corresponds to an angle on the sky). This is
+known as the Airy pattern.
+
+\begin{itemize}
+\item Perform a numerical FFT of the simplest aperture, in order to
+  verify the above result in detail. Show how the size of the PSF
+  varies with aperture size.  
+\item Many reflective telescopes have a Cassegrain design
+  (\href{https://en.wikipedia.org/wiki/Cassegrain_reflector}{\color{blue}
+  see Wikipedia}) which causes the aperture to be a donut, with a hole
+  in the middle. Can you write analytically what you expect the PSF to
+  be, and also verify that numerically?
+\item To hold the secondary mirror in place in this design, there need
+  to be some structural elements.  Often these take the form of
+  several struts holding it in place, which cause obscuration of the
+  aperture (basically, small lines with $P=0$ aligned radially). Look
+  up some images of stars on the web from the Hubble Space Telescope,
+  guess how many such struts it has, and try to reproduce the
+  diffraction spikes (roughly) using your model. Do you notice
+  anything about the patterns of color in the diffraction spikes that
+  you can explain with your model?
+\item We will want to simulate small imperfections in the phases from
+  different causes. To do so it will be useful to be able to create
+  {\it Gaussian random fields}. These are random fields whose values
+  have Gaussian distributions, and have random ``phases.''
+  Specifically, they can be created by choosing independent Gaussian
+  random values for Fourier modes in $\vec{k}$-space, and Fourier
+  transforming back to configuration space. The random distributions
+  have mean zero and a variance that is a function of the scalar $k$,
+  called $P(k)$ or the ``power spectrum.'' Create a function that will
+  return a random field given a function $P(k)$.  You may consult
+  \href{http://andrewwalker.github.io/statefultransitions/post/gaussian-fields/}{\color{blue}
+    the example code here}.
+\item Small imperfections in the mirror cause phase shifts. Simulate
+  such shifts in your model by creating a Gaussian random field for
+  the phase offsets $W$ (which is in the same units as $\lambda$) in
+  each pixel. Use a $P(k)$ with power at large $k$. Under what
+  conditions do you expect these shifts to become a major problem? Can
+  you verify that?
+\item For a ground-based telescope, the atmosphere causes the light
+  coming into the telescope to not be a plane wave. Instead it is
+  ``wrinkled'' with a coherence length of about 20 cm. Create a
+  Gaussian random field whose power spectrum cuts off on smaller
+  scales, and above those scales has fluctuations large compared to
+  the wavelength of the light. It should look ``smooth'' on small
+  scales.  How do these errors affect the point spread function?
+\end{itemize}
+
+
+\end{document}

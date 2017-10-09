@@ -14,25 +14,25 @@ in other contexts.
 
 In order to follow how structure forms due to gravity, the
 particle-mesh technique approximates the distribution of matter using
-a large set of particles in 3-dimensions. The simulation stars at some
-initial time step with some initial conditions for the particles. The
-density field is approximated by counting the number of particles in
-each cell of a rectangular mesh. This yields a 3D array containing the
-density field. Then, Poisson's equation is solved for the
-gravitational potential. The acceleration on each particle can then be
-calculated as the gradient of the potential. The velocity of the
-particle is updated, and its position is updated according to the
+a large set of particles in 3-dimensions. The simulation starts at
+some initial time step with some initial conditions for the
+particles. The density field is approximated by counting the number of
+particles in each cell of a rectangular mesh. This yields a 3D array
+containing the density field. Then, Poisson's equation is solved for
+the gravitational potential. The acceleration on each particle can
+then be calculated as the gradient of the potential. The velocity of
+the particle is updated, and its position is updated according to the
 velocity. Then the process is repeated with the new (slightly
 different) density field. The basics of this method were described
 thoroughly in a classic book by Hockney \& Eastwood (1988), {\it
-  Computer Simulation Using Particles}. 
+  Computer Simulation Using Particles}.
 
 In this project, you will just perform and test the solution of
 Poisson's equation for a density field that you define. Then you will
 play with integrating orbits in this potential (without updating the
-potential). Chapter 19 of Landau has some information about this {\it
-  but} in the gravitational case you cannot do exactly what it says
-there. 
+potential). Chapter 19 of Landau has some information about this;
+however, in the gravitational case you cannot do exactly what it says
+there.
 
 \section{Defining a density field}
 

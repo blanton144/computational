@@ -26,8 +26,12 @@ ALL= \
 	$(PDFDIR)/numerics-answers.pdf \
 	$(PDFDIR)/intro.pdf \
 	$(PDFDIR)/intro-answers.pdf \
+	$(PDFDIR)/project-stellar-structure.pdf \
+	$(PDFDIR)/project-telescope.pdf \
 	$(PDFDIR)/project-three-body.pdf \
-	$(PDFDIR)/project-gravity-mesh.pdf  
+	$(PDFDIR)/project-gravity-mesh.pdf \
+	$(PDFDIR)/project-ising.pdf \
+	$(PDFDIR)/project-ligo.pdf  
 
 all: $(ALL) $(DOCDIR)/example.tex
 

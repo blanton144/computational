@@ -1,0 +1,75 @@
+\documentclass[11pt, preprint]{aastex}
+
+\include{computational_defs}
+
+\begin{document}
+
+\title{\bf Computational Physics Project / 2D Ising Models}
+
+This project focuses on the simulation through Monte Carlo methods of
+2D Ising models for magnetization.
+
+These model a magnetic material as a 2D lattice of atoms whose
+magnetic moments can either be up or down. These are thermodynamic
+systems, so depending on the temperature, there is more or less random
+flipping of these moments.
+
+Each neighboring pair of atoms (labeled $i$ and $j$, where $j$ is a
+neighbor in $x$ or in $y$, but not along the diagonal) contributes to
+the total energy of the system an amount:
+\begin{equation}
+  E = - J s_{i} s_{j}
+\end{equation}
+Aligned moments are lower energy, therefore are the preferred state.
+
+Since the system is thermodynamic, the spins will sometimes flip
+randomly. Flips that happen to be favorable happen at a constant rate,
+but those that are unfavorable do so at a reduced rate; reduced
+specifically by the Boltzman factor:
+\begin{equation}
+  R = \exp\left(-\Delta E /k T\right)
+\end{equation}
+
+We are interested in what happens to the magnetization of a system as
+a function of temperature.  The magnetization can be defined as :
+\begin{equation}
+M = \sum_i s_i
+\end{equation}
+
+\begin{itemize}
+\item Explain in words why you should find $M\sim 0$ for sufficiently
+  high $T$, and find an extremal $M$ (all spins aligned) for
+  sufficiently low $T$. 
+\item Write into code the Metropolis algorithm found in Section 17.4
+  of Landau. Note that you do {\it not} need to recalculate the full
+  energy of the system at each trial, since most of it is unchanged
+  (i.e. you only need the terms involving the lattice atom you
+  picked).  Think about the scaling of the problem. Does your code
+  need to carry around $J$, $k$, and $T$? Use periodic boundary
+  conditions.
+\item Now initialize your system to start with a fully magnetized (all
+  spins aligned, with $s_i = 1$) system, at $T=0$. Raise the
+  temperature in small steps, and after each step run the Metropolis
+  algorithm for long enough that the energy and magnetization seem to
+  have converged.
+\item Plot the magnetization and energy as a function of
+  temperature. Compare to the analytic solution found in Section
+  17.3.1 of Landau (this will indicate to you how far up in $T$ you
+  need to go).
+\item What is the physical meaning of the slope of the energy versus
+  temperature?  Can you describe in words what this slope means in
+  terms of how much work it is to raise the temperature?
+\item If you add a term to $E$ that accounts for an external magnetic
+  field:
+  \begin{equation}
+    -H \sum_i s_i
+  \end{equation}
+  how does this change the behavior of the system when you start with
+  $T=0$ and raise the temperature?  Try both $H$ positive and
+  negative.
+\item Try a few runs where you start with random spin orientations and
+  $T\gg T_c$, and cool the system down. What do you notice about the
+  final result? What if you include a non-zero $H$?
+\end{itemize}
+
+\end{document}

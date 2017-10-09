@@ -1,0 +1,95 @@
+\documentclass[11pt, preprint]{aastex}
+
+\include{computational_defs}
+
+\begin{document}
+
+\title{\bf Computational Physics Project / LIGO}
+
+This project involves finding a gravitational wave in the LIGO data
+set. If you do not know what LIGO is \ldots {\it find out!} This is
+probably the most significant physics result of your lifetime. It is
+a close race between cosmic acceleration, the Higgs particle, and
+this, anyway.
+
+In this project, you will use Fourier techniques to find the merging
+black hole signal \texttt{GW150914}.  Write a Python program to read
+in the LIGO data, do some simple cleaning, and find the signal.
+
+LIGO has two independent observatories, one in Livingston, LA and the
+other in Hanford, WA. Both detectors must see a signal within 10ms of
+each other for it to count. A window of data (32 seconds) around the
+time of the event is available for download here:
+			
+\begin{itemize}
+\item
+  \href{https://losc.ligo.org/s/events/GW150914/H-H1_LOSC_4_V1-1126259446-32.hdf5}{\texttt{https://losc.ligo.org/s/events/GW150914/H-H1\_LOSC\_4\_V1-1126259446-32.hdf5}}
+\item
+  \href{https://losc.ligo.org/s/events/GW150914/L-L1_LOSC_4_V1-1126259446-32.hdf5}{\texttt{https://losc.ligo.org/s/events/GW150914/L-L1\_LOSC\_4\_V1-1126259446-32.hdf5}}
+\end{itemize}
+
+These are \texttt{HDF5} files, a binary file format often used in
+science. These files are much smaller and quicker to read/write than
+plain text files.  The \texttt{h5py} library (included in Anaconda
+and available through \texttt{pip}) interacts with these files.  A
+function to do so is:
+\begin{verbatim}
+def loadLIGOdata(filename):
+    f = h5py.File(filename, "r")
+    strain = f['strain/Strain'][...]
+    t0 = f['strain/Strain'].attrs['Xstart']
+    dt = f['strain/Strain'].attrs['Xspacing']
+    t = t0 + dt * np.arange(strain.shape[0])
+    f.close()
+    return t, strain
+\end{verbatim}
+This returns the time (in seconds) and the strain (which has no
+units).  The measurements in this data set are evenly sampled at
+$4096$ Hz.
+
+The strain $h(t)$ is what is measured by LIGO. You can think of it as
+the fractional change in the length of the 4km interferometer arms:
+$\Delta L / L$.
+
+\begin{itemize}
+\item Plot the strain as a function of time for both
+  detectors. Gravitational waves from astrophysical sources produce a
+  maximum strain on Earth of about $10^{-21}$. Can you see a
+  gravitational wave in the data?  No.  You cannot.  Most of the
+  strain is ``noise'' coming from various physical effects in the
+  detector.
+\item To find how the noise affects the data, plot the
+  \emph{periodogram} $P_{hh} = |h_k|^2$ of the data for each detector
+  using an FFT.  The periodogram is a simple (not very optimal)
+  estimate of the \emph{power spectrum}, which indicates how much
+  power is in each Fourier mode of the data.  The periodogram shows a
+  lot of power for $f < 30$ Hz, and many spectral lines.  These lines
+  correspond to resonances in the LIGO machinery (the cables
+  suspending the mirrors, the 60 Hz electrical frequency, etc). These
+  are clearly noise!
+\item Filtering out particular modes in Fourier space is not
+  difficult, simply multiply the FFT of your data $h_f$ by a
+  \emph{transfer function} $H(f)$, where $|H(f)| < 1$, then perform
+  the inverse transform to see the filtered data.  Here are two very
+  simple filters:
+\begin{eqnarray}
+	H_{\rm step}(f) &=& \frac{1}{1+(f/f_0)^{2n}} \ , \\
+	H_{\rm gauss}(f) &=& 1 - \exp\left(-\frac{(f-f_0)^2}{2\sigma_f^2}\right) \ .
+\end{eqnarray}
+In the above, $f_0$ is the location of the filter and $n$ or
+$\sigma_f$ control the width. Describe in words what each filter
+does. Construct some test data, and use the filters on it, that
+demonstrate what these filters do.
+\item LIGO is most sensitive between $35$ Hz and $350$ Hz. Use
+  $H_{step}$ with $n\sim8$ to filter out the modes outside this band.
+  Plot the resulting waveform and periodogram.
+\item See a signal yet? Use the $H_{\rm gauss}$ filter to remove spectral
+  lines from the data as well.  Plot the resulting waveform and
+  periodogram.
+\item This dataset contains the \emph{first ever} detection of a
+  binary black hole merger!  What time does it occur at?  Remember: a
+  real signal appears in both data sets with a time delay of no more
+  than $10 ms$.
+\end{itemize}
+
+\end{document}
