@@ -21,3 +21,12 @@ Problem sets:
 | [PS 3](pdf/ps-3.pdf) | 
 | [PS 4](pdf/ps-4.pdf) | 
 | [PS 5](pdf/ps-5.pdf) | 
+
+Semester projects:
+
+| [Gravity on a mesh](pdf/project-gravity.pdf) | 
+| [Three-body gravity](pdf/project-three-body.pdf) | 
+| [Telescope diffraction](pdf/project-telescope.pdf) | 
+| [LIGO detection](pdf/project-ligo.pdf) | 
+| [Two-dimensional Ising Model](pdf/project-ising.pdf) | 
+| [Two-dimensional Ising Model](pdf/project-stellar-structure.pdf) | 
