@@ -14,7 +14,7 @@ NumPy (and other languages).
 You are aware of the usual matrix notation:
 \begin{eqnarray}
 x_i &\rightarrow& \vec{x} \cr
-Q_{ij} &\rightarrow& {\bf Q}
+Q_{ij} &\rightarrow& \mat{Q}
 \end{eqnarray}
 so for example:
 \begin{equation}
@@ -22,7 +22,7 @@ y_i = \sum_j Q_{ij} x_j
 \end{equation}
 may also be written:
 \begin{equation}
-\vec{y} = {\bf Q}\cdot \vec{x}
+\vec{y} = \mat{Q}\cdot \vec{x}
 \end{equation}
 
 If you have an array in Python or another language, you can perform
@@ -39,24 +39,24 @@ I show some examples in the workbook.
 Many physical and statistical problems boil down to solving a linear
 system of the form:
 \begin{equation}
-{\bf A} \cdot \vec{x} = \vec{b}
+\mat{A} \cdot \vec{x} = \vec{b}
 \end{equation}
-where ${\bf A}$ and $\vec{b}$ are known, and we want to know
+where $\mat{A}$ and $\vec{b}$ are known, and we want to know
 $\vec{x}$.
 
-\noindent {\bf If ${\bf A}$ is an $M\times N$ matrix (and therefore
+\noindent {\bf If $\mat{A}$ is an $M\times N$ matrix (and therefore
   $\vec{x}$ is an $N$-vector) then under what conditions is there a
   unique, exact solution $\vec{x}$ to this equation?}
 
 \begin{answer}
-If ${\bf A}$ is invertible. This generally means that ${\bf A}$ has to
+If $\mat{A}$ is invertible. This generally means that $\mat{A}$ has to
 be $N\times N$ (so $M=N$), and that the {\it rank} of this square
-matrix is $N$. Rank $N$ implies the rows (and columns) of ${\bf A}$
+matrix is $N$. Rank $N$ implies the rows (and columns) of $\mat{A}$
 are all linearly independent.
 
 Another way of looking at this is asking what is the dimension of the
-space spanned by the rows of ${\bf A}$. If any row of ${\bf A}$ is a
-linear combination of other rows of ${\bf A}$, then it doesn't
+space spanned by the rows of $\mat{A}$. If any row of $\mat{A}$ is a
+linear combination of other rows of $\mat{A}$, then it doesn't
 introduce a new linearly independent dimension.
 
 These sorts of issues in matrices are known as {\it degeneracies}. In
@@ -89,25 +89,25 @@ Gauss-Jordan type of technique.  This is not what is done
 numerically. Instead, the simplest matrix inversion technique of
 practical use is {\it LU decomposition}.
 
-LU decomposition yields a lower triangular matrix ${\bf L}$ and and
-upper triangular matrix ${\bf U}$, which satisfy:
+LU decomposition yields a lower triangular matrix $\mat{L}$ and and
+upper triangular matrix $\mat{U}$, which satisfy:
 \begin{equation}
-{\bf L} \cdot {\bf U} = {\bf A}
+\mat{L} \cdot \mat{U} = \mat{A}
 \end{equation}
 
 This then means we can solve:
 \begin{equation}
 \label{eq:lyb}
-{\bf L} \cdot \vec{y} = {\bf b}
+\mat{L} \cdot \vec{y} = \mat{b}
 \end{equation}
 and then:
 \begin{equation}
 \label{eq:uxy}
-{\bf U} \cdot \vec{x} = {\bf y}
+\mat{U} \cdot \vec{x} = \mat{y}
 \end{equation}
 and the resulting $\vec{x}$ satisfies:
 \begin{equation}
-{\bf A} \cdot \vec{x} = {\bf L} \cdot {\bf U} \cdot \vec{x}  = {\bf L}
+\mat{A} \cdot \vec{x} = \mat{L} \cdot \mat{U} \cdot \vec{x}  = \mat{L}
 \cdot \vec{y} = \vec{b}
 \end{equation}
 
@@ -123,7 +123,7 @@ y_i = \frac{b_i - \sum_{j=0}^{i-1} L_{ij} y_j}{L_{11}}
 \end{equation}
 
 \noindent {\bf How many operations does the solution take once you
-  have {\bf L} and {\bf U}?}
+  have \mat{L} and \mat{U}?}
 
 \begin{answer}
 It takes $\mathcal{O}(N^2)$. For each row, you have to do of order $N$
@@ -132,23 +132,23 @@ operations, and there are $N$ rows.
 
 It turns out that the LU decomposition can be done efficiently, with
 the same scaling with $N$. Now, in most implementations, in fact what
-is done is that the rows of ${\bf A}$ are shuffled in the procedure so
+is done is that the rows of $\mat{A}$ are shuffled in the procedure so
 as to keep the numerics stable.
 
 Also, the decomposition is not unique. There are $N^2 + N$ values to
-set in ${\bf L}$ and ${\bf U}$ but only $N^2$ values in ${\bf A}$. A
-typical choice is to let the diagonal of ${\bf L}$ be just 1s. 
+set in $\mat{L}$ and $\mat{U}$ but only $N^2$ values in $\mat{A}$. A
+typical choice is to let the diagonal of $\mat{L}$ be just 1s. 
 
 \noindent {\bf This gives me a way of solving the equations. How do I
-  determine the inverse of ${\bf A}$?}
+  determine the inverse of $\mat{A}$?}
 
 \begin{answer}
 By calling it $N$ times for each column $j$, each time with $b_i =
 \delta_{ij}$. 
 \end{answer}
 
-\noindent {\bf If I have an LU decomposition of ${\bf A}$, how can I
-  calculate the determinant of ${\bf A}$?}
+\noindent {\bf If I have an LU decomposition of $\mat{A}$, how can I
+  calculate the determinant of $\mat{A}$?}
 
 \begin{answer}
 If we have a lower or upper triangular matrix, the determinant is just
@@ -159,20 +159,20 @@ clear in equation \ref{eq:det}, where the contribution of the diagonal
 terms yields a Levi-Civita value of 1, but introducing a term with
 non-diagonal factors means you need to swap two of the
 indices. E.g. if I swap 2 and 3, then I get factors $a_{32}$ and
-$a_{23}$. For both ${\bf L}$ and ${\bf U}$, one or the other of these
+$a_{23}$. For both $\mat{L}$ and $\mat{U}$, one or the other of these
 are zero.
 
 Then we have:
 \begin{eqnarray}
-\det {\bf L} &=& 1 \cr
-\det {\bf U} &=& \prod_{i=0}^{N-1} U_{ii}
+\det \mat{L} &=& 1 \cr
+\det \mat{U} &=& \prod_{i=0}^{N-1} U_{ii}
 \end{eqnarray}
 
 And finally we use the general rule for determinants of matrix
 products:
 \begin{equation}
-\det {\bf A} =  \det {\bf L}  \cdot {\bf U} = 
-\det {\bf L} \det {\bf U}
+\det \mat{A} =  \det \mat{L}  \cdot \mat{U} = 
+\det \mat{L} \det \mat{U}
 \end{equation}
 \end{answer}
 
@@ -183,8 +183,8 @@ equations.
 \section{Singular Value Decomposition}
 
 The above methods are great if you have an invertible $N\times N$
-matrix. But what if the solution to ${\bf A}\cdot \vec{x} = \vec{b}$
-is not unique, or doesn't exist? Or, what if ${\bf A}$ is sufficiently
+matrix. But what if the solution to $\mat{A}\cdot \vec{x} = \vec{b}$
+is not unique, or doesn't exist? Or, what if $\mat{A}$ is sufficiently
 close to singular that round-off error starts makes the solution for
 the inverse numerically unstable. What do we do? The answer is {\it
   singular value decomposition} (SVD), which provides a stable way to
@@ -193,26 +193,26 @@ deal with all of these cases.
 SVD  relies on the fact that any $M\times N$ matrix can be written
 as:
 \begin{equation}
-{\bf A} = {\bf U}\cdot{\bf W}\cdot{\bf V}^T
+\mat{A} = \mat{U}\cdot\mat{W}\cdot\mat{V}^T
 \end{equation}
-where ${\bf U}$ is $M\times N$ with columns that are all orthonormal,
-${\bf W}$ is an $N\times N$ diagonal matrix, and ${\bf V}^T$ is the
+where $\mat{U}$ is $M\times N$ with columns that are all orthonormal,
+$\mat{W}$ is an $N\times N$ diagonal matrix, and $\mat{V}^T$ is the
 transpose of an $N \times N$ orthonormal matrix.
 
-The components of the diagonal matrix ${\bf W}$ are the {\it singular
+The components of the diagonal matrix $\mat{W}$ are the {\it singular
   values}.  By convention in these decompositions, they are arranged
 in descending order. If $M<N$ (or if for any other reason the row rank
 is less than $N$), then there are fewer independent equations than
 unknowns, and there will be $w_j$ values that take the value zero.
 
-The condition of orthonormality on ${\bf V}$ means:
+The condition of orthonormality on $\mat{V}$ means:
 \begin{equation}
-{\bf V}^T \cdot {\bf V} = 1
+\mat{V}^T \cdot \mat{V} = 1
 \end{equation}
 
-And on ${\bf U}$ this means if $M\ge N$:
+And on $\mat{U}$ this means if $M\ge N$:
 \begin{equation}
-{\bf U}^T \cdot {\bf U} = 1
+\mat{U}^T \cdot \mat{U} = 1
 \end{equation}
 but if $M<N$ then some of the $w_j$ are zero, so:
 \begin{equation}
@@ -224,21 +224,21 @@ yields zero.
 Performing this decomposition can be done very stably, using routines
 within {\tt linalg}. Exactly how it is done is outside our scope here. 
 
-What is the point of doing this? Consider ${\bf A}\cdot\vec{x} =
+What is the point of doing this? Consider $\mat{A}\cdot\vec{x} =
 \vec{b}$. $\vec{x}$ is an $N$-dimensional vector, and $\vec{b}$ is
-$M$-dimensional. ${\bf A}$ maps between these two spaces, but it may
+$M$-dimensional. $\mat{A}$ maps between these two spaces, but it may
 not be able to map to the full $M$-dimensional space.  It may have the
 property that it can only map to a subspace.
 
 A trivial example is:
 \begin{equation}
-  A = \left(\begin{array}{cc}
+  \mat{A} = \left(\begin{array}{cc}
     1 & -1\cr
     -1 & 1
     \end{array}\right)
 \end{equation}
 Any vector $\vec{x}$ I multiple by ends up on the line $b_0 =
--b_1$. ${\bf A}$ maps from a two-dimensional space into a
+-b_1$. $\mat{A}$ maps from a two-dimensional space into a
 one-dimensional one.
 
 \noindent {\bf Is this ${\bf A}$ invertible?}
@@ -249,21 +249,93 @@ one-dimensional one.
   of zero).
 \end{answer}
 
-The {\it range} of ${\bf A}$ is the subspace ${\bf A}$ can map
-into. The {\it rank} of ${\bf A}$ is the dimension of the range.  If
+The {\it range} of $\mat{A}$ is the subspace $\mat{A}$ can map
+into. The {\it rank} of $\mat{A}$ is the dimension of the range.  If
 the rank is less than the number of dimensions ($N$) of $\vec{x}$,
 then what happens to all the other dimensions? It indicates that there
-is a {\it null space} for which $ {\bf A}\cdot \vec{x} = 0$. The
+is a {\it null space} for which $ \mat{A}\cdot \vec{x} = 0$. The
 dimension of the null space is $N$ minus the rank.
 
-What SVD does is basically an analysis of ${\bf A}$ which tells you
+What SVD does is basically an analysis of $\mat{A}$ which tells you
 the range and null space, and the rank of the matrix. Specifically,
-the columns of ${\bf U}$ corresponding to non-zero $w_j$ form an
-orthonormal basis of the range of ${\bf A}$ --- clearly the ${\bf
-  W}\cdot{\bf V}^T$ that multiplies into ${\bf U}$ must yield
-something that lives in this subspace. The columns of ${\bf V}$
-corresponding to zero $w_j$ span the null space.  The rank is the
-number of non-zero $w_j$. 
+the columns of $\mat{U}$ corresponding to non-zero $w_j$ form an
+orthonormal basis of the range of $\mat{A}$ --- clearly the ${\bf
+W}\cdot\mat{V}^T$ that multiplies into $\mat{U}$ must yield something
+that lives in this subspace. The columns of $\mat{V}$ corresponding to
+zero $w_j$ span the null space.  The rank is the number of non-zero
+$w_j$.
+
+This decomposition gives yields a useful quantity for quantifying the
+singularity of a matrix, called the {\it condition number}. The
+condition number of a matrix is the ratio between the maximum and
+minimum value of $w_j$. For a singular matrix this is
+infinity. However, whenever this number is close to the inverse of the
+machine precision (e.g. $10^{-15}$ in double precision) then the
+matrix is close enough to singular that numerics on it will become
+unstable. 
+
+\section{Inversion of square matrices in SVD}
+
+Let us return to the question of $N\times N$ matrices that we perform
+SVD on.
+
+\noindent {\bf What is the inverse of $\mat{A}$ in terms of the
+decomposition?}
+
+\begin{answer}
+\begin{equation}
+\mat{A}^{-1}
+= \left( \mat{U} \cdot \mat{W} \cdot \mat{V}^T\right)^{-1} 
+= (\mat{V}^{T})^{-1} \cdot \mat{W}^{-1} \cdot (\mat{U})^{-1} 
+= \mat{V} \cdot \mat{W}^{-1} \cdot \mat{U}^{T} 
+\end{equation}
+\end{answer}
+
+Clearly, then, if \mat{A} is not singular or close to singular, once
+the SVD is done it is trivial to invert the matrix \mat{A}, and obtain
+the solution to the problem.
+
+Now, what if the matrix \mat{A} is singular? If so, then there are two
+possibilities. Either $\vec{b}$ is in the range of \mat{A}, or it is
+not.
+
+If it is in the range, then there are an infinite set of solutions; if
+you find one solution, you can always take that solution $\vec{x}$
+plus any solution in the null space $\vec{x}'$, and it is a new
+solution.  You can find the solution with the smallest norm in the
+following way. Take all the zero $w_j$, and replace $1/w_j$ with 0
+instead of infinity. What??? Yes.
+
+You can prove this as follows. Say $\mat{W}^{-1}$ is the inverse
+of \mat{W} with the adjustment made for zero $w_j$. Then:
+\begin{eqnarray}
+|\vec{x} + \vec{x}'|
+&=& \left| \mat{V}\cdot\mat{W}^{-1} \cdot \mat{U}^T\cdot \vec{b}
++ \vec{x}'\right| \cr
+&=& \left| \mat{V}\cdot \left(\mat{W}^{-1} \cdot \mat{U}^T\cdot \vec{b}
++ \mat{V}^T \cdot \vec{x}' \right)\right| \cr
+&=& \left| \mat{W}^{-1} \cdot \mat{U}^T\cdot \vec{b}
++ \mat{V}^T\cdot \vec{x}'\right| 
+\end{eqnarray}
+where the last equality follows from the orthonormality of \mat{V}.
+The left term has components only where $w_j\ne 0$. The right term is
+in the null space, so has only components in directions where $w_j=0$.
+We get to choose $\vec{x}$ so we should choose it to be zero.
+
+If $\vec{b}$ is not in the range, then the same procedure, it turns
+out, yields an $\vec{x}$ then minimizes:
+\begin{equation}
+r = \left|\mat{A}\cdot\vec{x} - \vec{b}\right|
+\end{equation}
+
+Therefore, the inverse with the conversion of $w_j = 0\rightarrow
+1/w_j = 0$ yields what we usually want in all cases. It is known as
+the {\it Moore-Penrose inverse} or {\it pseudoinverse} of a matrix. 
+
+The SVD solution of linear systems is in almost all cases the correct
+approach. Note that when $w_j$ values become less than the machine
+precision, they often should also be treated as zeros to avoid
+numerical instability.
 
 \section{Sparse matrices}
 
