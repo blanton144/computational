@@ -30,4 +30,3 @@ Semester projects:
 | [Telescope diffraction](pdf/project-telescope.pdf) | 
 | [LIGO detection](pdf/project-ligo.pdf) | 
 | [Two-dimensional Ising Model](pdf/project-ising.pdf) | 
-| [Stellar Structure](pdf/project-stellar-structure.pdf) | 

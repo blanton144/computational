@@ -27,6 +27,7 @@ ALL= \
 	$(PDFDIR)/intro.pdf \
 	$(PDFDIR)/intro-answers.pdf \
 	$(PDFDIR)/project-stellar-structure.pdf \
+	$(PDFDIR)/project-psf.pdf \
 	$(PDFDIR)/project-telescope.pdf \
 	$(PDFDIR)/project-three-body.pdf \
 	$(PDFDIR)/project-gravity-mesh.pdf \
