@@ -29,4 +29,5 @@ Semester projects:
 | [Three-body gravity](pdf/project-three-body.pdf) | 
 | [Telescope diffraction](pdf/project-telescope.pdf) | 
 | [LIGO detection](pdf/project-ligo.pdf) | 
-| [Two-dimensional Ising Model](pdf/project-ising.pdf) | 
+| [Two-dimensional Ising model](pdf/project-ising.pdf) | 
+| [Point spread function](pdf/project-psf.pdf) | 
