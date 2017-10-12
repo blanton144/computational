@@ -340,6 +340,13 @@ numerical instability.
 \section{Sparse matrices}
 
 There are many applications where you have in principle very large
-matrices, but they are in fact very sparse.  
+matrices, but they are in fact very sparse. A common case is a
+tridiagonal or band-diagonal system. However, it is also possible that
+there are simply sparse off-diagonal terms. 
 
-{\bf band-diagonal}
+For these systems, you can save a lot of time and memory by not
+operating on the full matrix, but only the non-sparse values.
+
+SciPy has a whole set of routines for dealing with such matrices,
+including inverses, SVD, etc. 
+

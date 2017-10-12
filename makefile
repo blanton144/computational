@@ -14,6 +14,8 @@ ALL= \
 	$(PDFDIR)/ps-5.pdf \
 	$(PDFDIR)/integration.pdf \
 	$(PDFDIR)/integration-answers.pdf \
+	$(PDFDIR)/eigensystems.pdf \
+	$(PDFDIR)/eigensystems-answers.pdf \
 	$(PDFDIR)/linear-algebra.pdf \
 	$(PDFDIR)/linear-algebra-answers.pdf \
 	$(PDFDIR)/differentiation.pdf \

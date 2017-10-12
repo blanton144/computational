@@ -13,7 +13,7 @@ Lecture notes and associated information:
 | Random | [notes](pdf/random.pdf) | [notes with answers](psf/random-answers.pdf) | [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/random.ipynb) | 
 | Differentiation | [notes](pdf/differentiation.pdf) | [notes with answers](psf/differentiation-answers.pdf)| [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/differentiation.ipynb) | 
 | Integration | [notes](pdf/integration.pdf) | [notes with answers](pdf/integration-answers.pdf)| [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/integration.ipynb) | 
-| Linear Algebra | [notes](pdf/linear-algebra.pdf) | | [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/linear-algebra.ipynb) | 
+| Linear Algebra | [notes](pdf/linear-algebra.pdf) | [notes with answers](pdf/linear-algebra.pdf) | [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/linear-algebra.ipynb) | 
 
 Problem sets: 
 
