@@ -1,0 +1,374 @@
+\section{Eigensystem Math}
+
+A hugely powerful set of methods in numerical linear algebra centers
+on the use of eigenvalues and eigenvectors. In fact, the SVD technique
+we just covered is very closely related to eigensystems.
+
+\noindent {\bf What is the definition of eigenvalues and
+  eigenvectors?}
+
+\begin{answer}
+For an $N\times N$ matrix, its eigenvalues and eigenvectors are
+defined by:
+\begin{equation}
+\mat{A}\cdot\vec{x} = \lambda \vec{x}
+\end{equation}
+Clearly this is only applicable to square matrices, because $\mat{A}$
+has to map one vector to another in the same-dimensional space.
+\end{answer}
+
+\noindent {\bf How many eigenvalues and eigenvectors are there?}
+
+\begin{answer}
+Up to $N$ distinct ones. For some matrices eigenvalues are
+``repeated.'' What we mean by this is clear from the proof.
+
+The eigenvalues are defined by the equation:
+\begin{equation}
+\det\left|\mat{A} - \lambda \mat{I}\right| = 0
+\end{equation}
+which follows from the fact that $\mat{A} - \lambda \mat{I}$ always
+maps $\vec{x}$ to zero, and so is clearly not invertible.
+
+The left side of the above equation is clearly an $N$th-order
+polynomial in $\lambda$. This polynomial will have $N$ roots (which
+can be repeated of course). Repeated eigenvalues are said to be
+``degenerate.'' 
+
+Each $\lambda$ has an associated $\vec{x}$ that produces it. The norm
+of the eigenvector is arbitrary, actually.
+\end{answer}
+
+Technically, these eigenvectors are {\it right eigenvectors}. There
+are {\it left eigenvectors} defined by the analogous equation:
+\begin{equation}
+\vec{x}\cdot\mat{A} = \lambda \vec{x}
+\end{equation}
+
+\noindent {\bf How are the eigenvalues of left eigenvectors related to
+  the eigenvalues of right eigenvectors?}
+
+\begin{answer}
+We can construct the determinant, and the polynomial equation it
+produces is the same, so they are the {\it same} eigenvalues.
+\end{answer}
+
+Now we get to perform a neat trick. Let's make matrices from the
+eigenvectors $\mat{X}_R$ and $\mat{X}_L$, by using the eigenvectors as
+the columns of the matrices.  Then:
+\begin{equation}
+  \mat{A}\cdot\mat{X}_R = \mat{X}_R \cdot
+  \left(
+  \begin{array}{cccc}
+    \lambda_0 & 0 & \ldots & 0 \cr
+    0 & \lambda_1 & \ldots & 0 \cr
+    \ldots & \ldots & \ldots & \ldots \cr
+    0 & 0 & \ldots & \lambda_{N-1} \cr
+  \end{array}
+  \right)
+\end{equation}
+and
+\begin{equation}
+  \mat{X}_L \cdot \mat{A} = 
+  \left(
+  \begin{array}{cccc}
+    \lambda_0 & 0 & \ldots & 0 \cr
+    0 & \lambda_1 & \ldots & 0 \cr
+    \ldots & \ldots & \ldots & \ldots \cr
+    0 & 0 & \ldots & \lambda_{N-1} \cr
+  \end{array}
+  \right) \cdot \mat{X}_L
+\end{equation}
+
+Calling the diagonal matrix of eigenvalues $\mat{D}$, we can show:
+\begin{equation}
+\vec{X}_L \cdot \vec{X}_R \cdot \mat{D} 
+= \mat{D} \cdot \vec{X}_L \cdot \vec{X}_R
+\end{equation}
+But $\mat{Q}\cdot\mat{R} = (\mat{R}\cdot\mat{Q})^T$, so if one of
+these matrices is diagonal, to commute, the other has to be too (in
+detail this is only true if the diagonal elements are distinct). 
+
+This means that if the $\lambda_i$ are all distinct, then each
+$\vec{x}_{R,i}$ is orthogonal to $\vec{x}_{L,i}$. You can of course
+define the norms of the eigenvectors to make them orthonormal. 
+
+If there are degenerate eigenvalues, then if you find the
+corresponding eigenvectors for each degenerate root, you can always
+linearly combine them into another eigenvector of the same root. So
+they define a linear subspace of more than one dimension. If there are
+$M$ degenerate values, this is an $M$-dimensional subspace. You can
+choose $M$ eigenvectors within this space. They don't have to be
+orthonormal, but you always are free to choose them to be, which is
+usually the right thing to do.
+
+In other words, it can always be arranged that:
+\begin{equation}
+\mat{X}_L = \left(\mat{X}_R\right)^{-1}
+\end{equation}
+
+Note that this implies that there is a similarity transform that
+diagonalizes any matrix:
+\begin{equation}
+\mat{X}_R^{-1} \cdot \mat{A} \cdot \mat{X}_R 
+\end{equation}
+
+An incredibly important case is that of real, symmetric matrices. In
+this case, the left and right eigenvectors are the same.  Therefore:
+$\mat{X}_R^{-1} = \mat{X}_R^T$. This means the matrix of eigenvectors
+in this case can be thought of as a rotation. It is specifically a
+rotation of the matrix into a new coordinate system where the matrix
+is diagonal!
+
+\section{Principal Component Analysis}
+
+This brings us to a very common use case for eigenvectors, which is
+principal component analysis. 
+
+It is common for us to generate real, symmetric, and positive-definite
+matrices.  An example is that of moments of inertia.
+
+\noindent {\bf What is the definition of the tensor moment of
+  inertia?}
+
+\begin{answer}
+\begin{eqnarray}
+I_{ij} &=& \int \dd^N{\vec{x}} \rho \left( x_i x_j \delta_{ij} - x_i
+x_j\right)
+\end{eqnarray}
+\end{answer}
+
+\noindent {\bf What are the principal axes of the moment of inertia?}
+
+\begin{answer}
+They are defined by the eigenvectors that define the coordinate system
+in which the moment of inertia is diagonal.
+\end{answer}
+
+Similar games can be played with any real, symmetric matrix, and it is
+often convenient and useful to find the coordinate system in which it
+is diagonal. 
+
+Another common example is an example of dimensionality reduction known
+as Principal Component Analysis. If you have some set of data points
+$\vec{q}_i$, with mean $\vec{q}_0$, you can define the residual:
+\begin{equation}
+\vec{r}_i = \vec{q}_i - \vec{q}_0
+\end{equation}
+and its covariance:
+\begin{equation}
+\mat{C} = \sum_{ijk} r_{ij} r_{ik} {\hat e}_j  {\hat e}_k
+\end{equation}
+
+\noindent {\bf This covariance matrix has eigenvalues and vectors.
+  Can you tell me what they are for the distribution I draw on the
+  board?} 
+
+The eigenvalues and vectors tell you the coordinate system that
+diagonalizes this covariance matrix, and what the diagonalized matrix
+is.
+
+\noindent {\bf For the distribution on the board, which eigenvector
+  has the larger eigenvalue?} 
+
+\begin{answer}
+The one corresponding to the larger variance.
+\end{answer}
+
+Because the eigenvector matrix $\mat{X}$ is a rotation matrix, we can
+apply it to a vector.  This is equivalent to projecting the vector
+onto each eigenvector, so it gives the components of the data in the
+new space.
+
+This is a very generally useful operation. Especially for
+high-dimensional data sets, looking at only the first few
+eigencomponents of the data can often be a good way to approximate the
+data with a low-dimensional model.
+
+\section{Finite Difference and Waves on a String}
+
+Eigensystems are also useful in the analysis of many dynamical
+problems. One particular example is waves on a string. I take the
+description of this example from notes of Peter Arbenz of ETH
+Z\"urich.
+
+For small displacements, the differential equation for the 1-D problem
+of a wave on a string is:
+\begin{equation}
+- \rho(x) \frac{\partial^2 u}{\partial t^2}
++ \frac{\partial }{\partial x}\left(p(x) \frac{\partial u}{\partial
+  x}\right)
++ q(x) u(x, t) = 0
+\end{equation}
+with $u$ being the displacement at position $x$, $t$ being time,
+$\rho$ being the mass density, $p$ being related to the elasticity of
+the string, and $q$ being the spring-like force. We assume $u=0$ at
+the boundaries ($x=0$ and $x=1$).
+
+We can separate variables:
+\begin{equation}
+u(x, t) = v(t) w(x)
+\end{equation}
+and find:
+\begin{equation}
+\ddot{v}(t) w(x) - v(t) \left(p(x) w'(x)\right)' - q(x)v(t) w(x) = 0
+\end{equation}
+and we can rearrange to find:
+\begin{equation}
+\frac{\ddot{v}(t)}{v(t)} = \frac{1}{w(x)}\left(p(x) w'(x)\right)' + q(x)
+\end{equation}
+Since this holds always for all $x$ and $t$, it must be a constant,
+which we will call $\lambda$. 
+
+This leads to a simple answer for $v(t)$:
+\begin{equation}
+\ddot{v} = - \lambda v
+\end{equation}
+where, because of some foresight regarding solutions to the right-hand
+side that can satisfy the boundary conditions, we assume $\lambda>0$.
+
+\noindent {\bf What are solutions for $v$?}
+
+\begin{answer}
+\begin{equation}
+v = a \cos(\sqrt{\lambda} t) + b \sin(\sqrt{\lambda} t)
+\end{equation}
+
+The consequence of this is that whatever pattern is established for
+$w(x)$ corresponding to $\lambda$, this will oscillate in
+time. Because the equation doesn't have any first order term in time,
+and no nonlinear terms, there is no dissipation so in this model it
+oscillates forever.
+
+There in general will be an infinite number of possible $\lambda$
+values, each with a specific pattern $w(x)$ it corresponds to, and as
+$\lambda$ grows, the period decreases. This is what you are familiar
+with regarding waves.
+\end{answer}
+
+The spatial equation is:
+\begin{equation}
+\left(p(x) w'(x)\right)' + q(x) w(x) = -\lambda w(x)
+\end{equation}
+This can be thought of as ``linear differential operator on $w(x)$
+equals scalar times $w(x)$.'' Sounds a tiny bit like an eigenvalue
+problem, and in fact it is, formally. Remember function space is a
+vector space. So linear operators are the same as linear mappings, but
+in an infinite dimensional space. Just like eigenvectors form a new
+basis set associated with their matrix, there are eigenfunctions  that
+form a new basis set of function space associated with each linear
+operator. In the context of numerical solutions to this problem of the
+sort I'm about to describe, this analogy is explicit: we will
+literally construct a finite matrix $\mat{A}$ to approximate the
+linear operator.
+
+If we determine the eigenfunctions, then a solution becomes:
+\begin{equation}
+u(x,t) = \sum_{k} w_k(x) \left[ a_k\, \cos(\sqrt{\lambda_k} t) + b_k\,
+  \sin(\sqrt{\lambda} t) \right]
+\end{equation}
+where $a_k$ and $b_k$ are determined by the initial conditions
+($u(x, t=0)$ and $\dot{u}(x, t=0)$).
+
+For constant $\rho$, $p$, and $q$, we can simplify the equation. For
+simplicity I'll use units where $\rho = p =1$.
+\begin{equation}
+- w'' + q w = \lambda w
+\end{equation}
+or 
+\begin{equation}
+w'' = (q - \lambda) w
+\end{equation}
+which yields:
+\begin{equation}
+w = A \exp\left[\sqrt{(q-\lambda)} x\right]
+\end{equation}
+
+\noindent {\bf What happens for $\lambda < q$ and $\lambda>q$?}
+
+\begin{answer}
+For $\lambda < q$, the solution is exponential, and to meet the
+boundary conditions it must be zero. So if your string is springy, it
+can't support low frequency modes.
+
+For $\lambda > q$, this is oscillatory, with shorter wavelengths for
+higher $\lambda$, as you expect.
+\end{answer}
+
+\noindent {\bf What is the dispersion relation for this system?}
+
+\begin{answer}
+The angular frequency squared is $\omega^2 = (2\pi)^2 \lambda$, and the
+wavenumber squared is $k^2 = (2\pi)^2 (\lambda - q)$. So we can write:
+\begin{equation}
+k^2 = \omega^2 - (2\pi)^2 q
+\end{equation}
+If $q=0$, this is just the ordinary dispersion relation for waves.
+\end{answer}
+
+The reason to do this numerically is if $q(x)$, $p(x)$, or $\rho(x)$
+are not constant. How do we go about this numerically?
+
+First note that we can without punishment change the definitions of
+$q$ and $p$ to allow us to set $\rho=1$. 
+
+Here we will use finite differences. We choose a series of $N$ points
+$x_i = i h $ for $i=1\ldots N$, with $h=1/(N+1)$ (we don't need $x=0$
+or $x=1$ because at these $w=0$). We approximate derivatives as:
+\begin{equation}
+\frac{\dd{g}}{\dd{x}} \approx \frac{g(x_{i+1/2}) - g(x_{i-1/2})}{h}
+\end{equation}
+For $g=p w'$ can evaluate:
+\begin{equation}
+p(x_{i+1/2})\left[\frac{\dd{w}}{\dd{x}}\right]_{x_{i+1/2}} =
+p(x_{i+1/2}) \frac{w(x_{i+1}) - w(x_i)}{h}
+\end{equation}
+and then we can write:
+\begin{eqnarray}
+  \left[\frac{\dd{}}{\dd{x}}\left(p\frac{\dd{w}}{\dd{x}}\right)\right]_{x_i}
+  &=& \frac{1}{h}\left[g(x_{i+1/2}) - g(x_{i-1/2})\right] \cr
+  &=& \frac{1}{h}\left[p(x_{i+1/2}) \frac{w(x_{i+1}) - w(x_i)}{h}
+    - p(x_{i-1/2}) \frac{w(x_{i}) - w(x_{i-1})}{h}\right] \cr
+  &=& \frac{1}{h^2}\left[ - p(x_{i+1/2}) w(x_{i-1})
+    + \left(p(x_{i-1/2}) + p(x_{i+1/2})\right) w(x_i)
+    - p(x_{i+1/2}) w(x_{i+1})\right]
+\end{eqnarray}
+
+If we call $\vec{w} = {w(x_0), w(x_1), \ldots, w(x_N)}$, and similarly
+with $q$, this leads to the following matrix equation:
+\begin{equation}
+\mat{M}\cdot \vec{w} + \vec{q}\cdot{\mat{I}}\vec{w} = \lambda \vec{w}
+\end{equation}
+where:
+\begin{equation}
+  \mat{M} = \frac{1}{h^2} \left(\begin{array}{cccccc}
+    p_{1/2} + p_{3/2} & - p_{3/2} & 0 & \ldots & \ldots & 0 \cr
+    - p_{3/2} & p_{3/2} + p_{5/2} & -p_{5/2} & 0 & \ldots & 0 \cr
+    0 & - p_{5/2} & p_{5/2} + p_{7/2} & -p_{7/2} & 0 & \ldots \cr
+    \ldots & \ldots & \ldots & \ldots & \ldots & \ldots \cr
+    0 & \ldots & 0 & 0 & - p_{N-1/2}  & p_{N-1/2} + p_{N+1/2} 
+\end{array}\right)
+\end{equation}
+
+Thus, we have converted this problem to a matrix eigenproblem!  Where
+we need to find the eigenvectors and eigenvalues of:
+\begin{equation}
+\mat{A} = \mat{M} + \vec{q}\cdot\mat{I}
+\end{equation}
+Note that while the real problem has an infinite number of
+eigenvalues, obviously this problem only has $N$ eigenvalues. Also
+note that in this formulation of the problem the   matrix $\mat{A}$ is
+tridiagonal. If we used higher order approximations for the
+derivative, it would be band-diagonal. (There is a finite-element
+expression of the problem which makes the matrix filled, but also
+requires lower $N$ for the same precision).
+
+An important lesson here is that we did {\it not} decide to integrate
+the differential equation directly in both time and space. Instead we
+analyzed the problem before adopting a numerical approach. This turned
+a two-dimensional problem into a one-dimensional problem and allowed
+us to generate all of the classes of solutions, not just integrate
+one set of initial conditions. (Note that even more analysis would
+lead us to even better methods than the finite difference method we
+used here --- but that's a different story).
+

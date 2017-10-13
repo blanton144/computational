@@ -1,0 +1,62 @@
+\documentclass[11pt, preprint]{aastex}
+
+\include{computational_defs}
+
+\begin{document}
+
+\title{\bf Computational Physics / PHYS-UA 210 / Problem Set \#6
+\\ Due October 20, 2017 }
+
+You {\it must} label all axes of all plots, including giving the {\it
+  units}!!
+
+This homework focuses on fitting a linear model to a data set.
+(Please note as an important point: when we say ``fitting a linear
+model'' it means ``fitting a model whose predictions vary linearly
+with its parameters,'' not ``fitting y vs. x with a line.'').
+
+\begin{enumerate}
+\item Generate a set of ``random'' $(x,y)$ data with constant noise,
+  using $x$ in the range from 0 to 1, and with $y$ determined by an
+  8th order polynomial:
+  \begin{equation}
+ y_i = \left[\sum_{j=0}^8 \alpha_j (x-0.5)^j\right] +
+ \mathrm{~Gaussian~noise}
+  \end{equation}
+  Choose reasonable $\alpha_j$, and reasonable Gaussian noise
+  (i.e. noticeable but not much larger than the features in your
+  polynomial. 
+\item For some (possibly different) set of coefficients,
+  $\beta_j$, sum-squared residuals of the model $\hat y$ are:
+  \begin{equation}
+    S = \sum_i (y_i - {\hat y}_i)^2 = \sum_i \left[y_i - \sum_j
+      {\beta}_j (x_i - 0.5)^j\right]^2
+  \end{equation}
+  which can be written as:
+  \begin{equation}
+    S = \left|\mat{A}\cdot \vec{\beta} - \vec{y} \right|^2
+  \end{equation}
+  Construct the matrix $\mat{A}$ given your random $\vec{x}$.
+\item Use SVD to find the $\vec{\beta}$ that minimizes $S$. This is
+  the linear least-squares estimate of $\vec{\alpha}$. Compare your
+  model for $y$ with the $y_i$ values and with the original, correct
+  $y$.  Try using different numbers of random draws: 6, 8, 32, 128.
+  Compare including Gaussian noise to not adding any noise.
+\item Compare using SVD to solving the ``normal equations.'' 
+  The normal equations result from finding where:
+  \begin{equation}
+    \frac{\partial S}{\partial \vec{\beta}} = 0
+  \end{equation}
+  and yield the equation:
+  \begin{equation}
+    \left(\mat{A}^T\cdot \mat{A} \right)\cdot \vec{\beta} =
+    \mat{A}^T\cdot\vec{y}
+  \end{equation}
+  This matrix equation can be solved by inverting $\mat{A}^T\cdot
+  \mat{A}$, which is $N\times N$. E.g. you can just use the {\tt
+    numpy.linalg.inv} implementation of LU decomposition. Try this
+  technique for the examples you used SVD on and describe any
+  differences you see.
+\end{enumerate}
+
+\end{document}
