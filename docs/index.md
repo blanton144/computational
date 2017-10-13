@@ -13,7 +13,8 @@ Lecture notes and associated information:
 | Random | [notes](pdf/random.pdf) | [notes with answers](psf/random-answers.pdf) | [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/random.ipynb) | 
 | Differentiation | [notes](pdf/differentiation.pdf) | [notes with answers](psf/differentiation-answers.pdf)| [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/differentiation.ipynb) | 
 | Integration | [notes](pdf/integration.pdf) | [notes with answers](pdf/integration-answers.pdf)| [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/integration.ipynb) | 
-| Linear Algebra | [notes](pdf/linear-algebra.pdf) | [notes with answers](pdf/linear-algebra.pdf) | [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/linear-algebra.ipynb) | 
+| Linear Algebra | [notes](pdf/linear-algebra.pdf) | [notes with answers](pdf/linear-algebra-answers.pdf) | [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/linear-algebra.ipynb) | 
+| Eigensystems | [notes](pdf/eigensystems.pdf) | [notes with answers](pdf/eigensystems-answers.pdf) | [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/eigensystems.ipynb) | 
 
 Problem sets: 
 
@@ -22,6 +23,7 @@ Problem sets:
 | [PS 3](pdf/ps-3.pdf) | 
 | [PS 4](pdf/ps-4.pdf) | 
 | [PS 5](pdf/ps-5.pdf) | 
+| [PS 5](pdf/ps-6.pdf) | 
 
 Semester projects:
 
