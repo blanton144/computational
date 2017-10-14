@@ -211,11 +211,12 @@ u(x, t) = v(t) w(x)
 \end{equation}
 and find:
 \begin{equation}
-\ddot{v}(t) w(x) - v(t) \left(p(x) w'(x)\right)' - q(x)v(t) w(x) = 0
+\rho(x) \ddot{v}(t) w(x) - v(t) \left(p(x) w'(x)\right)' - q(x)v(t) w(x) = 0
 \end{equation}
 and we can rearrange to find:
 \begin{equation}
-\frac{\ddot{v}(t)}{v(t)} = \frac{1}{w(x)}\left(p(x) w'(x)\right)' + q(x)
+\frac{\ddot{v}(t)}{v(t)} = \frac{1}{\rho(x) w(x)}\left(p(x)
+w'(x)\right)' + \frac{q(x)}{\rho(x)}
 \end{equation}
 Since this holds always for all $x$ and $t$, it must be a constant,
 which we will call $\lambda$. 
@@ -248,7 +249,8 @@ with regarding waves.
 
 The spatial equation is:
 \begin{equation}
-\left(p(x) w'(x)\right)' + q(x) w(x) = -\lambda w(x)
+\frac{1}{\rho(x)} \left[\left(p(x) w'(x)\right)' + q(x) w(x)\right] =
+-\lambda w(x)
 \end{equation}
 This can be thought of as ``linear differential operator on $w(x)$
 equals scalar times $w(x)$.'' Sounds a tiny bit like an eigenvalue
@@ -333,20 +335,22 @@ and then we can write:
     + \left(p(x_{i-1/2}) + p(x_{i+1/2})\right) w(x_i)
     - p(x_{i+1/2}) w(x_{i+1})\right]
 \end{eqnarray}
+and 
 
-If we call $\vec{w} = {w(x_0), w(x_1), \ldots, w(x_N)}$, and similarly
-with $q$, this leads to the following matrix equation:
+If we call $\vec{w} = \{w(x_1), w(x_2), \ldots, w(x_N)\}$, and call
+$\vec{r} = \{q(x_1)/\rho(x_1), \ldots, q(x_N)/\rho(x_N)$,
+this leads to the following matrix equation:
 \begin{equation}
-\mat{M}\cdot \vec{w} + \vec{q}\cdot{\mat{I}}\vec{w} = \lambda \vec{w}
+\mat{M}\cdot \vec{w} + \vec{r}\cdot{\mat{I}}\vec{w} = \lambda \vec{w}
 \end{equation}
 where:
 \begin{equation}
   \mat{M} = \frac{1}{h^2} \left(\begin{array}{cccccc}
-    p_{1/2} + p_{3/2} & - p_{3/2} & 0 & \ldots & \ldots & 0 \cr
-    - p_{3/2} & p_{3/2} + p_{5/2} & -p_{5/2} & 0 & \ldots & 0 \cr
-    0 & - p_{5/2} & p_{5/2} + p_{7/2} & -p_{7/2} & 0 & \ldots \cr
+    \frac{p_{1/2} + p_{3/2}}{\rho_1} & - \frac{p_{3/2}}{\rho_1} & 0 & \ldots & \ldots & 0 \cr
+    \frac{- p_{3/2}}{\rho_2} & \frac{p_{3/2} + p_{5/2}}{\rho_2} & -\frac{p_{5/2}}{\rho_2} & 0 & \ldots & 0 \cr
+    0 & \frac{- p_{5/2}}{\rho_3} & \frac{p_{5/2} + p_{7/2}}{\rho_3} & -\frac{p_{7/2}}{\rho_3} & 0 & \ldots \cr
     \ldots & \ldots & \ldots & \ldots & \ldots & \ldots \cr
-    0 & \ldots & 0 & 0 & - p_{N-1/2}  & p_{N-1/2} + p_{N+1/2} 
+    0 & \ldots & 0 & 0 & \frac{- p_{N-1/2}}{\rho_N}  & \frac{p_{N-1/2} + p_{N+1/2} }{\rho_N}
 \end{array}\right)
 \end{equation}
 
