@@ -1,0 +1,195 @@
+\section{Root-finding problems}
+
+An extremely common type of problem is that of {\it
+  root-finding}. That is, solving the following problem for $x$:
+\begin{equation}
+f(x) = 0
+\end{equation}
+There is a related, much harder problem, of solving a multidimensional
+problem $\vec{x}$, that we will not discuss here; just remember it is
+much harder!
+
+First, however, note that there are many common cases where the
+function $f(x)$ is linear. These cases are, obviously, easy. They are
+even ``easy'' in multi-dimensions, because they boil down to solving
+linear systems of equations. What we're interested in here are the
+harder, nonlinear cases.
+
+A simple example is if I have a routine that tells me the position of
+the Moon as a function of time, and I want to know when the Moon is
+going to rise or set next. 
+
+\section{Bracketing}
+
+A critical issue for finding roots is {\it bracketing}: how to find an
+interval which contains the root. Any given interval may have more
+than zero, one, or more roots. In general, if you have a black box
+function, there may be no root anywhere! As an example, if you are at
+the North Pole, moon rise or set may be many days away!
+
+A method that is commonly used is to start with some guess as to the
+bracket, and then just grow it symmetrically by some factor. This may
+or may not work. In general, the initial bracketing is going to depend
+a lot on the problem at hand. In my example, I want to know the next
+moonrise, so I can keep ``now'' fixed and just extend my other bracket
+into the future. I also pretty much know that over most of the Earth,
+the time to the next moon rise or set will be less than 12 hours, and
+at most it is going to be $\sim$ 13--14 days.
+
+So I give an example here which will work okay for this case. The {\tt
+  scipy.optimize} package has a {\tt bracket} utility which is more
+general, but also may not be appropriate in all cases. As usual, your
+mileage may vary!
+
+\section{Bisection}
+
+By far the most sure-fire route to find the minimum is bisection. 
+
+\noindent {\bf Can you explain to me, or guess, what bisection is?}
+
+\begin{answer}
+Bisection just involves checking the midpoint of the bracketed
+interval, and asking which side of the midpoint the root is on. Then
+do this recursively.
+\end{answer}
+
+\noindent {\bf When should you stop?}
+
+\begin{answer}
+When you are limited by machine roundoff error. If your tolerance is
+above the limit where that matters, you might want to think about
+whether your tolerance is in the function, or in the argument. Do you
+need a certain precision in $x$ or do you need $f(x)$ sufficiently
+close to zero? 
+
+If you have a desired tolerance in $f(x)$, you can run into a
+situation where you cannot reach it. I.e. given the precision in $x$
+you can't reach the desired precision in $f(x)$. E.g. if $f' \sim
+10^{10}$ near the root $x=1$ , then you just aren't going to get
+$f(x)$ closer to zero than $10^{-5}$ at double precision.
+
+For this reason, root-finding routines also can express their
+tolerance in terms of $x$. Even this can be tricky. Generally, if you
+have bracketed your root, you can set the tolerance to be around the
+machine tolerance at the middle of the range.
+\end{answer}
+
+\noindent {\bf How does the accuracy increase at each step of the
+  method?}
+
+\begin{answer}
+  It improves by a factor of two. Thus:
+  \begin{equation}
+    \epsilon_{n+1} = \frac{\epsilon_n}{2}
+  \end{equation}
+  In root-finding this (exponential) convergence is referred to as
+  ``linear.'' Quadratic convergence would be if $\epsilon_{n+1}\propto
+  \epsilon_n^2$.
+\end{answer}
+
+The {\tt scipy.optimize} utility implements this in the {\tt bisect}
+routine. It is also fairly easy to implement yourself.
+
+\section{Brent's Method}
+
+Faster convergence is sometimes desired. As in integration, building
+some sort of local model for your function can aid in convergence ---
+why blindly take a step if you can guess something about your
+function? 
+
+Brent's Method is a version of this technique. If you are root-finding
+on $f(x)$, it takes the clever route of fitting a parabola to
+$x(f)$. You start with the brackets and their midpoint.  These three
+points allow you to fit a parabola in to $x(f)$ and evaluate $x$ at
+$f=0$. 
+
+This $x$ can be written as:
+\begin{equation}
+x = b + \frac{P}{Q}
+\end{equation}
+where:
+\begin{eqnarray}
+R &=& \frac{f(b)}{f(c)} \cr
+S &=& \frac{f(b)}{f(a)} \cr
+T &=& \frac{f(a)}{f(c)}
+\end{eqnarray}
+and:
+\begin{eqnarray}
+P &=& S\left[T(R-T)(c-b) - (1-R)(b-a)\right] \cr
+Q &=& (T-1)(R-1)(S-1)
+\end{eqnarray}
+where this particular formulation is designed to avoid instabilities
+in the quadratic equation. You can verify that the above set of
+definitions yields the zero for the parabolic fit, but I won't do it
+here.
+
+If these updates are reasonable, this method will converge somewhere
+between linearly and quadratically.
+
+At any rate, if we try this, we can easily imagine two types of
+scenarios: one where the zero point ends up outside the range $a<x<c$;
+another where the steps are very small (this can happen if the
+midpoint gets close to one of the end points). In such cases, Brent's
+method dictates that you take a bisection step instead (between $b$
+and whatever bracket point is opposite sign). Thus, your worst case
+scenario is never much worse than bisection.
+
+{\tt scipy.optimize} implements this as its {\tt brentq} routine.
+
+\section{Newton-Raphson}
+
+The methods above, and particularly Brent, are what to use if you
+do not have easy access to the analytic derivative of your function. 
+However, occasionally you do, and the {\it Newton-Raphson} method
+takes advantage of this. Also, Newton-Raphson becomes very useful in
+more than one dimension.
+
+Newton-Raphson simply uses the derivative at one location $x$ to linearly
+extrapolate to an estimate $x+\delta$ of the zero:
+\begin{equation}
+\delta = - \frac{f(x)}{f'(x)}
+\end{equation}
+
+We can work out the convergence properties of Newton-Raphson. If we
+are at $x_i = x+\epsilon$ near the real root $x$:
+\begin{eqnarray}
+f(x+\epsilon) &=& f(x) + \epsilon f'(x) + \frac{\epsilon^2}{2!} f''(x) +
+\ldots \cr
+f'(x+\epsilon) &=& f'(x) + \epsilon f''(x) + \frac{\epsilon^2}{2!}
+f'''(x) + \ldots \cr
+\end{eqnarray}
+Now:
+\begin{equation}
+x_{i+1} = x_i - \frac{f(x_i)}{f'(x_i)}
+\end{equation}
+and since $x$ isn't changing:
+\begin{equation}
+\epsilon_{i+1} = \epsilon_i - \frac{f(x_i)}{f'(x_i)}
+\end{equation}
+
+\noindent {\bf Plug in the above equations and keep the lowest order in
+  $\epsilon_i$}
+
+\begin{answer}
+\begin{eqnarray}
+  \epsilon_{i+1} &\approx&
+  \epsilon_i - \frac{\epsilon_i f'(x) - \epsilon_i^2
+  f''(x) /2}{f'(x) + \epsilon_i f''(x)} \cr
+  &=& \epsilon_i - \epsilon_i - \frac{\epsilon_i^2 f''(x)}{2 f'(x)} \cr
+  &=& - \frac{\epsilon_i^2 f''(x)}{2 f'(x)}
+\end{eqnarray}
+That is, the convergence is quadratic.
+\end{answer}
+
+However, Newton-Raphson can get into some trouble, if it isn't treated
+carefully, as I show in the notebook.
+
+In general, it is advisable to use bracketing, then Brent's method to
+some reasonable tolerance, then tune the root using Newton-Raphson if
+the derivatives are available.
+
+Finally, what if we don't have access to the derivatives? You can
+forward-difference the derivative, but then it is usually not better
+to use Newton-Raphson than Brent. You need at least to double your
+function calls to take a derivative, and that means the convergence
+power is $\sqrt{2}$, not 2. 

@@ -25,6 +25,8 @@ ALL= \
 	$(PDFDIR)/random-answers.pdf \
 	$(PDFDIR)/arrays.pdf \
 	$(PDFDIR)/arrays-answers.pdf \
+	$(PDFDIR)/roots.pdf \
+	$(PDFDIR)/roots-answers.pdf \
 	$(PDFDIR)/numerics.pdf \
 	$(PDFDIR)/numerics-answers.pdf \
 	$(PDFDIR)/intro.pdf \
