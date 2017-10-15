@@ -14,7 +14,8 @@ Lecture notes and associated information:
 | Differentiation | [notes](pdf/differentiation.pdf) | [notes with answers](psf/differentiation-answers.pdf)| [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/differentiation.ipynb) | 
 | Integration | [notes](pdf/integration.pdf) | [notes with answers](pdf/integration-answers.pdf)| [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/integration.ipynb) | 
 | Linear Algebra | [notes](pdf/linear-algebra.pdf) | [notes with answers](pdf/linear-algebra-answers.pdf) | [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/linear-algebra.ipynb) | 
-| Eigensystems | [notes](pdf/eigensystems.pdf) | [notes with answers](pdf/eigensystems-answers.pdf) | [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/eigensystems.ipynb) | 
+| Eigensystems | [notes](pdf/eigensystems.pdf) | | [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/eigensystems.ipynb) | 
+| Root-finding | [notes](pdf/roots.pdf) | | [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/roots.ipynb) | 
 
 Problem sets: 
 
