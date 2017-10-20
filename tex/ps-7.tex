@@ -4,24 +4,47 @@
 
 \begin{document}
 
-\title{\bf Computational Physics / PHYS-UA 210 / Problem Set \#6
+\title{\bf Computational Physics / PHYS-UA 210 / Problem Set \#7
 \\ Due October 27, 2017 }
 
 You {\it must} label all axes of all plots, including giving the {\it
   units}!!
 
 Here you will solve the heat equation using the same techniques used
-in class for the vibrating string.
+in class for the vibrating string. This equation describes a
+heat-conducting rod, with in this case insulated ends.
 
-The equations  in one dimension is:
-
+The equation in one dimension is:
 \begin{equation}
   \frac{\partial u(x, t)}{\partial t} -
-  \frac{\partial^2 u(x,t)}{\partial t^2} = 0 \cr
+  \alpha \frac{\partial^2 u(x,t)}{\partial x^2} = 0
 \end{equation}
+and if its ends are insulated it is subject to the boundary condition:
+\begin{equation}
+  \frac{\partial u(x, t)}{\partial x} = 0
+\end{equation}
+Constraints on the derivative at the boundary are known as {\it
+  Neumann} boundary conditions (constraints on the function value at
+the boundary are known as {\it Dirichlet} boundary conditions.
 
 \begin{enumerate}
-\item 
+\item Use the method of separation of variables to analytically find
+  the solutions of this equation for constant $\alpha$. 
+\item Now use the finite difference method presented in class to solve
+  the same problem using a finite eigensystem. Compare the
+  eigenfunctions to your analytic method and test how its accuracy
+  varies with $N$. Demonstrate how a central temperature excess (use a
+  Gaussian with a standard deviation of about one pixel) evolves over
+  time. Feel free to use an altered version of the {\tt StringProb}
+  class in the Jupyter notebook for this lecture. However, you will
+  need to account for the boundary conditions differently. To do so,
+  use a central difference approximation to the derivative at the
+  first node, and use this to alter the first and last finite
+  difference equations.
+\item Now alter the thermal diffusivity coefficient $\alpha$ to be a
+  function of position. Try putting a ``barrier'' of low diffusivity
+  somewhere (not right at the location of the Gaussian), and see what
+  happens. Try some other pattern you invent too.
 \end{enumerate}
 
 \end{document}
