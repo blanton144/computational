@@ -1,0 +1,149 @@
+\section{Minimization}
+
+Optimization, either minimization or maximization of functions, is a
+close relation of root-finding, but it has some fundamental
+differences. There is a sense in which they are the same problem,
+because finding a stationary point of $f(x)$ is like finding a root of
+$\dd{f}/\dd{x}$. Nevertheless, they do differ (particularly in
+multiple dimensions, due fundamentally to the fact that the gradient
+of a function has special properties helpful to finding its minimum).
+
+In the game of optimization, the most important categorization is
+between {\it convex} and {\it non-convex} problems. Convex problems
+are one with a single optimum --- e.g. a single minimum. So if you
+find a minimum, you have found the minimum. Nonconvex problems can
+have multiple optima --- i.e. more than one local minimum, only one of
+which is a global minimum (unless there's a tie!).
+
+We start with the simplest example of a convex problem, that of a
+quadratic optimization. We've already seen this problem in the context
+of SVD, but let's connect it explicitly to the idea of minimization.
+
+\section{Minimization of quadratic functions}
+
+If you have a one-dimensional parabola, it has exactly one
+extreme. We will write the parabola as:
+\begin{equation}
+f(x) = \alpha x^2 + \beta x + \gamma
+\end{equation}
+
+\noindent {\bf In this case, what is the extremum of the function?}
+
+\begin{answer}
+You can easily find this extreme analytically of course:
+leads to
+\begin{eqnarray}
+f'(x) =  2 \alpha x + \beta  &=& 0 \cr
+x  &=& - \frac{\beta}{2\alpha} \cr
+\end{eqnarray}
+\end{answer}
+
+Typically, we will be handed a function, not given an explicit set of
+quadratic parameters (and we'll see later we actually want to
+use the quadratic form as an approximation to more general
+functions). 
+
+\noindent {\bf How many function evaluations do I need to do to
+  determine the parameters of the quadratic?}
+
+\begin{answer}
+Three, because there are three unknowns. If you choose points $a$,
+$b$, and $c$, these evaluations give you the equations:
+\begin{eqnarray}
+\alpha a^2 + \beta a + \gamma &=& f(a) \cr
+\alpha b^2 + \beta b + \gamma &=& f(b) \cr
+\alpha c^2 + \beta c + \gamma &=& f(c) \cr
+\end{eqnarray}
+or:
+\begin{equation}
+  \left(\begin{array}{ccc}
+    a^2 & a & 1 \cr
+    b^2 & b & 1 \cr
+    c^2 & c & 1 
+  \end{array}\right) \cdot
+  \left(\begin{array}{c}
+    \alpha \cr
+    \beta \cr
+    \gamma
+    \end{array}\right) = 
+  \left(\begin{array}{c}
+    f(a) \cr
+    f(b) \cr
+    f(c)
+    \end{array}\right) = 
+\end{equation}
+If $a$, $b$, and $c$ are distinct, this matrix will be nonsingular.
+\end{answer}
+
+In fact, one can work through this matrix to find $\alpha$, $\beta$,
+nd $\gamma$ (you don't really use $\gamma$, but you do need to
+calculate it) and thus the minimum (this is the same as Brent's
+method). Analytically you get the result:
+\begin{equation}
+  x = b - \frac{1}{2}
+  \frac{(b-a)^2 \left[f(b) - f(c)\right] - (b-c)^2
+  \left[f(b) - f(a)\right]}
+  {(b-a) \left[f(b) - f(c)\right] - (b-c) \left[f(b) - f(a)\right]}
+\end{equation}
+
+This method works great if the function is actually quadratic (not
+something else, and not linear). But is very rare for a function to be
+known to be quadratic, and not have the ability to calculate its
+derivative directly. The real use of this method is as a way to
+iterate twoards a solution.
+
+\section{Golden Section Search}
+
+For functions about which you know nothing, there is a more fool-proof
+method, akin to bisection, which is {\it golden section} search.
+
+Imagine you start with a bracketing set of points $a$, $b$, and $c$,
+such that $f(b)<f(a)$ and $f(b)<f(c)$. Define the fractional position
+of $b$ as:
+\begin{equation}
+w = \frac{b-a}{c-a}
+\end{equation}
+Now we will pick a next trial point $x$. This will define some new
+triplet, depending on whether it is higher or lower than $f(b)$. Let's
+call the fraction position beyond $b$:
+\begin{equation}
+z = \frac{x-b}{c-a}
+\end{equation}
+If the new triplet is the first three points, it has fractional length
+$w+z$. If it is the last three points, it has fractional length
+$1-w$. It seems reasonable to want these to be the same:
+\begin{equation}
+w+z = 1 - w \quad\rightarrow\quad z = 1 - 2w
+\end{equation}
+which leaves each length as $1-w$. 
+
+If you are applying this iteratively, the fractional position of $x$
+within the new bracket should be the same as $b$ was in the old
+bracket (since the latter was created by the same process):
+\begin{equation}
+\frac{z}{1-w} = w
+\end{equation}
+and then plugging in for $z$, and solving for $w$ we can find:
+\begin{equation}
+w = \frac{3-\sqrt{5}}{2} \approx 0.382
+\end{equation}
+This is the {\it golden section}.
+
+This method will continually bracket the minimum further and further
+down. 
+
+\section{Brent's one-dimensional minimization}
+
+A workable one-dimensional minimization routine combines these two
+methods, and is called Brent's Method. Like the root-finding Brent, it
+uses parabolic approximations, but it keeps track of a bracketing
+interval, and under certain conditions it reverts to golden section
+search.
+
+These conditions are that:
+\begin{itemize}
+\item The parabolic step falls outside the  bracketing interval.
+\item The parabolic step is greater than the step before last (!).
+\end{itemize}
+
+You shall, for your homework, implement this method.

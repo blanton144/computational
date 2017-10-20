@@ -13,6 +13,7 @@ ALL= \
 	$(PDFDIR)/ps-4.pdf \
 	$(PDFDIR)/ps-5.pdf \
 	$(PDFDIR)/ps-6.pdf \
+	$(PDFDIR)/ps-7.pdf \
 	$(PDFDIR)/integration.pdf \
 	$(PDFDIR)/integration-answers.pdf \
 	$(PDFDIR)/eigensystems.pdf \
@@ -27,6 +28,8 @@ ALL= \
 	$(PDFDIR)/arrays-answers.pdf \
 	$(PDFDIR)/roots.pdf \
 	$(PDFDIR)/roots-answers.pdf \
+	$(PDFDIR)/minimization.pdf \
+	$(PDFDIR)/minimization-answers.pdf \
 	$(PDFDIR)/numerics.pdf \
 	$(PDFDIR)/numerics-answers.pdf \
 	$(PDFDIR)/intro.pdf \
