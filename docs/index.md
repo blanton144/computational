@@ -15,7 +15,8 @@ Lecture notes and associated information:
 | Integration | [notes](pdf/integration.pdf) | [notes with answers](pdf/integration-answers.pdf)| [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/integration.ipynb) | 
 | Linear Algebra | [notes](pdf/linear-algebra.pdf) | [notes with answers](pdf/linear-algebra-answers.pdf) | [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/linear-algebra.ipynb) | 
 | Eigensystems | [notes](pdf/eigensystems.pdf) | [notes with answers](pdf/eigensystems-answers.pdf) | [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/eigensystems.ipynb) | 
-| Root-finding | [notes](pdf/roots.pdf) | | [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/roots.ipynb) | 
+| Root-finding | [notes](pdf/roots.pdf) | [notes with answers](pdf/roots-answers.pdf)| [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/roots.ipynb) | 
+| Minimization | [notes](pdf/minimization.pdf) | [notes with answers](pdf/minimization-answers.pdf)| [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/roots.ipynb) | 
 
 Problem sets: 
 
@@ -26,6 +27,7 @@ Problem sets:
 | [PS 5](pdf/ps-5.pdf) | 
 | [PS 6](pdf/ps-6.pdf) | 
 | [PS 7](pdf/ps-7.pdf) | 
+| [PS 8](pdf/ps-8.pdf) | 
 
 Semester projects:
 
