@@ -14,6 +14,7 @@ ALL= \
 	$(PDFDIR)/ps-5.pdf \
 	$(PDFDIR)/ps-6.pdf \
 	$(PDFDIR)/ps-7.pdf \
+	$(PDFDIR)/ps-8.pdf \
 	$(PDFDIR)/integration.pdf \
 	$(PDFDIR)/integration-answers.pdf \
 	$(PDFDIR)/eigensystems.pdf \

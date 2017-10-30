@@ -1,3 +1,7 @@
+These notes draw heavily on {\it Numerical Recipes}, a valuable
+resource for entry-level understanding of numerical methods relevant
+to physics.
+
 \section{Minimization}
 
 Optimization, either minimization or maximization of functions, is a
@@ -147,3 +151,198 @@ These conditions are that:
 \end{itemize}
 
 You shall, for your homework, implement this method.
+
+\section{$N$-dimensional minimization}
+
+Things get trickier in higher numbers of dimensions. A phenomenally
+bad way to minimize in high dimensions is to iteratively minimize
+along different coordinate directions.  This will be extremely slow
+even in pretty reasonable cases.  It will get caught in some
+degeneracy valleys.  Another bad way that at first sounds good is {\it
+  steepest descent}, where you minimize in the gradient direction,
+successively. It is easy to draw situations where most starting
+points will lead to very slow convergence.
+
+Modern methods are robust to this problem; at times you will hear
+physicists describe this as if it were a mysterious, unassailable
+problem, but computer science has had it solved in a huge number of
+practical cases for decades.
+
+The key idea for improving convergence is the same as that used in
+parabolic minimization. Near the minimum of the function, it will be
+quadratic at lowest order. Let's put the minimum at the origin for
+simplicity. If you expand it in Taylor series:
+\begin{equation}
+  f(\vec{x}) = f(\vec{0})
+  + \sum_i \left[\frac{\partial f}{\partial x_i}\right]_{\vec{0}}  x_i
+  + \frac{1}{2} \sum_{ij} \left[\frac{\partial^2 f}{\partial x_i \partial x_j}\right]_{\vec{0}}
+  x_i x_j
+\end{equation}
+
+\noindent {\bf What is the gradient of this Taylor expansion?}
+
+\begin{answer}
+\begin{equation}
+\sum_i \frac{\partial f}{\partial x_i} {\hat e}_i = \sum_i
+\left[\frac{\partial f}{\partial x_i}\right]_{\vec{0}} {\hat e}_i +
+\sum_{ij} \left[\frac{\partial^2 f}{\partial x_i \partial
+    x_j}\right]_{\vec{0}} x_j {\hat e}_i
+\end{equation}
+which can be written as:
+\begin{equation}
+\vec{\nabla}f = \left[\vec{\nabla}f \right]_{\vec{0}} +
+\mat{A}\cdot{\vec{x}}
+\end{equation}
+where the {\it Hessian matrix} is:
+\begin{equation}
+A_{ij} = 
+\left[\frac{\partial^2 f}{\partial x_i \partial x_j}\right]_{\vec{0}}
+\end{equation}
+Clearly we can solve this problem!  If you actually knew the Hessian
+matrix you could leap to the bottom of a quadratic.
+\end{answer}
+
+\noindent {\bf If you had to choose successive directions to minimize
+  one-dimensionally in, which would they be?}
+
+\begin{answer}
+The eigenvectors of $\mat{A}$. These eigenvectors will bring you
+straight to the bottom of a quadratic, in $N$ line minimizations. In a
+real situation, where the function was only approximately quadratic,
+of course it would take some more iterations.
+
+However, you can't do this in general, since usually you do not know
+the form of the Hessian.
+\end{answer}
+
+There is one sort of case where you may know the Hessian matrix. That
+is when your function $f$ is quadratic in the parameters. A classic
+example is least squares minimization to a linear model (sometimes
+called $\chi^2$ minimization, which is only appropriate to say if you
+are fitting data to a model with Gaussian noise). In this case if you
+have data points $g_i$, and a model $m_i = \sum_j a_j M_{ij}$ which is
+a linear function of unknowns $a_j$, then the function you want to
+minimize is:
+\begin{equation}
+f = \sum_i \left( g_i - \sum_{j} a_j M_{ij} \right)^2
+\end{equation}
+and your Hessian matrix can be constructed and the problem above
+solved. Always remember that if your function is quadratic in its
+parameters than minimizing it should be easy --- it is convex and you
+can solve it in one matrix operation!
+
+\section{Conjugate Gradient}
+
+In more general cases, we do not know the Hessian matrix explicitly
+and need to estimate its structure based on evaluations of $f$ (and
+its derivatives). How to estimate the Hessian matrix efficiently with 
+function and derivative evaluations is the subject of the {\it
+  conjugate gradient} method and its variants. In general, you will
+want to use one of the modern variants on conjugate gradient, which
+are good for many low-enough-dimensional and smooth problems. A good,
+extensive introduction is given by
+\href{http://www.cs.cmu.edu/~jrs/jrspapers.html}{\color{red} Shewchuk
+  (1994)}.
+
+The idea of conjugate gradient is simple, but its implementation is
+tricky. Basically, the idea is that if you knew the eigenvectors of
+the Hessian matrix, you could successively minimize along its
+eigenvectors and reach the minimum in $N$ steps. This is clear when
+you remember that the eigenvectors form a basis in which the matrix is
+diagonal. Thus, if you construct a rotation matrix \mat{R} from the
+eigenvectors:
+\begin{equation}
+\mat{A} = \mat{R}^T \cdot \mat{D} \cdot \mat{R}
+\end{equation}
+where $\mat{D}$ is a diagonal matrix. Thus, any quadratic form can be
+written in the eigenbasis ${\hat e}'$ as:
+\begin{equation}
+\sum_i a_i (x_i' - {\bar x}_i)^2
+\end{equation}
+that is, without any cross-terms between different
+dimensions. Furthmore, we can define a more general transformation
+\mat{T} so that:
+\begin{equation}
+\mat{A} = \mat{T}^T \cdot \mat{I} \cdot \mat{T}
+\end{equation}
+just by renormalizing the eigenvectors. It is also worth noting at
+this stage that the columns of \mat{T} satisfy:
+\begin{equation}
+\vec{t}_i \cdot\mat{A}\cdot \vec{t}_j = \delta_{ij}
+\end{equation}
+If I transform into a new space defined by \mat{T} then we can start
+in {\it any} direction and do steepest descent.
+
+This fact is of limited use on its own. After all, you still need to
+determine the Hessian matrix and construct the eigenbasis. The magic
+of the conjugate gradient algorithm is that you can generate searches
+along the relevant directions. You start in any direction
+$\vec{h_0}=\vec{g_0}$ and line minimize in that direction. Then you
+update according to:
+\begin{eqnarray}
+\vec{g}_{i+1} &=& \vec{g}_i - \lambda_i \mat{A}\cdot\vec{h}_i \cr
+\vec{h}_{i+1} &=& \vec{g}_{i+1} + \gamma_i \vec{h}_i 
+\end{eqnarray}
+with:
+\begin{eqnarray}
+\lambda_i &=& \frac{\vec{g}_i \cdot
+  \vec{h}_i}{\vec{h}_i\cdot\mat{A}\cdot\vec{h}_j} \cr
+\gamma_i &=& \frac{\vec{g}_{i+1} \cdot
+  \vec{g}_{i+1}}{\vec{g}_i\cdot\vec{g}_i}
+\end{eqnarray}
+Given this updating scheme, you line minimize successively on
+$\vec{h}_i$. 
+
+The directions $\vec{h}$ and $\vec{g}$ have the magical
+property that for $j<i$, $\vec{g}_i$ is orthogonal to all the previous
+$\vec{g}_j$ and $\vec{h}_j$, and crucially:
+\begin{equation}
+\vec{h}_i \cdot \mat{A} \cdot \vec{h}_j = 0 
+\end{equation}
+so the resulting directions have the property we want. Showing that
+this is the case takes more time than I have here. 
+
+Except the $\lambda_i$ still require the knowledge of
+$\mat{A}$. Luckily we can use the following trick. If $\vec{g}_i = -
+\nabla f(\vec{P}_i)$, then line minimize and pick the next
+$\vec{g}_{i+1}$ as the gradient again, this is the same as the update
+for $\vec{g}$ above. It does not require $\mat{A}$.
+
+We can see this because in this case:
+\begin{equation}
+\vec{g}_i = - \mat{A}\cdot\vec{P}_i + \vec{b}
+\end{equation}
+so:
+\begin{equation}
+\vec{g}_{i+1} = - \mat{A}\cdot (\vec{P}_i + \lambda \vec{h}_i) + \vec{b}
+\end{equation}
+and so:
+\begin{equation}
+\vec{g}_{i+1} = \vec{g}_i - \lambda \mat{A}\cdot\vec{h}_i
+\end{equation}
+with $\lambda$ chosen at the line minimum. This $\lambda$ turns out is
+the same as $\lambda_i$ used above. To show this, note that at the
+minimum:
+\begin{equation}
+  \vec{h}_i\cdot \nabla f = -\vec{h}_i \cdot \vec{g}_{i+1}  = 0
+\end{equation}
+Then you can solve for $\lambda$ in the above equation and you get the
+value for $\lambda_i$ above.
+
+This version of the algorithm is known as the Fletcher-Reeves
+algorithm. You start your minimization along the gradient, then you
+update according to how $\vec{h}_i$ evolves under the iteration
+above. If your function is quadratic, you converge in $N$ steps. If
+not, you still proceed quite rapidly to the minimum.
+
+You need derivatives! In multi-dimensions, it is worthwhile to simply
+use finite difference derivatives.
+
+\section{Quasi-Newtonian Methods}
+
+There are other techniques for finding the minimum through generating
+the Hessian matrix information, specifically building up a model for
+its inverse. These are known as quasi-newtonian methods. The most
+commonly used of these nowadays is called
+Broyden-Fletcher-Goldfarb-Shanno (BFGS).  This is the method of choice
+for minimization problems with a moderate number of dimensions.

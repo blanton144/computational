@@ -1,0 +1,45 @@
+\documentclass[11pt, preprint]{aastex}
+
+\include{computational_defs}
+
+\begin{document}
+
+\title{\bf Computational Physics / PHYS-UA 210 / Problem Set \#8
+\\ Due November 10, 2017 }
+
+You {\it must} label all axes of all plots, including giving the {\it
+  units}!!
+
+\begin{enumerate} 
+\item Implement Brent's method for minimization of a one-dimensional
+  function. Test it on a fourth-order function. Compare your
+  performance to the {\tt scipy} implementation.
+\item Write a routine that integrates the equations for projectile
+  motion:
+  \begin{equation}
+    \frac{\dd{^2\vec{x}}}{\dd{t}^2} = - g {\hat x}_1 - \alpha
+    \dot{\vec{x}}^2
+  \end{equation}
+  These are appropriate for, say, a golf ball. 
+  The initial conditions should be that the object is launched at some
+  angle $\theta$ from the horizontal at some initial speed in the
+  $x_0$-$x_1$ plane. Integrate until the object hits the ground
+  again. Implement Euler's method, and also use a Runge-Kutta method
+  from {\tt scipy}. Compare their convergence with time steps.
+\item Use Brent's method (either yours or {\tt scipy}'s) to optimize
+  the angle $\theta$ to get the longest distance.
+\item Now consider that you are aiming for a specific point along the
+  ${\hat x}_0$ axis, and that there is some wind in the ${\hat x}_2$
+  direction, so the drag term becomes: 
+  \begin{equation}
+    - \alpha (\dot{\vec{x}} - w {\hat x_2})^2 
+  \end{equation}
+  Allow yourself the freedom to hit the golf ball in any direction
+  $\theta$ from the horizontal, any angle $phi$ from the $x_0$ axis in
+  the $x_0$-$x_2$ plane, and at any speed. You should be able to hit
+  any given spot $D$ along the $x_0$ axis. Use the {\tt scipy}
+  implementation of {\tt bfgs} to perform this optimization.
+\end{enumerate} 
+
+
+\end{document}
