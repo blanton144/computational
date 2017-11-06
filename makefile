@@ -33,6 +33,8 @@ ALL= \
 	$(PDFDIR)/minimization-answers.pdf \
 	$(PDFDIR)/numerics.pdf \
 	$(PDFDIR)/numerics-answers.pdf \
+	$(PDFDIR)/ode.pdf \
+	$(PDFDIR)/ode-answers.pdf \
 	$(PDFDIR)/intro.pdf \
 	$(PDFDIR)/intro-answers.pdf \
 	$(PDFDIR)/project-stellar-structure.pdf \
