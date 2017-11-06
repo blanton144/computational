@@ -1,0 +1,221 @@
+\section{Ordinary Differential Equations}
+
+Differential equations have the form:
+\begin{equation}
+\frac{\dd{x}}{\dd{t}} = f(x, t)
+\end{equation}
+and can come both in systems (i.e. multiple equations that have to
+remain all true) and can contain higher orders in the derivatives. 
+In the case above, we will want to solve for $x(t)$, and $x$ is
+referred to as the dependent variable, and $t$ is referred to as the
+independent variable. 
+
+\noindent {\bf What is the distinction between ordinary and partial
+  differential equations?}
+
+\begin{answer}
+{\it Ordinary differential equations} have a single independent
+variable, whereas {\it partial differential equations} require
+multiple independent variables. 
+
+For example, Poisson's equation:
+\begin{equation}
+\nabla^2 \rho = 4 \pi G \rho(x,y,z)
+\end{equation}
+involves derivatives in all three coordinates, and they are all
+required in general. You can reduce Poisson's equation to an ODE in
+spherical symmetry.
+\end{answer}
+
+\noindent {\bf What is the distinction between homogeneous and
+  nonhomogeneous ODEs?}
+
+\begin{answer}
+Homogeneous ODEs have  no terms without the dependent variable.
+Nonhomogeneous ODEs have ``driving'' terms, without the dependent
+variable.
+
+For example, a nonhomogeneous equation is:
+\begin{equation}
+\frac{\dd{^2x}}{\dd{t^2}} = f(t)
+\end{equation}
+\end{answer}
+
+\noindent {\bf What is the distinction between linear and nonlinear
+  ODEs?}
+
+\begin{answer}
+Linear ODEs are {\it linear} in the dependent variable (but not necessarily
+in the independent variable). 
+
+Thus, the following equation is linear:
+\begin{equation}
+\frac{\dd{x}}{\dd{t}} = t^3 x(t)
+\end{equation}
+but this equation is {\it nonlinear}:
+\begin{equation}
+\frac{\dd{x}}{\dd{t}} = t x^3(t)
+\end{equation}
+
+While solutions of homogeneous, linear ODEs may be superposed to find
+new solutions, the same is not true of nonlinear equations.  Any two
+solutions to the top equation $x_1$ and $x_2$ can be linearly combined
+into a new equation, but that's not going to be necessarily true of
+(nontrivial) solutions of the bottom equation.
+\end{answer}
+
+With ODEs, you need to set {\it boundary conditions}. For example, in
+the simplest case, you might set a set of conditions at $t=0$
+(i.e. {\it initial conditions}). For each dependent variable, the
+number of independent boundary conditions you need to set are equal to
+the order of the problem. 
+
+You can in principle set conditions at multiple $t$, as long as you
+have the right number of conditions. In such cases, it is not
+necessarily the case that your conditions can be met under your
+equations of course. It definitely complicates the finding of a
+solution.  
+
+ODEs of any order can be reduced to systems of linear
+equations. Specifically they can be reduced to a form like:
+\begin{eqnarray}
+\frac{\dd{w_0}}{\dd{t}} &=& f_0(\vec{w}, t) \cr
+\frac{\dd{w_1}}{\dd{t}} &=& f_1(\vec{w}, t) \cr
+&\ldots& \cr
+\frac{\dd{w_{N-1}}}{\dd{t}} &=& f_{N-1}(\vec{w}, t)
+\end{eqnarray}
+where no terms appear on the right-hand side that are derivatives of
+$\vec{w}$ with $t$.  In vector form this appears as:
+\begin{equation}
+\frac{\dd{\vec{w}}}{\dd{t}} = \vec{f}(\vec{w}, t)
+\end{equation}
+
+But do not confuse these vectors with three-dimensional vectors in
+configuration space. More often (usually) they involve vectors in
+phase space.
+
+For example, take the second-order equation in three-dimensional space:
+\begin{equation}
+\frac{\dd{^2\vec{x}}}{\dd{t}^2} = - \vec{x} + \vec{f}(t)
+\end{equation}
+which represents a spring under some time-dependent forcing. This may
+be reduced to one dimension as follows:
+\begin{eqnarray}
+\frac{\dd{\vec{x}}}{\dd{t}} &=& \vec{v} \cr
+\frac{\dd{\vec{v}}}{\dd{t}} &=& - \vec{x} + \vec{f}(t) \cr
+\end{eqnarray}
+which represents six first-order equations in the 6-D phase space
+vector $\vec{w} = (\vec{x}, \vec{v})$.
+
+\section{Algorithms for ODEs}
+
+For a general nonlinear ODE, given initial conditions, we will need to
+integrate (usually) forward in time numerically. There are a number of
+well-developed algorithms for doing this. As in other applications we
+have done this semester, the more complex algorithm tend to take the
+form of higher-order approximations to the solutions of the problem. 
+
+The simplest ODE integrator that exists is {\it Euler's algorithm}.
+Like all the simplest examples in this course, you should probably
+never use it, but it is illustrative.
+
+This algorithm takes equal time steps $\Delta t$, starting from
+$\vec{w}(t=0)$, just says:
+\begin{equation}
+\vec{w}(t+\Delta t) = \Delta t {\dot{\vec{w}}}(t) = 
+\Delta t \vec{f}(\vec{w}, t)
+\end{equation}
+
+Perhaps not surprisingly given what we have learned about similar
+methods for forward differencing, the error in this method is
+$\mathcal{O}(\Delta t^2)$. This means it is accurate to first-order in
+$\Delta t$. 
+
+{\it Second-order Runga-Kutta} is simple second-order algorithm
+evaluates the function at $t+\Delta t /2$, and then takes the full
+step based on the values at the mid-point:
+\begin{eqnarray}
+k_1 &=& \Delta t f(\vec{w}_n, t_n) \cr
+k_2 &=& \Delta t f\left(\vec{w}_n + \frac{1}{2} k_1,
+t_n + \frac{1}{2}\Delta t\right) \cr
+\vec{w}_{n+1} &=& \vec{w}_n + k_2
+\end{eqnarray}
+
+We can see why this is second-order fairly easily. In the case that we
+are integrating just one dependent variable, we are trying to
+approximate the integral:
+\begin{equation}
+\Delta w = \int_0^{\Delta t} \dd{t} f(w(t), t)
+\end{equation}
+We can Taylor expand $f(w(t), t)$ in $t$:
+\begin{equation}
+  f(w, t) \approx f\left(\Delta t /2\right) +
+  \left(t - \frac{\Delta t}{2}\right) \left[\frac{\dd{f}}{\dd{t}}\right]_{\Delta t /2} + 
+  \frac{1}{2} \left(t - \frac{\Delta t}{2}\right)^2
+  \left[\frac{\dd{^2f}}{\dd{t}^2}\right]_{\Delta t /2}   + \ldots
+\end{equation}
+When we insert this into the integral we find the second term vanishes:
+\begin{equation}
+\Delta w \approx \Delta t f(w(\Delta t /2), \Delta t /2) +
+\mathcal{O}(\Delta t^3)
+\end{equation}
+This assumes that we have an estimate of $f(\Delta t /2)$.  However,
+since this is multiplied by $\Delta t$, to remain second-order we only
+need this estimate to be good to first-order. Thus, the Euler
+algorithm can be used to estimate the midpoint and we get the
+procedure above.
+
+This second-order Runge-Kutta algorithm requires two determinations of
+$f$, not one. So it will only be useful when the $\Delta t^2$ term is
+sufficiently small (i.e. the function is sufficiently smooth), so that
+the decrease in time step is worth it.  
+
+Harder to prove, but more useful generally, is the fourth-order
+Runge-Kutta. This is given by evaluating the derivative at the start,
+using that to estimate the derivative at the mid-point, then using the
+mid-point derivative to estimate the mid-point {\it again}, and and
+using those results to estimate a trial end point, before reaching the
+final answer.
+\begin{eqnarray}
+\vec{k}_1 &=& \Delta t \vec{f}(\vec{w}_n, t_n) \cr
+\vec{k}_2 &=& \Delta t \vec{f}(\vec{w}_n + \frac{1}{2} \vec{k}_1, t_n +
+\frac{1}{2} \Delta t) \cr
+\vec{k}_3 &=& \Delta t \vec{f}(\vec{w}_n + \frac{1}{2} \vec{k}_2, t_n +
+\frac{1}{2} \Delta t) \cr
+\vec{k}_4 &=& \Delta t \vec{f}(\vec{w}_n + \vec{k}_3, t_n + \Delta t) \cr
+\vec{w}_{n+1}  &=& \vec{w}_n + \frac{1}{6} k_1
++ \frac{1}{3} k_2 + \frac{1}{3} k_3 + \frac{1}{6} k_4
+\end{eqnarray}
+This, it turns out, has error terms $\mathcal{O}(\Delta t^5)$. 
+
+\section{Step sizes}
+
+In integrating differential equations, setting the step size is
+critical. Generally you don't know this in advance. ODE integrators
+essentially always use an adaptive step size designed to keep the
+integration accuracy within some tolerance.
+
+Specifically, this is typically done by performing the integration in
+pairs of steps, and then comparing the answer using two steps to using
+one step twice as big. This adds at most 50\% more function
+evaluations.
+
+The two answers will be:
+\begin{eqnarray}
+w(t+ 2\Delta t) &=& w_1 + (2\Delta t)^5 \phi + \mathcal{O}(\Delta t^6)
+\cr
+w(t+ 2\Delta t) &=& w_2 + 2 (\Delta t)^5 \phi + \mathcal{O}(\Delta t^6)
+\end{eqnarray}
+
+And you can adjust $\Delta t$ based on:
+\begin{equation}
+\delta = w_2 - w_1 \approx - 30 (\Delta t)^5 \phi
+\end{equation}
+Note that you usually should consider both the absolute and relative
+errors. 
+
+Note that these can be combined to:
+\begin{equation}
+w(t+ 2\Delta t) = w_2 + \frac{\delta}{15}
+\end{equation}
+for a fifth order method.
