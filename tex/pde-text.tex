@@ -1,0 +1,54 @@
+Partial differential equations (PDEs) are distinguished from ordinary
+differential equations by the presence of more than one independent
+variable, which may be time or space. Generally speaking, they are
+applicable to continuous systems: fluids, electromagnetic fields,
+gravity, general relativity, etc. 
+
+There are several types of PDEs, which can be classified as follows:
+\begin{itemize}
+\item Hyperbolic: second-order derivatives, with opposite signs, like
+  the wave equation:
+  \begin{equation}
+\frac{\partial^2 u}{\partial t^2} - v^2 \frac{\partial^2 u}{\partial
+  x^2} = 0
+  \end{equation}
+\item Elliptic: second-order derivatives, with like signs, like the
+  Laplace equation:
+  \begin{equation}
+\frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial
+  y^2} = 0
+  \end{equation}
+\item Parabolic: first-order and second-order mixed, like the
+  diffusion equation:
+  \begin{equation}
+\frac{\partial u}{\partial t} - \frac{\partial}{\partial
+  x}\left(D\frac{\partial u}{\partial x^2}\right) = 0
+  \end{equation}
+\end{itemize}
+
+These sorts of equations are more complex than ODEs, mainly because
+you cannot reduce the equations to a single derivative of the state
+variable with the single independent variable. Furthermore, you cannot
+as easily set the boundary conditions; at least, there are many more
+ways to. 
+
+The simplest way to see this is the case of the Laplace equation. To
+solve Laplace for an electric potential within some region requires
+setting the potential at the surface of that region (or its
+derivative, or some combination). Clearly this is a bit
+complicated. Also, it is not at all obvious whether a solution with
+the desired boundary conditions is necessarily allowed by the
+equations (with Laplace, this is not really a problem of course, but
+it can be with more general equations).
+
+The setting of the boundary conditions is an extremely important
+feature of any PDE problem, and usually defines the basic watersheds
+between numerical approaches. For example, you can imagine setting
+$u(x=0, t)$ and using the wave or diffusion equations to integrate in
+time.  These are {\it Cauchy} or {\it initial value} problems.
+But for Laplace, you need to specify {\it boundary values}, either of
+$u$ ({\it Dirichlet}) or its derivative ({\it Neumann}).
+
+\section{Boundary value problems}
+
+We will concern ourselves first with boundary value problems.

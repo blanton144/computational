@@ -15,6 +15,8 @@ ALL= \
 	$(PDFDIR)/ps-6.pdf \
 	$(PDFDIR)/ps-7.pdf \
 	$(PDFDIR)/ps-8.pdf \
+	$(PDFDIR)/fft.pdf \
+	$(PDFDIR)/fft-answers.pdf \
 	$(PDFDIR)/integration.pdf \
 	$(PDFDIR)/integration-answers.pdf \
 	$(PDFDIR)/eigensystems.pdf \
@@ -35,6 +37,8 @@ ALL= \
 	$(PDFDIR)/numerics-answers.pdf \
 	$(PDFDIR)/ode.pdf \
 	$(PDFDIR)/ode-answers.pdf \
+	$(PDFDIR)/pde.pdf \
+	$(PDFDIR)/pde-answers.pdf \
 	$(PDFDIR)/intro.pdf \
 	$(PDFDIR)/intro-answers.pdf \
 	$(PDFDIR)/project-stellar-structure.pdf \
