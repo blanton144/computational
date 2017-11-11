@@ -1,0 +1,342 @@
+A common task in the solution of physics problems is the spectral
+decomposition of functions. A very common application is in the
+solution of partial differential equations, as we will see later. This
+is also important in signal analysis and data analysis
+generally. There are many possible decompositions of functions into
+different basis sets; as I have noted before, function space is a
+vector space and there are many choices of a complete basis set of
+functions (orthogonal and not).  An extremely common one is the
+Fourier basis, and here we will learn about the practical
+implementation of discrete Fourier transforms, using the Fast Fourier
+Transform.
+
+These notes draw heavily on {\it Numerical Recipes}, a valuable
+resource for entry-level understanding of numerical methods relevant
+to physics.
+
+\section{Fourier Transforms}
+
+We use the common definition of the Fourier tranform as follows:
+\begin{eqnarray}
+H(f) &=& \int_{-\infty}^{\infty} \dd{t} h(t) \exp\left(2\pi i f t\right) \cr
+h(t) &=& \int_{-\infty}^{\infty} \dd{f} H(f) \exp\left(- 2\pi i f t\right)
+\end{eqnarray}
+The notation here suggests $t$ is time, and $f$ is frequency. However,
+of course Fourier transforms can be performed in terms of spatial
+coordinates (or anything really).
+
+\noindent {\bf What property of $H(f)$ will lead to a real $h(t)$?}
+
+\begin{answer}
+If $H(-f) =  [H(f)]^\ast$, because in that case:
+\begin{eqnarray}
+h(t) &=& \int_{-\infty}^{\infty} \dd{f} H(f) \exp\left(- 2\pi i f t\right) \cr
+&=& \int_{-\infty}^{\infty} \dd{f} H_r(f) \exp\left(- 2\pi i f t\right)
++ i \int_{-\infty}^{\infty} \dd{f} H_i(f) \exp\left(- 2\pi i f
+t\right) \cr
+&=& \int_{-\infty}^{\infty} \dd{f} H_r(f) \cos\left(- 2\pi f t\right)
++ i \int_{-\infty}^{\infty} \dd{f} H_r(f) \sin\left(- 2\pi f
+t\right) \cr
+&& + i \int_{-\infty}^{\infty} \dd{f} H_i(f) \cos\left(- 2\pi i f t\right)
+- \int_{-\infty}^{\infty} \dd{f} H_i(f) \sin\left(- 2\pi i f t\right)
+\end{eqnarray}
+Both imaginary terms have odd integrands, so the result is real.
+
+Clearly if $H(-f) = -[H(f)]^\ast$, then $h(t)$ is imaginary. 
+\end{answer}
+
+These properties of the Fourier transform become time-saving devices
+when considering the numerical transforms of functions with known
+symmetries.
+
+A particularly useful property of the Fourier transform is the
+convolution rule:
+\begin{equation}
+{\rm FT}(f \ast g) = F \times G
+\end{equation}
+This leads to fast implementations of convolutions. 
+
+Finally, it is worth noting that the total power is the same in the
+Fourier or configuration basis:
+\begin{equation}
+\int_{-\infty}^{\infty} \dd{t} \left|h(t)\right|^2 = 
+\int_{-\infty}^{\infty} \dd{f} \left|H(f)\right|^2
+\end{equation}
+This result is known as Parseval's Theorem.
+
+\section{Discrete Fourier Tranform}
+
+Obviously on a computation one does not implement the Fourier
+transform continuously. Instead, what you do is that you have a set of
+samples $h(t_k)$ in equally spaced locations $t_k = k \Delta$, where
+$k$ runs from 0 to $N-1$.  For reasons we will soon see, very often
+the $N$ are factors of two.  The discrete Fourier transform is a
+linear transform of these samples similar to the Fourier transform.
+
+\noindent {\bf How many independent frequencies can you determine for
+the discrete Fourier  transform?}
+
+\begin{answer}
+Since you are restricted to linear combinations, you are restricted to
+an $N$-dimensional linear space, and there can only be $N$
+independently determined freqencies.
+\end{answer}
+
+\noindent {\bf What are these frequencies?}
+
+\begin{answer}
+The lowest representable frequency is $1/N\Delta$, since this is
+length of the interval. The discrete Fourier transform then is to the
+frequencies: 
+\begin{equation} 
+f_n = \frac{n}{N \Delta}
+\end{equation}
+for $n$ between $-N/2$ and $N/2$ (with $f_{N/2} = f_{-N/2}$).
+
+The highest representable frequency is $1/2\Delta$, which is known as
+the {\it Nyquist frequency}.
+\end{answer}
+
+Then the discrete tranform is:
+\begin{eqnarray}
+H(f_n) &=& \int_{-\infty}^{\infty} \dd{t} h(t) \exp(2\pi i f_n t) \cr
+&\approx& \sum_{k=0}^{N-1} h(t_k) \exp(2\pi i f_n t_k) \Delta \cr
+&\approx& \Delta \sum_{k=0}^{N-1} h(t_k) \exp(2\pi i (n / N\Delta)
+(k\Delta) \cr
+&\approx& \Delta \sum_{k=0}^{N-1} h(t_k) \exp(2\pi i k n / N)
+\end{eqnarray}
+
+Usually we define $H_n = H(f_n) / \Delta$, because in that case we can
+work with arrays without reference to an underlying scale.
+
+\noindent {\bf What is the periodicity of $H_n$?}
+
+\begin{answer}
+The lowest non-zero $k$ is 1, and for this choice the exponential has
+$2\pi i n/N$, which loops over $2\pi$ in $N$ steps, so the periodicity
+of that term is $N$. All of the other $k$ terms have a harmonic of
+that periodicity. Thus, as I asserted above $H_{-N/2} = H_{N/2}$.
+
+Also, we can then equally well let $n$ vary from $0$ to $N-1$, which
+makes most sense on a computer.
+\end{answer}
+
+The inversion of $H_n$ is:
+\begin{equation}
+h_k = \frac{1}{N} \sum_{n=0}^{N-1} H_n \exp(-2\pi i k n/N)
+\end{equation}
+
+\section{Calculation of a Fast Fourier Transform}
+
+\noindent {\bf How many operations does it take to calculate $H_n$ if
+  you naively implement the above formulae?}
+
+\begin{answer}
+The sums to calculate $H_n$ require a sum over $N$ data points, $N$
+times, so are $N^2$. There are many applications in which you might
+want to have $N$ in the millions. This quickly becomes
+intractable. Luckily this is not necessary.
+\end{answer}
+
+A far better way has long been known, called the {\it Fast Fourier
+  Transform}. It rewrites the sum in a clever tree-based way that
+reduces the order of operations to $N\log_2 N$.
+
+It works due to the {\it Danielson-Lanczos lemma}, which is easily
+shown as follows to allow us to :
+\begin{eqnarray}
+H_k &=& \sum_{j=0}^{N-1} \exp(2\pi i jk /N) h_j \cr
+&=& \sum_{j=0}^{N/2-1} \exp(2\pi i (2j) k /N) h_{2j} 
+\sum_{j=0}^{N/2-1} \exp(2\pi i (2j + 1) k /N) h_{2j+1} \cr
+&=& \sum_{j=0}^{N/2-1} \exp(2\pi i j k / (N/2)) h_{2j} 
+\exp(2\pi i k /N) \sum_{j=0}^{N/2-1} \exp(2\pi i j k / (N/2)) h_{2j+1} \cr
+&=& H_k^e + W^k J_k^o
+\end{eqnarray}
+where $H_k^e$ is the Fourier transform of the even components, $H_k^o$
+is the Fourier transform of the odd components, and $W=\exp(2\pi i
+/N)$. 
+
+So you can take any Fourier transform it, and break it in two. Then
+you can take each piece, and break that in two, and so on. Until you
+have a one-element Fourier transform to perform. A one element
+discrete Fourier Transform is just equal to that same element.
+
+If you label the Fourier transform at each leaf as something like
+$H_k^{eeoeoe\ldots}$, then it corresponds to some $h_n$. Which $h_n$?
+Each time you sort into even and odd, you are taking the lowest bit of
+significance, and reordering the whole array according to that. Then
+you take the next bit, and reorder according to that. This means that
+you are taking the index $k$, reversing its bits, and identifying $k$
+with its bit-reversal corresponding to $n$.  
+
+To take the FFT, you can then just reorder $h_n$ appropriately, and
+then apply the Danielson-Lanczos lemma in a tree-like fashion.  This
+leads to $\sim N$ operations executed $\log_2 N$ times. 
+
+Further tricks can be applied to reduce the number of $\cos()$ and
+$\sin()$ calls.
+
+The {\tt numpy.fft} module is an implementation of these techniques.
+
+\section{Real FFTs}
+
+A common application is the FFT of a function $f(t)$ that is known to
+be real in configuration space. It seems intuitive that we should be
+able to do this more quickly, because we know all the imaginary parts
+are zero, and yes we can.
+
+You can do so by defining:
+\begin{equation}
+h_j = f_{2j} + i f_{2j+1} 
+\end{equation}
+If you Fourier tranform this, you get back (since the Fourier
+transform is linear):
+\begin{equation}
+H_n = F_n^e + i F_n^o
+\end{equation}
+We also know from above that the Fourier tranform we want can be
+expressed as:
+\begin{equation}
+F_n = F_n^e + \exp(2\pi i n /N) F_n^o
+\end{equation}
+We can then note:
+\begin{eqnarray}
+F^e &=& \frac{1}{2} \left(H + H^\ast\right) \cr
+F^o &=& \frac{1}{2} \left(H - H^\ast\right)
+\end{eqnarray}
+and so
+\begin{equation}
+  F_n = \frac{1}{2}\left(H_n + H_{N/2-n}^\ast\right) +
+  \frac{1}{2} \exp(2\pi i n /N) \left(H_n - H_{N/2-n}^\ast\right)
+\end{equation}
+
+\section{Sine and Cosine Transforms}
+
+Finally, you can perform sine and cosine transforms of real function
+efficiently as well with some cleverness.
+
+The sine transform is defined as:
+\begin{equation}
+F_k = \sum_{j=1}^{N-1} f_j \sin(\pi jk /N)
+\end{equation}
+It is not just the imaginary part of the Fourier transform! It
+contains waves which fill the array with half-integer numbers of
+wavelengths. It is relevant to solving partial differential equations
+with zero value boundary conditions; similarly, the cosine transform
+is relevant to problems with zero derivative boundary conditions.
+
+A sine transform can be reduced to a regular Fourier transform as
+follows. Define an new array:
+\begin{equation}
+y_j = \sin(j\pi /N) \left(f_j + f_{N-j}\right)
++ \frac{1}{2}\left(f_j - f_{N-j}\right)
+\end{equation}
+The first part is symmetric (around $j=N/2$) and the  second is
+antisymmetric.  In the Fourier transform, this means that the real
+part (projected onto $\cos()$) survives in the real part while the
+imaginary part (projected onto $\sin()$) survives in the imaginary
+part. 
+
+Then:
+\begin{eqnarray}
+Y^{(r)}_k &=&
+\sum_{j=0}^{N-1} y_j \cos(2\pi jk /N) \cr
+&=&
+\sum_{j=0}^{N-1} (f_j + f_{N-j}) \sin(\pi j / N) \cos(2\pi jk /N) \cr
+&=&
+\sum_{j=0}^{N-1} f_j \sin(\pi j / N) \cos(2\pi jk /N) 
++ \sum_{j=0}^{N-1} f_{N-j} \sin(\pi j / N) \cos(2\pi jk /N)  \cr
+&=&
+\sum_{j=0}^{N-1} f_j \sin(\pi j / N) \cos(2\pi jk /N) 
++ \sum_{j=0}^{N-1} f_j \sin(\pi (N - j) / N) \cos(2\pi (N- j) k /N)  \cr
+&=&
+\sum_{j=0}^{N-1} f_j \sin(\pi j / N) \cos(2\pi jk /N) 
++ \sum_{j=0}^{N-1} f_j \sin(\pi - \pi j / N) \cos(2\pi - 2\pi j k /N)  \cr
+&=&
+\sum_{j=0}^{N-1} f_j \sin(\pi j / N) \cos(2\pi jk /N) 
++ \sum_{j=0}^{N-1} f_j \sin(\pi j / N) \cos(2\pi j k /N)  \cr
+&=&
+\sum_{j=0}^{N-1} 2 f_j \sin(\pi j / N) \cos(2\pi jk /N)
+\end{eqnarray}
+And using:
+\begin{equation}
+\sin A \cos B = \frac{1}{2}\left(\sin(A+B) + \sin(A-B\right)
+\end{equation}
+we find:
+\begin{eqnarray}
+Y^{(r)}_k &=&
+\sum_{j=0}^{N-1} f_j \left(\sin(\pi j / N + 2\pi jk /N)
++\sin(\pi j / N - 2\pi jk /N) \right) \cr
+&=& 
+\sum_{j=0}^{N-1} f_j \left(\sin(\pi (2k+1) j / N)
+-\sin(\pi (2k - 1) j / N) \right) \cr
+&=& 
+F_{2k+1} - F_{2k-1} 
+\end{eqnarray}
+where in the last line we just recognize that the terms are exactly
+terms of the sine tranform.
+
+A similar analysis shows:
+\begin{equation}
+Y^{(i)}_k = F_{2k}
+\end{equation}
+
+So the even terms are easy. The odd terms can be determined with:
+\begin{equation}
+F_1 = - F_{-1} \quad\rightarrow\quad F_1 = \frac{1}{2} Y_k^{(r)}
+\end{equation}
+and then by using:
+\begin{equation}
+F_{2k+1} = F_{2k-1} + Y_k^{(r)}
+\end{equation}
+
+A very similar technique will yield an efficient cosine tranform.
+
+\section{Multidimensional FFTs}
+
+Multidimensial discrete Fourier transforms of course exist. They have
+the expected form:
+\begin{equation}
+H_{n_1n_2} =
+\sum_{k_2=0}^{N_2-1}
+\sum_{k_1=0}^{N_1-1}
+\exp\left(2\pi i k_2 n_2 / N_2\right)
+\exp\left(2\pi i k_1 n_1 / N_1\right)
+h_{k_1k_2}
+\end{equation}
+
+Clearly these can be calculated with a series of one-dimensional
+FFTs. Since the FFTs are linear, they are therefore commutative, so it
+doesn't matter how you do it. 
+
+However, it is reasonably complicated to implement. Especially in the
+context of the sort of tricks I have discussed, it is the right thing
+to use the existing packages for these techniques. 
+
+\section{Application: convolution}
+
+The convolution of two functions is as follows:
+\begin{equation}
+(f \ast g) (t) = \int_{-\infty}^{\infty} \dd{t'} f(t - t') g(t')
+\end{equation}
+In this formulation, one often thinks of $f$ as a ``kernel'' with
+which you are ``smoothing'' $g$. E.g., $g$ is a delta function, then
+you just get back the kernel.
+
+As noted above, the Fourier transform of the convolution is the
+Fourier transform of the two functions, multiplied together:
+\begin{equation}
+{\rm FT}(f \ast g) = F \times G
+\end{equation}
+
+In the notebook I show several examples, in 1D and 2D. 
+
+\section{Application: filtering}
+
+``Filtering'' is really just another form of convolution. Usually
+however, filtering is performed by setting ranges of the Fourier
+components to zero. This will correspond to a kernel whose Fourier
+transform is unity everywhere except at those Fourier components.  The
+kernel in configuration space will be positive and negative.
+
+In the notebook I show a 2D example of this. 
