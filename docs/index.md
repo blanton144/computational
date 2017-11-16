@@ -18,6 +18,8 @@ Lecture notes and associated information:
 | Root-finding | [notes](pdf/roots.pdf) | [notes with answers](pdf/roots-answers.pdf)| [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/roots.ipynb) | 
 | Minimization | [notes](pdf/minimization.pdf) | [notes with answers](pdf/minimization-answers.pdf)| [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/roots.ipynb) | 
 | ODEs | [notes](pdf/ode.pdf) | [notes with answers](pdf/ode-answers.pdf)| [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/ode.ipynb) | 
+| Fast Fourier Transforms | [notes](pdf/fft.pdf) | [notes with answers](pdf/fft-answers.pdf)| [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/fft.ipynb) | 
+| PDE (initial value) | [notes](pdf/pde.pdf) | [notes with answers](pdf/pde-answers.pdf)| [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/pde.ipynb) | 
 
 Problem sets: 
 

@@ -1,3 +1,7 @@
+These notes draw heavily on {\it Numerical Recipes}, a valuable
+resource for entry-level understanding of numerical methods relevant
+to physics.
+
 Partial differential equations (PDEs) are distinguished from ordinary
 differential equations by the presence of more than one independent
 variable, which may be time or space. Generally speaking, they are
@@ -49,6 +53,447 @@ time.  These are {\it Cauchy} or {\it initial value} problems.
 But for Laplace, you need to specify {\it boundary values}, either of
 $u$ ({\it Dirichlet}) or its derivative ({\it Neumann}).
 
-\section{Boundary value problems}
+\section{Initital value problems}
 
-We will concern ourselves first with boundary value problems.
+We will concern ourselves first with initial value problems. We will
+first consider the {\it flux-conservative initial value
+  problems}. These are of the form:
+\begin{equation}
+  \frac{\partial \vec{q}}{\partial t} =
+  - \frac{\partial \vec{F}\left(\vec{q}\right)}{\partial x}
+\end{equation}
+$\vec{F}$ is called the {\it conserved flux}.
+
+For example, take the wave equation. It can be rewritten as:
+\begin{eqnarray}
+\frac{\partial r}{\partial t} &=&  v \frac{\partial s}{\partial x} \cr
+\frac{\partial s}{\partial t} &=&  \frac{\partial r}{\partial x}
+\end{eqnarray}
+where:
+\begin{eqnarray}
+r &=& v \frac{\partial q}{\partial x}\cr
+s &=& \frac{\partial q}{\partial t}
+\end{eqnarray}
+
+In this case, we can write:
+\begin{equation}
+\vec{F}\left(\vec{q}\right) = 
+\left(\begin{array}{cc}
+  0 & -v \cr
+  -v & 0 
+\end{array}\right) \cdot \vec{q}
+\end{equation}
+
+However, we will start with an even simpler example:
+\begin{equation}
+\frac{\partial q}{\partial t} = - v\frac{\partial q}{\partial x}
+\end{equation}
+
+\noindent {\bf What is the general solution of this problem given
+  some initial conditions $q_0(x)$?}
+
+\begin{answer}
+  You can guess the answer by considering:
+  \begin{equation}
+    {\Delta q} \approx (-v \Delta t) \frac{\partial q}{\partial x}
+  \end{equation}
+  $-v\Delta t$ represents a distance. So the change in $q$ is just the
+  gradient $q$ times this distance. That is, the new $q(x)$ is equal
+  to the old $q(x-v\Delta t)$. 
+
+  Then it becomes clear that the solution of this equation will be
+  $q(x) = q_0(x-vt)$ --- that is, the equations just propagate the
+  initial values forward at speed $v$.
+
+  This is the simplest example of an {\it advective} equation. 
+\end{answer}
+
+\section{A simple method that doesn't work}
+
+We will be looking at solving PDEs with finite difference related
+methods. These are not the only methods, but they are a good place to
+start.
+
+To perform the finite differencing, we will take equal spaces in time
+and space:
+\begin{eqnarray}
+x_j &=& x_0 + j \Delta x \cr
+t_n &=& t_0 + n \Delta t
+\end{eqnarray}
+
+We can approximate the equation as:
+\begin{equation}
+  \frac{q_j^{n+1} - q_j^{n}}{\Delta t} = - v \left(
+  \frac{q_{j+1}^n - q_{j-1}^n}{2\Delta x}
+  \right)
+\end{equation}
+Then, given the initial conditions at $n=0$ and all $j$, we can
+generate $q$ at $n=1$ explicitly from the current time step. 
+
+In the notebook, I implement this very simple method. It clearly
+doesn't work very well!!
+
+\section{Stability Analysis}
+
+To see why this happens, we need to perform a stability analysis. To
+do so using the {\it von Neumann stability analysis}, we will search
+for solutions of linearized equations under constant
+coefficients. For the advective equation, the right hand side is
+linear already, so we do not need to linearize it. 
+
+\noindent {\bf Explain to me what ``linearizing'' a nonlinear
+  expression is?}
+
+\begin{answer}
+It means to take small perturbations around a solution, and Taylor
+expand the expression, keeping only the linear terms.  E.g.:
+\begin{equation}
+\vec{F}\left(\vec{q}\right) \approx \vec{F}\left(\vec{q}_0\right) +
+\frac{\partial \vec{F}}{\partial \vec{q}} \cdot \delta\vec{q}
+\end{equation}
+\end{answer}
+
+In any case, under the conditions of linearity and constant
+coefficients, the solutions to the finite difference equation have the
+form:
+\begin{equation}
+q_j^n = \xi^n \exp\left(i k j \Delta x\right)
+\end{equation}
+with some choice for $k$. 
+
+\noindent {\bf Under what conditions is this mode unstably growing in
+  time?}
+
+\begin{answer}
+When $\xi>1$, then this grows exponentially with $n$! If $\xi < 1$, it
+dies away. Note that you should think of this analysis as looking at
+what happens to a perturbation away from the correct solution.
+\end{answer}
+
+For the difference question above, if you plug this in:
+\begin{eqnarray}
+  \frac{q_j^{n+1} - q_j^{n}}{\Delta t} &=& - v \left(
+  \frac{q_{j+1}^n - q_{j-1}^n}{2\Delta x} \right) \cr
+  \xi^n (\xi - 1) \exp\left( i k j \Delta x\right) &=&
+  - \frac{v \Delta t}{2\Delta x} \xi^n \left(
+  \exp\left(i k (j+1) \Delta x\right)  - 
+  \exp\left(i k (j-1) \Delta x\right) \right) \cr
+  (\xi - 1) &=&
+  - \frac{v \Delta t}{2\Delta x} \left(
+  \exp\left(i k \Delta x\right)  - 
+  \exp\left(- i k \Delta x\right) \right) \cr
+  \xi &=&
+  1 - i \frac{v \Delta t}{\Delta x} 
+  \sin\left(k \Delta x\right)
+\end{eqnarray}
+
+\noindent {\bf What does this result mean for the stability of this
+  method? Is it stable for any scale of fluctuation?}
+
+\begin{answer}
+The magnitude of $|\xi|>1$ for all values of $k$, so perturbations
+around the solution at all scales grow exponentially! This is an
+unconditionally bad method.
+\end{answer}
+
+\section{Lax Method}
+
+The Lax method is a stable alternative, which just reads:
+\begin{equation}
+  \frac{q_j^{n+1} - \frac{1}{2}\left(q_{j+1}^{n} +
+    q_{j-1}^{n}\right)}{\Delta t} = - v \left(
+  \frac{q_{j+1}^n - q_{j-1}^n}{2\Delta x}
+  \right)
+\end{equation}
+
+\noindent {\bf Describe the difference between the Lax method and the
+  original method in words.}
+
+\begin{answer}
+This just replaces the estimate of $q_j$ at step $n$ with the average
+of the neighboring points. 
+\end{answer}
+
+We can evaluate the stability of this method as well: 
+\begin{eqnarray}
+  \frac{q_j^{n+1} - \frac{1}{2}\left(q_{j+1}^{n} +
+    q_{j-1}^{n}\right)}{\Delta t} &=& - v \left(
+  \frac{q_{j+1}^n - q_{j-1}^n}{2\Delta x} \right) \cr
+  \xi^n \left(\xi \exp(i k j \Delta x) - 
+  \frac{1}{2} \left(\exp(i k (j+1) \Delta x\right) +
+  \exp\left(i k (j-1) \Delta x \right) \right)
+  &=& - i \frac{v \Delta t}{\Delta x} 
+  \sin\left(k \Delta x\right) \xi^n \exp(ikj \Delta x) \cr
+  \xi - \cos(k \Delta x) 
+  &=& - i \frac{v \Delta t}{\Delta x} 
+  \sin\left(k \Delta x\right) 
+\end{eqnarray}
+and thus:
+\begin{equation}
+  \xi = \cos(k \Delta x) 
+   - i \frac{v \Delta t}{\Delta x} 
+  \sin\left(k \Delta x\right) 
+\end{equation}
+
+\noindent {\bf What does the stability requirement mean in this case?}
+
+\begin{answer}
+We evaluate the amplitude of $\xi$:
+\begin{eqnarray}
+\left|\xi\right|^2 &=& \cos^2 k\Delta x + \left(\frac{v \Delta t}{\Delta
+  x}\right)^2 \sin^2 k \Delta x \cr
+&=& \cos^2 k\Delta x + \sin^2 k \Delta x  + 
+\left[\left(\frac{v \Delta t}{\Delta
+  x}\right)^2 - 1\right] \sin^2 k \Delta x \cr
+&=& 1 +
+\left[\left(\frac{v \Delta t}{\Delta
+  x}\right)^2 - 1\right] \sin^2 k \Delta x < 1
+\end{eqnarray}
+or:
+\begin{equation}
+\label{eq:courant1}
+\left[\left(\frac{v \Delta t}{\Delta
+  x}\right)^2 - 1\right] \sin^2 k \Delta x < 0
+\end{equation}
+which requires:
+\begin{equation}
+\left(\frac{v \Delta t}{\Delta x}\right)^2 < 1
+\end{equation}
+
+This means that the time step you take is related to the resolution
+you are trying to recover by:
+\begin{equation}
+\frac{\Delta x}{\Delta t} < v
+\end{equation}
+\end{answer}
+
+\noindent {\bf Can you think of a heuristic interpretation of this
+  requirement?} 
+
+\begin{answer}
+The time step needs to be shorter than the time it will take the
+signal in the system to propagate across a single cell. This
+requirement is the {\it Courant condition}. This basic idea reappears
+in many different problems.
+\end{answer}
+
+Things are actually a bit trickier, as we will see in the notebook. If
+I set $\Delta t = \Delta x / v$, we get exactly the right behavior.
+This is because in that case $\xi=1$ exactly and so there is no
+increase --- or decrease --- in the signal. But, if the time step is a
+bit too large, we see the signal get unstable. If the time step is a
+bit too small, we see the signal damp away! We had better understand
+what is going on, because in real applications, where we don't know
+exactly what we should expect, we can easily be tricked.
+
+Note that if we take a very broad Gaussian, it is less affected. What
+is going on here is that the small wavenumber $k$, large wavelength
+solutions are closer to actually being equal to zero in
+(\ref{eq:courant1}), and this leads to $\xi=1$. So when the time step
+is too small, it tends to damp the high wavenumber, short wavelength
+modes, but not the longer ones. This causes the Gaussian to broaden
+(and also affects the fractional width of the narrow Gaussian more
+quickly than the broad one). 
+
+We can look directly at some sinusoidal waves to see this at work a
+little more cleanly, which the notebook does.
+
+\section{Numerical Viscosity}
+
+We can rewrite the numerical equation for Lax as follows:
+\begin{eqnarray}
+  \frac{q_j^{n+1} - \frac{1}{2}\left(q_{j+1}^{n} +
+    q_{j-1}^{n}\right)}{\Delta t} &=& - v \left(
+  \frac{q_{j+1}^n - q_{j-1}^n}{2\Delta x}
+  \right) \cr
+  \frac{q_j^{n+1} - q_j^n}{\Delta t}
+  &=& 
+    - \frac{1}{2}\frac{\left(q_{j+1}^{n} - 2 q_j^{n} +
+    q_{j-1}^{n}\right)}{\Delta t}
+      - v \left(
+  \frac{q_{j+1}^n - q_{j-1}^n}{2\Delta x}
+  \right) 
+\end{eqnarray}
+This is an FTCS-type equation for:
+\begin{equation}
+  \frac{\partial q}{\partial t} = - \frac{\partial q}{\partial x}
+  + \frac{\Delta x^2}{2\Delta t} \frac{\partial^2 q}{\partial x^2}
+\end{equation}
+The second term here is like a viscosity. So although the advective
+equation itself has no viscosity, the numerical equations do have
+viscosity. This damps perturbations on small scales, like with regular
+viscosity. 
+
+Whether the viscosity matters or not is a practical question. It
+affects all scales at some rate, and the question is whether you are
+looking at sufficiently large scales that it does not matter.
+
+\section{Leapfrog Time Stepping}
+
+The Lax method is second order in space but first order in time. If we
+can store two time steps, we can achieve higher order in time. The
+basic idea is to calculate the space derivatives every step, and the
+time derivatives every other step. 
+
+In general this yields:
+\begin{equation}
+q_j^{n+1} - q_j^{n-1} = - \frac{\Delta t}{\Delta x} \left(F_{j+1}^n -
+F_{j-1}^n\right)
+\end{equation}
+
+For the advective equation:
+\begin{equation}
+q_j^{n+1} - q_j^{n-1} = - \frac{ v \Delta t}{\Delta x} \left(q_{j+1}^n
+- q_{j-1}^n\right)
+\end{equation}
+
+If we evaluate this under the von Neumann stability analysis we find:
+\begin{eqnarray}
+\xi^2 - 1 &=& - \frac{v \Delta t}{\Delta x} \xi \left(\exp(i k \Delta x)
+- \exp(- i k \Delta x) \right) \cr
+\xi^2 - 1 &=& - 2i \xi \frac{v \Delta t}{\Delta x} \sin k\Delta x 
+\end{eqnarray}
+which then yields:
+\begin{equation}
+\xi = - i \frac{v \Delta t}{\Delta x} \sin k\Delta x \pm
+\sqrt{1 - \left(\frac{v \Delta t}{\Delta x} \sin k\Delta x \right)^2}
+\end{equation}
+and so as long as the square root is of a real number:
+\begin{equation}
+|\xi|^2 = \left(\frac{v \Delta t}{\Delta x} \sin k\Delta x \right)^2 +
+ 1 - \left(\frac{v \Delta t}{\Delta x} \sin k\Delta x \right)^2 = 1
+\end{equation}
+Then the conditions of stability for all $k$ become:
+\begin{equation}
+\Delta t < \frac{\Delta x}{v}
+\end{equation}
+i.e. the Courant condition again.
+
+\section{Diffusion Equation}
+
+Another typical type of equation is the diffusion equation, generally
+of the form:
+\begin{equation}
+\frac{\partial q}{\partial t} = \frac{\partial}{\partial
+x} \left(D \frac{\partial q}{\partial x}\right)
+\end{equation}
+This too can be put in flux-conservative form where $F = -D \partial
+u/\partial x$. 
+
+Note you have actually already solved this problem in your homework,
+and for the simple, linear case we are discussing of course that is
+the preferred method.
+
+Before actually discussing a specific method, it is worth asking what
+quantity is going to be relevant to the time step.
+
+\noindent {\bf From dimensional analysis, how can you construct a
+quantity with units of time from the diffusion coefficient $D$ and a
+chosen spatial grid size $\Delta x$?}
+
+\begin{answer}
+$D$ has units of length$^2$ time$^{-1}$. So $\Delta x^2 / D$ is a
+quantity of units of time. It is the diffusion time across a cell. 
+\end{answer}
+
+We will define a unitless quantity:
+\begin{equation}
+\alpha = \frac{D \Delta t}{\Delta x^2}
+\end{equation}
+
+We can perform the diffusion equation finite differencing with:
+\begin{equation}
+\frac{q_j^{n+1} - q_j^{n}}{\Delta t} = D \left[\frac{q_{j+1}^n - 2
+q_j^n + q_{j-1}^n}{\Delta x^2}\right]
+\end{equation}
+which can be rearranged to:
+\begin{equation}
+q_j^{n+1} = q_j^{n} + \alpha \left[q_{j+1}^n - 2
+q_j^n + q_{j-1}^n\right]
+\end{equation}
+
+Performing a stability analysis on this yields:
+\begin{eqnarray}
+\xi &=& 1 + \alpha \left[e^{ik\Delta x} - 2 + e^{-ik \Delta
+x}\right] \cr
+&=& 1 + 2 \alpha \left[\cos(k\Delta x) - 1 \right] \cr
+&=& 1 + 2 \alpha \left[1 - 2\sin^2\left(\frac{k\Delta x}{2}\right) - 1 \right] \cr
+&=& 1 - 4 \alpha \sin^2\left(\frac{k\Delta x}{2}\right) 
+\end{eqnarray}
+
+\noindent {\bf What does this make the condition on stability?}
+
+\begin{answer}
+This method remains stable ($|\xi|<1$) for all $k$ as long as $\alpha
+< 1/2$.
+\end{answer}
+
+We can take larger time steps if we are willing to sacrifice accuracy
+at small scales. One version of this to construct an {\it implicit}
+differencing method:
+\begin{equation}
+\frac{q_j^{n+1} - q_j^{n}}{\Delta t} = D \left[\frac{q_{j+1}^{n+1} - 2
+q_j^{n+1} + q_{j-1}^{n+1}}{\Delta x^2}\right]
+\end{equation}
+Here the right-hand side uses the future time step values!
+
+\noindent {\bf How do we solve for $q^{n+1}$ in this case?}
+
+\begin{answer}
+This is still a linear system of equations. It has $N$ unknowns
+($q_j^{n+1}$, and you have $N$ knowns ($q_j^{n}$). So it can be solved
+as a sparse matrix problem. 
+
+Specifically:
+\begin{equation}
+-\alpha q_{j-1}^{n+1} + (1 + 2\alpha) q_j^{n+1} - \alpha q_{j+1}^{n+1}
+ = q_j^n
+\end{equation}
+and you need to set boundary conditions at the edge.
+
+This is a tridiagonal system that you can solve easily with sparse
+matrix techniques. I.e. backsubstituting a tridiagonal system is not
+very hard.
+\end{answer}
+
+We can check the stability of the system:
+\begin{equation}
+\xi - 1 = \alpha \xi \left(e^{ik\Delta x} - 2 + 2 e^{ik\Delta x}\right)
+\end{equation}
+and using the same trigonometry as before:
+\begin{equation}
+\xi \left[ 1+ 4 \alpha \sin^2\left(\frac{k\Delta x}{2}\right)\right] =
+1
+\end{equation}
+and so:
+\begin{equation}
+\xi = \frac{1}{ 1+ 4 \alpha \sin^2\left(\frac{k\Delta x}{2}\right)}
+\end{equation}
+This means that this is always stable. You can see how these implicit
+methods can end up being very stable, because you'll end up with terms
+in the denominator.
+
+But it can't possibly be accurate at small scales for $\alpha>1$). It
+tends to drive the solution to the solution of:
+\begin{equation}
+\frac{\partial^2 q}{\partial x^2} = 0
+\end{equation}
+which you can see by looking at the matrix equation above and setting
+$\alpha\gg 1$ --- the ``source'' term goes to zero and you are left
+with the equilibrium solution.  That's not a crazy result, but it does
+mean that if there is structure on small scales in your initial
+conditions, this dissipates, and perhaps not accurately. 
+
+Another method which is the most commonly used technique, is the {\it
+Crank-Nicolson} method. This is formed by the average of the two above
+methods. This yields a second-order-in-time result:
+\begin{equation}
+\frac{q_j^{n+1} - q_j^n}{\Delta t}
+= \frac{\alpha}{2}
+\left[
+  \left(q_{j+1}^{n+1} - 2 q_j^{n+1} + q_{j-1}^{n+1}\right) + 
+  \left(q_{j+1}^{n} - 2 q_j^{n} + q_{j-1}^{n}\right)
+\right]
+\end{equation}
+If you work this out, it is also unconditionally stable. 
+
