@@ -17,6 +17,8 @@ ALL= \
 	$(PDFDIR)/ps-8.pdf \
 	$(PDFDIR)/fft.pdf \
 	$(PDFDIR)/fft-answers.pdf \
+	$(PDFDIR)/boundary.pdf \
+	$(PDFDIR)/boundary-answers.pdf \
 	$(PDFDIR)/integration.pdf \
 	$(PDFDIR)/integration-answers.pdf \
 	$(PDFDIR)/eigensystems.pdf \
