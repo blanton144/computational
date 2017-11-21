@@ -1,0 +1,305 @@
+These notes draw heavily on {\it Numerical Recipes}, a valuable
+resource for entry-level understanding of numerical methods relevant
+to physics.
+
+Boundary value problems have a somewhat different set of solutions
+than initial value PDEs. However, we will see that in fact solving a
+boundary value problem can sometimes be written as an initial value
+problem too.
+
+\section{Fourier Methods}
+
+Boundary value problems with constant coefficients are often amenable
+to solution through Fourier methods. The simplest example is the
+Poisson equation:
+\begin{equation}
+\nabla^2 q = \rho
+\end{equation}
+
+\noindent {\bf What is the Fourier transform of $\nabla^2$?}
+
+\begin{answer}
+  Simply $-k^2$, where $k$ is the wavenumber. So the solution to this
+  equation can be found with:
+  \begin{equation}
+    q = - {\rm FT}\left(\frac{\tilde\rho}{k^2}\right)
+  \end{equation}
+\end{answer}
+
+You can also think of the problem as:
+\begin{equation}
+q = \int \dd{^3x}' \frac{\rho}{|x-x|'}
+\end{equation}
+where $1/x$ is the Greens Function solution for a delta function
+source. This is the same as: $q = \rho \ast G$. 
+
+\noindent {\bf What is the finite difference form of the Poisson
+  equation (in one dimension)?}
+
+\begin{answer}
+\begin{equation}
+\frac{q_{j+1} - 2 q_{j} + q_{j-1}}{\Delta^2} = \rho_j
+\end{equation}
+\end{answer}
+
+Now we can write down the discrete Fourier transform of $q$ and $\rho$:
+\begin{eqnarray}
+q_j &=& \frac{1}{J} \sum_{n=0}^{J-1} {\tilde q}_n e^{-2\pi i j n /J} \cr
+\rho_j &=& \frac{1}{J} \sum_{n=0}^{J-1} {\tilde \rho}_n e^{-2\pi i j n /J}
+\end{eqnarray}
+If we plug in we find:
+\begin{eqnarray}
+\frac{1}{J}\sum_{n=0}^{J-1} {\tilde q}_n
+\left[
+e^{-2\pi i (j+1) n / J}
+- 2 e^{-2\pi i j n / J}
++ e^{- 2\pi i (j-1) n / J}
+\right] &=&\Delta^2 
+\frac{1}{J}\sum_{n=0}^{J-1} {\tilde \rho}_n
+e^{-2\pi i j n / J} \cr
+\frac{1}{J}\sum_{n=0}^{J-1} {\tilde q}_n
+e^{-2\pi i j n}
+\left[
+e^{-2 \pi i n / J}
+- 2 
++ e^{2\pi i n / J}
+\right] &=&
+\Delta^2 \frac{1}{J}\sum_{n=0}^{J-1} {\tilde \rho}_n
+e^{-2\pi i j n / J}
+\end{eqnarray}
+This needs to be true for any choice of $j$. That means that each
+individual term has to be the same. You can also see that this arises
+from the uniqueness of the Fourier transform. For the functions on the
+left and right to be equal, the two Fourier transforms must be equal:
+\begin{eqnarray}
+{\tilde q}_n 
+\left[
+e^{-2 \pi i n / J}
+- 2 
++ e^{2\pi i n / J}
+\right] &=& \Delta^2 {\tilde \rho}_n \cr
+2 {\tilde q}_n 
+\left[
+\cos\left(2\pi n/J\right)
+- 1 
+\right] &=& {\tilde \rho}_n \cr
+{\tilde q}_n &=& \frac{\Delta^2 {\tilde \rho}_n}{2
+\left[ \cos\left(2\pi n/J\right) - 1 \right]}
+\end{eqnarray}
+
+\noindent {\bf Can you explain the relationship between this
+expression and the division by $k^2$ in the continuous case?}
+
+\begin{answer}
+Begin by imagining the continuous limit, where
+$J\rightarrow\infty$. Then:
+\begin{equation}
+\cos\left(2\pi n/J\right) \approx 1 - \frac{1}{2} \left(\frac{2\pi
+n}{J}\right)^2 + \ldots
+\end{equation}
+and we find:
+\begin{equation}
+{\tilde q}_n = \frac{\Delta^2 {\tilde \rho}_n}{2
+\left[1 - \frac{1}{2} \left(\frac{2\pi
+n}{J}\right)^2 -1 \right]}
+\end{equation}
+and:
+\begin{equation}
+{\tilde q}_n = \frac{\Delta^2 J^2 {\tilde \rho}_n}{
+(2\pi n)^2}
+\end{equation}
+Then we note that $k= 2\pi n/\Delta J$ (where the $2\pi$ is the
+difference between the wavenumber and the spatial ``frequency'') and
+the equality is clear:
+\begin{equation}
+{\tilde q}_n = \frac{{\tilde \rho}_n}{k_n^2}
+\end{equation}
+However, the difference is large over a large part of the
+$k$-space. It is imperative to use this form.
+\end{answer}
+
+Your colleagues will or have already shown an example of using this
+method! 
+
+\section{Relaxation Methods}
+
+Another class of methods for solving boundary value problems is that
+of relaxation methods.
+
+The basic idea is that if you have a problem of this form:
+\begin{equation}
+\mathcal{L} q = \rho
+\end{equation}
+where $\mathcal{L}$ is an elliptic operator such as $\nabla^2$, you
+can choose to start from a random guess for $q$ and solve the
+diffusion equation:
+\begin{equation}
+\frac{\partial q}{\partial t} = \mathcal{L} q - \rho
+\end{equation}
+As $t\rightarrow\infty$, $q$ will evolve to a static solution, which
+therefore satisfies the original equation. 
+
+If you solve this with FTCS, for the case of Poisson's equation, it
+results in:
+\begin{equation}
+q_j^{n+1} = q_j^n + \frac{\Delta t}{\Delta x^2} \left(q_{j+1}^n - 2
+q_j^n +q_{j-1}^{n}\right) - \rho_j \Delta t
+\end{equation}
+We need to take $\Delta t / \Delta x^2 < 1/2$ for stability as we
+found before. This is called the {\it Jacobi method}. 
+
+It turns out you can also just do this ``in-place,'' meaning that you
+can just use your current round of updates:
+\begin{equation}
+q_j^{n+1} = q_j^n + \frac{\Delta t}{\Delta x^2} \left(q_{j+1}^n - 2
+q_j^n +q_{j-1}^{n+1}\right) - \rho_j \Delta t
+\end{equation}
+This method, called {\it Gauss-Seidel}, converges \ldots a little bit
+faster.
+
+Either method converges to a solution in a number of iterations that
+scales as $J$. In $N$-dimensions, it will scale as $J^N$. This is
+$J^2$ or $J^{2N}$ operations respectively. For large problems this is
+clearly problematic. Do not bother with these methods for problems
+greater than $100\times 100$. 
+
+However, we can look closer to get a more practical method that sees
+quite a bit of use. The solution $\vec{q}$ can be written as the
+solution of the linear system:
+\begin{equation}
+\mat{A}\cdot\vec{q} = \vec{b}
+\end{equation}
+and we can split \mat{A} as follows:
+\begin{equation}
+\mat{A} = \mat{D} + \mat{L} + \mat{U}
+\end{equation}
+where \mat{D} is the diagonal, \mat{L} is the lower part of the
+matrix, and $\mat{U}$ is the upper part.
+
+The Jacobi method can be written:
+\begin{equation}
+\mat{D}\cdot\vec{q}^{n+1} = - \left(\mat{L}
++ \mat{U}\right) \cdot \vec{x}^n + \vec{b}
+\end{equation}
+
+The Gauss-Siedel method can be written:
+\begin{equation}
+\left(\mat{L} + \mat{D}\right)\cdot\vec{q}^{n+1}
+= - \mat{U}\cdot \vec{x}^n + \vec{b}
+\end{equation}
+
+This latter method forms the basis for the idea of {\it successive
+overrelaxation}. Basically, you imagine inverting $\mat{L}+\mat{D}$
+and you then write the same method as:
+\begin{equation}
+\vec{q}^{n+1} = \vec{q}^n
+- \left(\mat{L}+\mat{D}\right)^{-1}\cdot \left[
+\left(\mat{L}+\mat{D}+\mat{U}\right)\cdot\vec{q}^n - \vec{b}\right]
+\end{equation}
+The latter factor is just the residual of the solution at step $n$,
+which we can denote $\vec{\xi}^n$. Then we can write Gauss-Seidel as:
+\begin{equation}
+\vec{q}^{n+1} = \vec{q}^n
+- \left(\mat{L}+\mat{D}\right)^{-1}\cdot \vec{\xi}^n
+\end{equation}
+This seems like a complication to Gauss-Seidel, but the last step is
+to imagine instead iterating with:
+\begin{equation}
+\vec{q}^{n+1} = \vec{q}^n - \omega
+\left(\mat{L}+\mat{D}\right)^{-1}\cdot \vec{\xi}^n
+\end{equation}
+The inversion necessary to take each step is a simple one; as we will
+see, simple enough that it just looks like a simple update.
+
+It can be shown that the method is convergent for $0<\omega<2$, though
+typically you want $\omega>1$, which typically (though not always) it
+will give faster convergence than Gauss-Seidel.
+ 
+You can write the problem as:
+\begin{equation}
+a_j q_{j+1} + b_j q_{j-1} + c_j q_j = f_j
+\end{equation}
+e.g. for Poisson $a_j=b_j =1$ and $c_j=-2$. 
+
+$(\mat{L}+\mat{D})^{-1} \cdot \vec{\xi}$ is just defined by solving:
+\begin{equation}
+(\mat{L} + \mat{D}) \cdot \tilde\xi = \vec{\xi} \omega
+\end{equation}
+for $\tilde\xi$. This is simple, because it just
+involves the following steps:
+\begin{eqnarray}
+\tilde\xi_0 &=& \frac{\xi_0}{c_0} \cr
+\tilde\xi_1 &=& \frac{1}{c_1} \left(\xi_1 - b_1 \tilde\xi_0\right)\cr
+\tilde\xi_2 &=& \frac{1}{c_2} \left(\xi_2 - b_2 \tilde\xi_1\right)
+\end{eqnarray}
+
+So let's imagine stepping through in $j$ and keeping track of the
+current residual $\xi_j^{\mathrm{curr}}$ based on progress so far, and using the
+formula:
+\begin{equation}
+\label{eq:update}
+q_j^{\mathrm{new}} = q_j^{\mathrm{old}}
+- \frac{\xi_j^{\mathrm{curr}}}{c_j}
+\end{equation}
+Then:
+\begin{equation}
+q_0^{\mathrm{new}} = q_0^{\mathrm{old}} - \frac{\xi_0}{c_0}
+\end{equation}
+So far so good. This step is the same as the 0th component of:
+\begin{equation}
+\vec{q}^{\mathrm{new}} = \vec{q}^{\mathrm{old}}
+- \tilde\xi
+\end{equation}
+When we move on to $q_1$, we have:
+\begin{equation}
+q_1^{\mathrm{new}} = q_1^{\mathrm{old}}
+- \frac{\xi_1^{\mathrm{curr}}}{c_1}
+\end{equation}
+where we can write
+\begin{eqnarray}
+\xi_1^{\mathrm{curr}} &=& - \left(f_j - a_1 q_2^{\mathrm{old}} - b_1
+q_0^{\mathrm{new}} - c_1 q_1^{\mathrm{old}}\right) \cr
+&=& \xi_1 - b_1 \left(q_1^{\mathrm{old}} -
+q_1^{\mathrm{new}}\right) \cr
+&=& \xi_1 - b_1 \tilde\xi_0
+\end{eqnarray}
+So:
+\begin{eqnarray}
+q_1^{\mathrm{new}} &=& q_1^{\mathrm{old}}
+- \frac{\xi_1^{\mathrm{curr}}}{c_1} \cr
+&=& q_1^{\mathrm{old}} - \frac{1}{c_1} \left(\xi_1
+- b_1 \tilde\xi_0\right)
+\end{eqnarray}
+and this too corresponds to the first component of: 
+\begin{equation}
+\vec{q}^{\mathrm{new}} = \vec{q}^{\mathrm{old}}
+- \tilde\xi
+\end{equation}
+
+Clearly the update in equation \ref{eq:update} can be scaled by
+$\omega$.
+
+Note that when you update, the updates to odd points don't affect
+other odd points, only even points, and vice-versa. 
+
+The entire trick to successful successive overrelaxation techniques is
+the selection of $\omega$. It turns out that an optimal choice for the
+Poisson equation is:
+\begin{equation}
+\omega_{o} = \frac{2}{1+\sqrt{1-\rho_J^2}}
+\end{equation}
+where:
+\begin{equation}
+\rho_J = \cos(\pi/J)
+\end{equation}
+
+It further turns out that this choice only is optimal
+asymptotically. The best way to proceed is to perform odd and even
+updates separately, and change $\omega$ on each sweep:
+\begin{eqnarray}
+\omega^{0} &=& 1 \cr
+\omega^{1/2} &=& \frac{1}{1-\rho_J^2 /2} \cr
+\omega^{n+1/2} &=& \frac{1}{1-\rho_J^2 \omega^n /2} \cr
+\end{eqnarray}
+which converges to the optimal choice but starts closer to
+underrelaxation. 

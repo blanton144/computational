@@ -20,6 +20,7 @@ Lecture notes and associated information:
 | ODEs | [notes](pdf/ode.pdf) | [notes with answers](pdf/ode-answers.pdf)| [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/ode.ipynb) | 
 | Fast Fourier Transforms | [notes](pdf/fft.pdf) | [notes with answers](pdf/fft-answers.pdf)| [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/fft.ipynb) | 
 | PDE (initial value) | [notes](pdf/pde.pdf) | [notes with answers](pdf/pde-answers.pdf)| [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/pde.ipynb) | 
+| PDE (boundary value) | [notes](pdf/boundary.pdf) | [notes with answers](pdf/boundary-answers.pdf)| [Jupyter solutions](https://nbviewer.jupyter.org/github/blanton144/computational/blob/master/docs/notebooks/boundary.ipynb) | 
 
 Problem sets: 
 
