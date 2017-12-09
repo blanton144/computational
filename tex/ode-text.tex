@@ -219,3 +219,49 @@ Note that these can be combined to:
 w(t+ 2\Delta t) = w_2 + \frac{\delta}{15}
 \end{equation}
 for a fifth order method.
+
+\section{Symplectic Integrators}
+
+Sometimes what we want is not just high order accuracy, but we want
+certain facts about the original equations to remain true, perhaps
+even at the expense of accuracy. For example, many sets of equations
+are required to obey conservation laws, such as momentum, energy,
+etc. It is also sometimes nice to guarantee that the equations you are
+using are time-reversible, just like the actual equations in physics
+can be.
+
+These classes of methods are sometimes known as ``symplectic,''
+because of its relationship to symplectic transforms in mathematics,
+which we will not get into here. However, it is this property that
+leads these finite difference expressions to have the useful
+properties that they do have.
+
+The simplest version of a symplectic integrator is the leapfrog
+algorithm. For example, for a one-dimensional equation of motion:
+\begin{eqnarray}
+{\dot x} &=& v \cr
+{\dot v} &=& F(x)
+\end{eqnarray}
+we can write: 
+\begin{eqnarray}
+x_1 &=& x_0 + \Delta v_{1/2} \cr
+v_{3/2} &=& v_{1/2} + \Delta F(x_1)
+\end{eqnarray}
+This will be accurate with remainders of order $\Delta^3$ at each time
+step. Note that eventually you want $v_1$, so:
+\begin{equation}
+v_{1} = v_{1/2} + \Delta F(x_1) / 2
+\end{equation}
+
+What are the virtues of this? First is time-reversibility. If I have
+$v_{3/2}$ and $x_1$, I can integrate backwards with the same equations
+to get the original $v_{1/2}$  and $x_0$. Believe it or, this is not
+true of Runge-Kutta!
+
+Another less generally useful fact, but still useful, is that in two
+or more dimensions in a spherically symmetric potential, it conserves
+angular momentum. 
+
+Finally, it conserves phase space density. It is area preserving in
+phase space.  
+
