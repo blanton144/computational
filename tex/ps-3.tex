@@ -5,17 +5,28 @@
 \begin{document}
 
 \title{\bf Computational Physics / PHYS-UA 210 / Problem Set \#3
-\\ Due September 29, 2017 }
+\\ Due September 20, 2019}
 
 You {\it must} label all axes of all plots, including giving the {\it
   units}!!
 
 \begin{enumerate}
+  \item Exercise 4.3 of Newman.
 
-  \item Exercise in S4.6 of Landau.
+  \item Read Example 4.3 in Newman. Using successively larger matrices
+    (10$\times$10, 30$\times$30, etc.) find empirically and plot how
+    the matrix multiplication computation rises with matrix size. Does
+    it rise as $N^3$ as predicted? Use both an explicit function
+    (i.e. the one in the example) and use the {\tt dot()} method. How
+    do they differ?
 
-  \item Make a PDF file, with an equation in it expressing the
-    exponential decay law derivation found in S4.5.2 in Landau.
+  \item Using the functions in the {\tt numpy.random} module, generate
+    an ensemble of 10,000 one-dimensional random walks, each of 1,000
+    steps, where each step is determined by the normal distribution
+    (Gaussian with a standard deviation of unity). Show using plots
+    how the mean and standard deviation of the distribution of walker
+    positions grows with the number of steps. Can you explain the
+    dependence of the standard deviation on the number of steps?
 
 \end{enumerate}
 
