@@ -24,7 +24,7 @@ P(r, \phi) \exp\left(-ik W(r,\phi)\right)
 where $P$ is a function of position on the aperture, in a coordinate
 system centered on the aperture axis of symmetry, and $W$ is a phase
 shift (induced, for example, by imperfections in the shape of the
-mirror. $k= 2\pi/\lambda$ is the wavenumber of the light wave.
+mirror). $k= 2\pi/\lambda$ is the wavenumber of the light wave.
 
 In the simplest case, $P(r, \phi)$ is just $1$ within some radius
 $D/2$, and $0$ outside.  In this case, the image formed is:
@@ -37,24 +37,24 @@ plane related to the input angle of light into the telescope (we call
 it $\theta$ because it corresponds to an angle on the sky). This is
 known as the Airy pattern.
 
+\section{Prep work}
+
 \begin{itemize}
-\item Perform a numerical FFT of the simplest aperture, in order to
-  verify the above result in detail. Show how the size of the PSF
-  varies with aperture size.  
+\item $J_1$ can be calculated as:
+  \begin{equation}
+   J_1 = \frac{1}{\pi} \int_0^\pi \dd\theta\, \cos\left(\theta -
+   x\sin\theta\right)
+  \end{equation}
+  You should in general use numerical libraries to calculate it.  But
+  this one time use Simpson's rule to check the NumPy implementation
+  of the calculation. Note that NumPy (and other libraries) use a very
+  accurate analytic approximation to evaluate this function, not an
+  explicit integral.
 \item Many reflective telescopes have a Cassegrain design
   (\href{https://en.wikipedia.org/wiki/Cassegrain_reflector}{\color{blue}
   see Wikipedia}) which causes the aperture to be a donut, with a hole
-  in the middle. Can you write analytically what you expect the PSF to
-  be, and also verify that numerically?
-\item To hold the secondary mirror in place in this design, there need
-  to be some structural elements.  Often these take the form of
-  several struts holding it in place, which cause obscuration of the
-  aperture (basically, small lines with $P=0$ aligned radially). Look
-  up some images of stars on the web from the Hubble Space Telescope,
-  guess how many such struts it has, and try to reproduce the
-  diffraction spikes (roughly) using your model. Do you notice
-  anything about the patterns of color in the diffraction spikes that
-  you can explain with your model?
+  in the middle. Can you write analytically (in terms of $J_1$) what
+  you expect the PSF to be? Plot the result.
 \item We will want to simulate small imperfections in the phases from
   different causes. To do so it will be useful to be able to create
   {\it Gaussian random fields}. These are random fields whose values
@@ -63,10 +63,38 @@ known as the Airy pattern.
   random values for Fourier modes in $\vec{k}$-space, and Fourier
   transforming back to configuration space. The random distributions
   have mean zero and a variance that is a function of the scalar $k$,
-  called $P(k)$ or the ``power spectrum.'' Create a function that will
-  return a random field given a function $P(k)$.  You may consult
+  called $P(k)$ or the ``power spectrum.'' First, create a function
+  that returns a set of amplitudes $a(\vec{k})$ for each mode. The
+  phase differences will be real, but the Fourier amplitudes will not
+  be. You must set the amplitudes with the right symmetries to
+  guarantee that their Fourier transform will be real!
+\item Now create a function that will use the function from the
+  previous step plus an FFT to produce a random
+  field with some user-specified $P(k)$. You may consult
   \href{http://andrewwalker.github.io/statefultransitions/post/gaussian-fields/}{\color{blue}
-    the example code here}.
+    the example code here}. Try using
+  \begin{equation}
+    P(k) \propto k^{n} \exp\left(- k^2 / k_c^2\right)
+  \end{equation}
+    for several values of $n<0$ and $k_c$. Plot the random fields
+    produced and comment on the differences.
+\end{itemize}
+
+\section{Calculating PSFs}
+
+\begin{itemize}
+\item Perform a numerical FFT of a simple circular aperture, in order
+  to verify the above result in detail. Show how the size of the PSF
+  varies with aperture size.
+\item For a Cassegraine telescope, to hold the secondary mirror in
+  place there need to be some structural elements.  Often these take
+  the form of several struts holding it in place, which cause
+  obscuration of the aperture (basically, small lines with $P=0$
+  aligned radially). Look up some images of stars on the web from the
+  Hubble Space Telescope, guess how many such struts it has, and try
+  to reproduce the diffraction spikes (roughly) using your model. Do
+  you notice anything about the patterns of color in the diffraction
+  spikes that you can explain with your model?
 \item Small imperfections in the mirror cause phase shifts. Simulate
   such shifts in your model by creating a Gaussian random field for
   the phase offsets $W$ (which is in the same units as $\lambda$) in
@@ -78,8 +106,9 @@ known as the Airy pattern.
   ``wrinkled'' with a coherence length of about 20 cm. Create a
   Gaussian random field whose power spectrum cuts off on smaller
   scales, and above those scales has fluctuations large compared to
-  the wavelength of the light. It should look ``smooth'' on small
-  scales.  How do these errors affect the point spread function?
+  the wavelength of the light. The random field should look ``smooth''
+  on small scales.  How do these errors affect the point spread
+  function?
 \end{itemize}
 
 

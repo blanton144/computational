@@ -7,10 +7,14 @@
 \title{\bf Computational Physics Project / Gravity on a mesh}
 
 This project focuses on solving Poisson's equation on a uniform mesh.
-The problem you will solve here is {\it one piece} of a larger
-technique known as {\it particle-mesh} which is often used in the
-context of simulating the formation of structure in the universe and
-in other contexts. 
+The problem you will solve here involves a technique known as {\it
+  particle-mesh} which is often used in the context of simulating the
+formation of structure in the universe and in other contexts.
+
+The version of Poisson's equation we need to solve is:
+\begin{equation}
+\nabla^2 \phi(\vec{x}) = 4\pi G \rho(\vec{x})
+\end{equation}
 
 In order to follow how structure forms due to gravity, the
 particle-mesh technique approximates the distribution of matter using
@@ -27,89 +31,110 @@ different) density field. The basics of this method were described
 thoroughly in a classic book by Hockney \& Eastwood (1988), {\it
   Computer Simulation Using Particles}.
 
-In this project, you will just perform and test the solution of
-Poisson's equation for a density field that you define. Then you will
-play with integrating orbits in this potential (without updating the
-potential). Chapter 19 of Landau has some information about this;
-however, in the gravitational case you cannot do exactly what it says
-there.
+\section{Rescaling the problem}
 
-\section{Defining a density field}
+First it is important to scale certain factors out of the problem for
+convenience: 
+\begin{itemize}
+\item Define a new unitless set of variables for position, mass,
+  velocity, and time, by scaling out the length scale, time scale,
+  total mass scale, and $G$. Set the size of the cubic region we are
+  considering to unity, and $G=1$, in these new units. There should be
+  a single combination of these overall scale values that
+  characterizes the expression. You have the freedom to choose to set
+  this combination to unity. You should perform your numerical
+  analysis in these variables; your numerical solutions can then be
+  scaled to different total mass and lengths by keeping this
+  combination fixed.
+\end{itemize}
 
-Your first task will be to define a 3D density field. For this
-purpose, you should use a multivariate Gaussian distribution. That is,
-the density field will have the form:
-\begin{equation}
-\rho(\vec{x}) = \left(\frac{1}{\sqrt{2\pi} \det{\bf C}}\right)^{1/2}
-\exp\left(-\frac{(\vec{x}-\vec{x}_0)\cdot{\bf
-    C}^{-1}\cdot(\vec{x}-\vec{x}_0}{2}\right)
-\end{equation}
-where ${\bf C}$ is the {\it covariance matrix} of the Gaussian and
-$\vec{x}_0$ is the location of the peak of the Gaussian. It is
-diagonal with equal elements for a spherically symmetric Gaussian.
+\section{Particle positions and density field}
+
+The first thing you will need to do is to define a set of particle
+positions and infer a density field. We will use the simplest {\it
+  cloud-in-cell} approach to this problem. You should use $32^3$
+particles and a $32\times 32\times 32$ grid, so that things run fast.
 
 \begin{itemize}
-\item Write a routine to create a mesh with such a density field
-  taking the covariance, center, and the size of the mesh as
-  input. You should put this routine into a module that you can call.
-\item Then write a routine to plot slices of the mesh, plus any other
-  sort of visualization that you want to explore, to show that the
-  Gaussian is behaving as you expect in the following cases.
-\item Experiment with different axis ratios for the Gaussian by
-  changing the diagonal elements.
-\item Experiment with using principal axes of the Gaussian not aligned
-  with the mesh. Note you should {\it rotate} the covariance matrix
-  elements; just making up random off-diagonal elements will not
-  necessarily behave as you expect.
+\item First, you need to distribute a bunch of particles in the 3D
+  space to represent a given density field. Write a function to
+  distribute particles according to a multi-variate Gaussian with a
+  chosen center, chosen semimajor axis $a$, and chosen axis ratios
+  ($b/a$ and $c/a$). It is fine if you let the principal axes of the
+  Gaussian be aligned with the coordinate system you are working in.
+\item Second you need to define a density field based on the
+  particles. To do so, imagine each particle is a small cubicle
+  ``cloud'' with sides equal to the size of a grid cell. Then the
+  contribution of each particle to the density in each cell is just
+  the fractional overlap of the particle and the cell. Write a
+  function that evaluates the density field and make some plots to
+  show that it is working as expected.
 \end{itemize}
 
 \section{Solving Poisson's equation}
 
 Then you need to solve Poisson's equation:
 \begin{equation}
-\nabla^2 \phi(\vec{x}) = - 4\pi \rho(\vec{x})
+\nabla^2 \phi(\vec{x}) = 4\pi \rho(\vec{x})
 \end{equation}
-You should use Fourier methods to perform the solution --- i.e. use
-the fact that the Fourier transform of the above equation is:
+This is a partial differential equation (PDE), but you do not need to
+wait until we learn about PDE solutions in order to solve this
+equation. You can use Fourier methods to perform the solution ---
+i.e. use the fact that the Fourier transform of the above equation is:
 \begin{equation}
-k^2 \tilde\phi(\vec{k}) = - 4\pi \tilde\rho(\vec{k})
+k^2 \tilde\phi(\vec{k}) = 4\pi \tilde\rho(\vec{k})
 \end{equation}
-
-A very similar case is described in the book.  However, unlike the
-electrostatics cases described in the book, you do not have boundary
-conditions of $\phi$ at the boundary. Instead, you need to use a
-trick to treat the mass distribution on the mesh as
-isolated. 
+However! You cannot use precisely this formula with a discrete Fourier
+Transform. Instead, there is a discrete version of this formula. 
 
 \begin{itemize}
-\item Write a function in your module to solve Poisson's equation
-  using this method. 
-\item Test this method by making a relatively small spherical,
-  Gaussian making sure that at large distances you get the Keplerian
-  potential you expect.
-\item Test this method further by making a bigger spherical Gaussian
-  and making sure that even where the density is high you get the
-  potential you expect. 
-\item Now explore a prolate or oblate Gaussian. Use a fairly extreme
-  axis ratio (e.g. 0.1) and compare the density and the potential.
-  Does the potential  have the same axis ratio?
+\item Write the derivation of and implement the discrete version of
+  the Fourier solution described above. Test the case of a point
+  source at the center of the box. The result is a Green's function
+  response of the method to a delta function source. Show that its
+  potential is not what you would expect from an isolated delta
+  function source, but that it is what you would expect with a
+  periodically repeated delta function source.
+\item To simulate an isolated distribution of mass, you have to use a
+  special trick. First, you need to ``isolate'' the mass distribution
+  with a moat of zero density, by expanding the grid size by a factor
+  of two in each dimension. Second, you need to limit the range of the
+  Green's function, so that the periodic isolated regions cannot
+  influence each other. To do the latter, you need to create the
+  Green's function response you want numerically:
+  \begin{equation}
+    g(\vec{r}) = \frac{1}{r} = \frac{1}{\sqrt{x^2 +y^2 + z^2}}
+  \end{equation}
+  for $|x|<1$, $|y|<1$, $|z|<1$, 0 otherwise, and $g(\vec{0}) =
+  1$. Then instead of $k^{-2}$, use the discrete Fourier Transform of
+  this Green's function.  Hockney \& Eastwood, around pages 212--213,
+  explain this. Implement this method and show that it works as
+  expected for a delta function source.
+\item Use your implementation to calculate the potential for several
+  cases with different widths and axis ratios of the Gaussian. Test
+  a spherically symmetric case against the analytic expectation.
 \end{itemize}
 
-\section{Bonus: integrating orbits in this potential}
+\section{Integrating the equations in time}
 
-Once you have a potential calculated, you should be able to integrate
-orbits through it according to the ordinary differential equation: 
+Now you have initial positions, the resulting density field, and the
+potential resulting from that density field. You can now integrate the
+system forward in time. The equations for each particle are:
 \begin{eqnarray}
 \dot{\vec{v}} &=& -\vec{\nabla}\phi \cr
 \dot{\vec{x}} &=& \vec{v} 
 \end{eqnarray}
-You can use Runge-Kutta. 
 
 \begin{itemize}
-\item Try starting a particle along a circular orbit with the right
-  velocity in a spherical potential. Does it stay on a circular orbit?
-\item Try making the potential non-spherical. What happens? Under what
-  conditions does the orbit stay spherical? 
+\item Implement the symplectic integrator I describe in the notes for
+  ODEs, for the particle-mesh case. Between each integer step,
+  update the positions according to the velocities. Between each
+  half-integer step, update the velocities according to the gradient
+  of the potential at the location of the particle; use a first-order
+  method to calculate the gradient. 
+\item Run the particle mesh for several initial Gaussian distributions
+  of particles at rest. Make some animations showing what the
+  particles do. 
 \end{itemize}
 
 \end{document}

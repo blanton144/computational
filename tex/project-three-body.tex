@@ -11,7 +11,7 @@ that you might find in planetary or stellar systems.
 
 The general equations governing these systems are simple:
 \begin{eqnarray}
-\dot{\vec{v}_i} &=& - \sum_{j \ne i} \frac{Gm_j}{r_{ij}^2} \cr
+\dot{\vec{v}_i} &=& - \sum_{j \ne i} \frac{Gm_j}{r_{ij}^2} {\hat r}_{ij} \cr
 \dot{\vec{x}_i} &=& \vec{v}_i
 \end{eqnarray}
 
@@ -37,19 +37,63 @@ and the angle $\phi$ and time $t$ are related by:
     - \frac{e(1-e^2)^{1/2} \sin\phi}{1+e\cos\phi}\right\}
 \end{equation}
 
-\section{Testing the two-body problem}
+\section{Prep work}
 
-In the first section of this project, you will write a general program
-to integrate orbits, and test it on the two body problem.
+First you should do some prep work to understand the problem and test
+your tools.
 
 \begin{itemize}
-\item Write a module with an integrator using the techniques in Landau
+\item Define a new unitless set of variables for position, mass,
+  velocity, and time, by scaling out the length scale, time scale,
+  total mass scale, and $G$. There should be a single combination of
+  these overall scale values that characterizes the expression. You
+  have the freedom to choose to set this combination to unity. You
+  should perform your numerical analysis in these variables; your
+  numerical solutions can then be scaled to different total mass and
+  lengths by keeping this combination fixed.
+\item Using minimization and/or root-finding techniques, write a
+  program that takes as input a function that returns a radius given
+  the time, and finds the pericenter positions in the orbit and
+  determines the period. Use the analytic solution for the two-body
+  problem above to verify your work.
+\item The equations for the problem can be evaluated in a rotating
+  frame. If the rotation is characterized by a constant angular
+  velocity $\vec{\Omega}$, then the equations in the rotating frame
+  for $\vec{x}_i'$ and $\vec{v}_i'$ in the rotating frame are:
+  \begin{eqnarray}
+    \dot{\vec{v}_i'} &=& - \sum_{j \ne i} \frac{Gm_j}{r_{ij}^2} {\hat
+      r}_{ij}
+    -2 \vec{\Omega}\times\vec{v_i}' -
+    \vec{\Omega}\times\vec{\Omega}\times\vec{x}_i'  \cr
+    \dot{\vec{x}_i'} &=& \vec{v}_i'
+  \end{eqnarray}
+  where $\dot{\vec{x}'} = \dot{\vec{x}} - \vec\Omega \times \vec{x}$.
+  Consider a two body system in circular orbit; this specifies a
+  constant $\Omega$. If there is a third test body in the system with
+  $\vec{v}'=0$, then you can think of the forces acting on it as the
+  derivative of an effective potential that accounts for the
+  gravitational potential Coriolis term together (the first and third
+  terms on the right hand side above). Write down that effective
+  potential. Then plot the effective potential in the plane of the
+  orbit of the two massive bodies. Identify the stationary
+  points. These are called {\it Lagrange Points}. What is special
+  about them?
+\end{itemize}
+
+\section{Creating the integrator}
+
+In this stage, you will write a general program to integrate orbits,
+and test it on the two body problem.
+  
+\begin{itemize}
+\item Write a module with an integrator using the techniques in 
   Chapter 8 that will solve the general system of equations for $N$
   bodies.
 \item Test the integrator on the two body problem. Use initial
-  conditions for which the system is bound. Assess the period of the
-  orbit, how well it approximates an ellipse, and showing that it
-  (approximately) closes. Use both circular and elliptical cases.
+  conditions for which the system is bound. Use the tools you
+  developed above to test the period of the orbit as a function of
+  mass and semi-major axis. Test both circular and elliptical cases,
+  and unequal mass cases.
 \end{itemize}
 
 \section{Exploring the three-body problem}
@@ -59,20 +103,30 @@ Now you should be able explore how three-body systems behave.
 \begin{itemize}
 \item Start with two large, equal mass particles, and one much smaller
   mass particle. Start the equal mass particles on circular orbits,
-  and verify sure that they stay on those orbits. Then explore a
-  couple of different initial conditions for the third particle.
-\item Try the Lagrange Points (look the description up on Wikipedia)
-  and put the small particle at those locations, with an angular
-  velocity the same as the orbital angular velocity of the large mass
-  particles. What happens?
-\item Make one large mass particle, one somewhat smaller mass particle
-  (like a factor of 100) in orbit around the large mass particle, and
-  then a third particle. Try different initial conditions for the
-  third particle, including some which are close to the orbit of the
-  second particle. Show what happens as the orbits get close together.
+  and verify sure that they stay on those orbits. 
+\item Test the Lagrange Points discussed above.  Put the small
+  particle at those locations, with an angular velocity the same as
+  the orbital angular velocity of the large mass particles. Does the
+  particle do what it should?
+\item Perform the same test, but work in the rotating frame by using
+  the variables $\vec{x}'$ and $\vec{v}'$, using the $\Omega$ value
+  appropriate for the two massive particles alone. 
+\item Make one large mass particle and two somewhat smaller mass
+  particles (like a factor of 100). Put one of the smaller mass
+  particles in a stable circular two-body orbit around the large mass
+  particle. Try many different initial conditions for the third
+  particle that correspond to circular orbits with a range of
+  different radii. When does the system remain stable and when not?
 \item Make three similar mass particles and follow their orbits. Can
   you find initial conditions which are stable? (Do not spend a ton of
   time trying).
+\end{itemize}
+
+\section{Bonus ideas}
+
+\begin{itemize}
+\item Test integrators of different orders on the two-body problem and
+  test how solution accuracy relates to calculation time for each.
 \end{itemize}
 
 \end{document}
