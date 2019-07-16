@@ -28,5 +28,12 @@ Problem sets:
 | [PS 2](pdf/ps-2.pdf) | 
 | [PS 3](pdf/ps-3.pdf) | 
 | [PS 4](pdf/ps-4.pdf) | 
+| [PS 5](pdf/ps-5.pdf) | 
+| [PS 6](pdf/ps-6.pdf) | 
+| [PS 7](pdf/ps-7.pdf) | 
 
 Semester projects:
+
+| [Gravity on a mesh](pdf/project-gravity-mesh.pdf) | 
+| [Point spread function of a telescope](pdf/project-telescope.pdf) | 
+| [Three-body problem](pdf/project-three-body.pdf) | 
