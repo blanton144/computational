@@ -64,6 +64,23 @@ into a new equation, but that's not going to be necessarily true of
 (nontrivial) solutions of the bottom equation.
 \end{answer}
 
+\noindent {\bf What is meant by ``first-order,'' ``second-order,''
+  ``third-order,'' etc. ODEs?}
+
+\begin{answer}
+This nomenclature indicates the order of the derivatives involved.
+Thus, the following equation is first-order:
+\begin{equation}
+\frac{\dd{x}}{\dd{t}} = w(x, t)
+\end{equation}
+but this equation is second-order:
+\begin{equation}
+  \frac{\dd{x}}{\dd{t}}
+  + \alpha(x, t) \frac{\dd^2{x}}{\dd{t}^2}
+  = w(x, t)
+\end{equation}
+\end{answer}
+
 With ODEs, you need to set {\it boundary conditions}. For example, in
 the simplest case, you might set a set of conditions at $t=0$
 (i.e. {\it initial conditions}). For each dependent variable, the
@@ -76,7 +93,7 @@ necessarily the case that your conditions can be met under your
 equations of course. It definitely complicates the finding of a
 solution.  
 
-ODEs of any order can be reduced to systems of linear
+ODEs of any order can be reduced to systems of first-order
 equations. Specifically they can be reduced to a form like:
 \begin{eqnarray}
 \frac{\dd{w_0}}{\dd{t}} &=& f_0(\vec{w}, t) \cr
@@ -102,7 +119,7 @@ which represents a spring under some time-dependent forcing. This may
 be reduced to one dimension as follows:
 \begin{eqnarray}
 \frac{\dd{\vec{x}}}{\dd{t}} &=& \vec{v} \cr
-\frac{\dd{\vec{v}}}{\dd{t}} &=& - \vec{x} + \vec{f}(t) \cr
+\frac{\dd{\vec{v}}}{\dd{t}} &=& - \vec{x} + \vec{f}(t)
 \end{eqnarray}
 which represents six first-order equations in the 6-D phase space
 vector $\vec{w} = (\vec{x}, \vec{v})$.
@@ -112,7 +129,7 @@ vector $\vec{w} = (\vec{x}, \vec{v})$.
 For a general nonlinear ODE, given initial conditions, we will need to
 integrate (usually) forward in time numerically. There are a number of
 well-developed algorithms for doing this. As in other applications we
-have done this semester, the more complex algorithm tend to take the
+have done this semester, the more complex algorithms tend to take the
 form of higher-order approximations to the solutions of the problem. 
 
 The simplest ODE integrator that exists is {\it Euler's algorithm}.
@@ -122,14 +139,35 @@ never use it, but it is illustrative.
 This algorithm takes equal time steps $\Delta t$, starting from
 $\vec{w}(t=0)$, just says:
 \begin{equation}
-\vec{w}(t+\Delta t) = \Delta t {\dot{\vec{w}}}(t) = 
-\Delta t \vec{f}(\vec{w}, t)
+\vec{w}(t+\Delta t) = \vec{w}(t) + \Delta t {\dot{\vec{w}}}(t) = 
+\vec{w}(t) + \Delta t \vec{f}(\vec{w}, t)
 \end{equation}
 
-Perhaps not surprisingly given what we have learned about similar
-methods for forward differencing, the error in this method is
-$\mathcal{O}(\Delta t^2)$. This means it is accurate to first-order in
-$\Delta t$. 
+
+\noindent {\bf What is the approximation error of this method for each
+  step, and for a full integration, as a function of the step size?}
+
+\begin{answer}
+  For each step, the real answer can be derived from the Taylor Series:
+  \begin{equation}
+    \vec{w}(t+\Delta t) = \vec{w}(t) + \Delta t {\dot{\vec{w}}}(t)
+    + \frac{\Delta t^2}{2} \ddot{\vec{w}}(t) + \ldots
+  \end{equation}
+  So for each step the error is given by the third term, which is
+  $\mathcal{O}(\Delta t^2)$. The total error is therefore, to leading
+  order, the sum of the individual errors in the integral from $t=a$
+  to $t=b$:
+  \begin{equation}
+    E = \sum_{i=0}^{N-1} \frac{\Delta t^2}{2} \ddot{\vec{w}}(t_i)
+     = \frac{\Delta t}{2} \sum_{i=0}^{N-1} \Delta t \dot{\vec{f}}(t_i)
+     \approx \frac{\Delta t}{2} \int_a^b \dd{t} \dot{\vec{f}}(t)
+     = \frac{\Delta t}{2} \left[ f(t=a) - f(t=b)\right].
+  \end{equation}
+  Therefore, a full integration's approximation error scales as
+  $\mathcal{O}(\Delta t)$. In general, if an individual step is
+  $\mathcal{O}(\Delta t^N)$ the full integration will be
+  $\mathcal{O}(\Delta t^{N-1}$.
+\end{answer}
 
 {\it Second-order Runga-Kutta} is simple second-order algorithm
 evaluates the function at $t+\Delta t /2$, and then takes the full
@@ -200,25 +238,68 @@ pairs of steps, and then comparing the answer using two steps to using
 one step twice as big. This adds at most 50\% more function
 evaluations.
 
-The two answers will be:
+The error in one step can be written as $\Delta t^2 \phi$, where
+$\phi$ is some constant.
+The two answers will therefore be:
 \begin{eqnarray}
-w(t+ 2\Delta t) &=& w_1 + (2\Delta t)^5 \phi + \mathcal{O}(\Delta t^6)
+w(t+ 2\Delta t) &=& w_1 + 2 (\Delta t)^5 \phi + \mathcal{O}(\Delta
+t^6) \quad\mathrm{two~steps} 
 \cr
-w(t+ 2\Delta t) &=& w_2 + 2 (\Delta t)^5 \phi + \mathcal{O}(\Delta t^6)
+w(t+ 2\Delta t) &=& w_2 + (2\Delta t)^5 \phi + \mathcal{O}(\Delta t^6)
+\quad\mathrm{one~step} 
 \end{eqnarray}
-
-And you can adjust $\Delta t$ based on:
+where $\phi$ is a constant of $\mathcal{O}(\Delta t^5)$. The
+difference gives you:
 \begin{equation}
-\delta = w_2 - w_1 \approx - 30 (\Delta t)^5 \phi
+w_2 - w_1 \approx 30 (\Delta t)^5 \phi
 \end{equation}
-Note that you usually should consider both the absolute and relative
-errors. 
-
-Note that these can be combined to:
+The single-step absolute value error can therefore be estimated as:
 \begin{equation}
-w(t+ 2\Delta t) = w_2 + \frac{\delta}{15}
+\epsilon \approx \Delta t^5 \phi \approx \frac{\left|w_2 -
+  w_1\right|}{30}
 \end{equation}
-for a fifth order method.
+
+Therefore, we can take the following approach to keep errors at some
+specified target level $\delta$, in {\it per unit time} units. Per
+time step $\Delta t$, the corresponding error per step would be
+$\epsilon = \delta\Delta t$.
+
+After each pair of steps, calculate $\epsilon$. If $\epsilon < \Delta
+t \epsilon$, continue from $t+ 2\Delta t$ (using $w_2$) but change the
+step size to a new one $\Delta t_n$ going forward to satisfy:
+\begin{equation}
+  \delta \Delta t_n = \Delta t_n^5 \phi
+  = \frac{\Delta t_n^5}{\Delta t^5} \Delta t^5 \phi
+  = \frac{\Delta t_n^5}{\Delta t^5} \frac{\left|w_2 - w_1\right|}{30}
+\end{equation}
+which means:
+\begin{equation}
+\Delta t_n^4 = \Delta t^5 \frac{30 \delta}{\left|w_2 - w_1\right|}
+\end{equation}
+and therefore:
+\begin{equation}
+\Delta t_n = \Delta t \left(\frac{30 \delta \Delta t}{\left|w_2 -
+  w_1\right|}\right)^{1/4}
+\end{equation}
+It is wise to limit the increase in $\Delta t$ (the right hand factor)
+to no more than a factor of two or so.
+
+But if $\epsilon > \Delta t \epsilon$, then also set $\Delta t_n$
+using the same formula, but start over from $t$ (that is, do not
+accept the initial measurement using the initial $\Delta t$.
+
+There is a further improvement that can be made. We have an estimate
+of the one step error with step-size $\Delta t$ to accuracy
+$\mathcal{0}(\Delta t^6)$:
+\begin{equation}
+  (\Delta t)^5 \phi \approx \frac{w_2 - w_1}{30}
+\end{equation}
+So you can correct the two-step estimate $w_1$:
+\begin{equation}
+w(t+ 2\Delta t) = w_1 + 2 \Delta t^5 \phi = w_1 + 
+  \frac{w_2 - w_1}{15}
+\end{equation}
+for a fifth order integration method. This basically comes for free. 
 
 \section{Symplectic Integrators}
 

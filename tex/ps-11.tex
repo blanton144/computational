@@ -1,0 +1,36 @@
+\documentclass[11pt, preprint]{aastex}
+
+\include{computational_defs}
+
+\begin{document}
+
+\title{\bf Computational Physics / PHYS-UA 210 / Problem Set \#11
+\\ Due November 22, 2019}
+
+You {\it must} label all axes of all plots, including giving the {\it
+  units}!!
+
+\begin{enumerate}
+  \item Exercise 8.3 of Newman.
+
+\item Write a routine that integrates the equations for projectile
+  motion:
+  \begin{equation}
+    \frac{\dd{^2\vec{x}}}{\dd{t}^2} = - g {\hat x}_1 - \alpha
+    \dot{\vec{x}}^2,
+  \end{equation}
+  where ${\hat x}_1$ is the vertical direction.
+  These are appropriate for, say, a golf ball. 
+  The initial conditions should be that the object is launched at some
+  angle $\theta$ from the horizontal at some initial speed in the
+  $x_0$-$x_1$ plane. Integrate until the object hits the ground
+  again. Use a Runge-Kutta method
+  from {\tt scipy} to solve this problem and write a routine that
+  finds where the ball hits the ground again.
+\item Use Brent's method (either yours or {\tt scipy}'s) to optimize
+  the angle $\theta$ to get the longest distance.
+
+  \item Exercise 8.10 of Newman.
+\end{enumerate}
+
+\end{document}
