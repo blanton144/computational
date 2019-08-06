@@ -173,10 +173,10 @@ $\vec{w}(t=0)$, just says:
 evaluates the function at $t+\Delta t /2$, and then takes the full
 step based on the values at the mid-point:
 \begin{eqnarray}
-k_1 &=& \Delta t f(\vec{w}_n, t_n) \cr
-k_2 &=& \Delta t f\left(\vec{w}_n + \frac{1}{2} k_1,
+\vec{k}_1 &=& \Delta t \vec{f}(\vec{w}_n, t_n) \cr
+\vec{k}_2 &=& \Delta t \vec{f}\left(\vec{w}_n + \frac{1}{2} k_1,
 t_n + \frac{1}{2}\Delta t\right) \cr
-\vec{w}_{n+1} &=& \vec{w}_n + k_2
+\vec{w}_{n+1} &=& \vec{w}_n + \vec{k}_2
 \end{eqnarray}
 
 We can see why this is second-order fairly easily. In the case that we
@@ -301,7 +301,7 @@ w(t+ 2\Delta t) = w_1 + 2 \Delta t^5 \phi = w_1 +
 \end{equation}
 for a fifth order integration method. This basically comes for free. 
 
-\section{Symplectic Integrators}
+\section{Leapfrog Method}
 
 Sometimes what we want is not just high order accuracy, but we want
 certain facts about the original equations to remain true, perhaps
@@ -311,14 +311,41 @@ etc. It is also sometimes nice to guarantee that the equations you are
 using are time-reversible, just like the actual equations in physics
 can be.
 
-These classes of methods are sometimes known as ``symplectic,''
-because of its relationship to symplectic transforms in mathematics,
-which we will not get into here. However, it is this property that
-leads these finite difference expressions to have the useful
-properties that they do have.
+The simplest version of a symplectic integrator is the {\it leapfrog
+  method}. It is very similar to the second-order Runge-Kutta method. 
+However, instead of:
+\begin{eqnarray}
+\vec{k}_1 &=& \Delta t \vec{f}(\vec{w}_n, t_n) \cr
+\vec{w}_{n+1/2} &=& \vec{w}_n + \frac{1}{2}\vec{k}_1 \cr
+\vec{k}_2 &=& \Delta t \vec{f}\left(\vec{w}_{n+1/2}, t_{n+1/2}\right) \cr
+\vec{w}_{n+1} &=& \vec{w}_n + \vec{k}_2
+\end{eqnarray}
+We define:
+\begin{eqnarray}
+\vec{k}_1 &=& \Delta t \vec{f}(\vec{w}_n, t_n) \cr
+\vec{w}_{n+1/2} &=& \vec{w}_{n-1/2} + \vec{k}_1 \cr
+\vec{k}_2 &=& \Delta t \vec{f}(\vec{w}_{n+1/2}, t_{n+1/2}) \cr
+\vec{w}_{n+1} &=& \vec{w}_{n} + \vec{k}_2
+\end{eqnarray}
+This means that if you start with some $\vec{w}_0$, you need to take a
+first half-step with Euler's method to $\vec{w}_{1/2}$, and then you
+can proceed from there. This is still second-order, but it can be
+shown that it is time-reversal-symmetric. This means that on average
+it will conserve energy. Believe it or not, this is not true of
+Runge-Kutta!
 
-The simplest version of a symplectic integrator is the leapfrog
-algorithm. For example, for a one-dimensional equation of motion:
+\section{Verlet Method}
+
+In leapfrog, all components of $\vec{w}$ are updated at steps $n$ and
+$n+1/2$. However, if there are a set of components of $\vec{w}$ whose
+update only depends on the intermediate values of the other
+components, and vice-versa, you can actually get away with only
+updating some of the components at $n$ and the rest at $n+1/2$. There
+is a useful and commonly used form of leapfrog that does exactly this,
+known as the {\it Verlet method}.
+
+It is typically applied to classical equations of motion. If we write
+a one-dimensional equation of motion:
 \begin{eqnarray}
 {\dot x} &=& v \cr
 {\dot v} &=& F(x)
@@ -334,15 +361,118 @@ step. Note that eventually you want $v_1$, so:
 v_{1} = v_{1/2} + \Delta F(x_1) / 2
 \end{equation}
 
-What are the virtues of this? First is time-reversibility. If I have
-$v_{3/2}$ and $x_1$, I can integrate backwards with the same equations
-to get the original $v_{1/2}$  and $x_0$. Believe it or, this is not
-true of Runge-Kutta!
+This method preserves time-reversibility. If I have $v_{3/2}$ and
+$x_1$, I can integrate backwards with the same equations to get the
+original $v_{1/2}$ and $x_0$. It also preserves phase space; a certain
+small volume in phase space would deform under the Verlet method in a
+way that conserved its volume. Another less generally useful fact, but
+still useful, is that in two or more dimensions in a spherically
+symmetric potential, this method conserves angular
+momentum. Preserving these facets of the physical system under study
+can be very useful.
 
-Another less generally useful fact, but still useful, is that in two
-or more dimensions in a spherically symmetric potential, it conserves
-angular momentum. 
+\section{Bulirsch-Stoer Method}
 
-Finally, it conserves phase space density. It is area preserving in
-phase space.  
+The {\it Bulirsch-Stoer method} is a somewhat differently structured
+method. Here we will discuss it in one dimension, solving:
+\begin{equation}
+\frac{\dd{x}}{\dd{t}} = f(x,t)
+\end{equation}
+
+Like other integrators, you proceed step by step. Here (as in the
+Newman book) we will call the step $H$ from $x(t)$ to $x(t+H)$. In the
+end, we will be doing a long integration with many steps of size
+$H$. But within each one, we will be dividing it into intermediate
+steps; for each step $H$ we will take 1 step of size $h_1 =H$, 2 steps
+of size $h_2 = H / 2$, 3 steps of size $h_3 = H/3$, 4 steps of size
+$h_4 = H / 4$, \ldots up to about 8 steps.  Each will give an answer
+for the full integration across step $H$, and we will the series to
+extrapolate to a more exact answer.
+
+The Bulirsch-Stoer works on the basis that the integration method for
+the intermediate steps have only even-order error terms. That is, that
+the leading order error will scale as $\mathcal{O}(h_n^{2})$, and that
+if that is cancelled, the next leading order will be
+$\mathcal{O}(h_n^4)$, etc. If you have some number of steps $n$, then
+you can denote as $R_{n,1}$ the $\mathcal{O}(h_n^{2})$ estimate.  You
+can denote further as $R_{n,m}$ estimates with errors
+$\mathcal{O}(h_n^{2m})$. 
+
+$R_{n,m}$ will relate to the real answer as:
+\begin{equation}
+x(t+H) = R_{n,m} + c_m h_n^{2m} + \mathcal{O}(h_n^{2m+2}).
+\end{equation}
+If you have also calculated the answer $R_{n-1,m}$ with one less step,
+you also have:
+\begin{equation}
+x(t+H) = R_{n-1,m} + c_m h_{n-1}^{2m} + \mathcal{O}(h_{n-1}^{2m+2}).
+\end{equation}
+Because you know $h_{n-1} = n h_n / (n-1)$, you can determine $c_m$.
+If you know $c_m$, then you can construct a $2m+2$-order estimate:
+\begin{equation}
+  R_{n,m+1} = R_{n,m} +c_mh_n^{2m},
+\end{equation}
+and in detail you can show this to be:
+\begin{equation}
+  R_{n,m+1} = R_{n,m} + \frac{R_{n,m} - R_{n-1,
+      m}}{\left[n/(n-1)\right]^{2m} -1}
+\end{equation}
+
+This equation allows us to build successively higher-order
+estimates. One starts with the one-step estimate $R_{1,1}$ of order
+$\mathcal{O}(h_1^2)$. Then you make the two-step estimate $R_{2,1}$ of
+order $\mathcal{O}(h_2^2)$. These first two estimates allow you to
+construct the two-step estimate of order $\mathcal{O}(h_2^4)$ from the
+recursion. Then you can similar use the three-step estimate $R_{3,1}$
+and use the previous results and the recursion relation to estimate
+$R_{3,3}$, which is $\mathcal{O}(h_3^6)$. This is getting better and
+better!
+
+The error estimate at each step is $c_mh_n^{2m}$. You keep increasing
+$n$ until the error on $R_{n,n}$ is less than the target value, or you
+reach some limit, usually $n=8$. If you reach the limit, you make $H$
+smaller, in a manner similar to that used in the adaptive step size
+approach described above. 
+
+Now we just need to find a way to take the intermediate steps which
+has an error which is an even function of the step size, so it is only
+the terms $h^{2m}$ that need concern us. Notice that in the argument
+above we were depending on the errors to have that property. This will
+be true for any time-reversal-symmetric method. This is because such
+methods will have the property that their error per step must have the
+property:
+\begin{equation}
+\epsilon(-h) = - \epsilon(h)
+\end{equation}
+So any Taylor expansion of the error per step has only odd
+terms. Since the full error of an integration will scale as one order
+higher, the full error has only even terms.
+
+Leapfrog has this property, except for at the outset of the
+integration, where you need to do one half-step of Euler. That makes
+it obviously unsuited to the Bulirsch-Stoer method, which is taking a
+small number of steps $h$ within $H$, and the error in that half-step
+will matter a lot and introduce undesirable odd-order terms.
+
+Bulirsch-Stoer is designed to use the {\it modified midpoint method}
+instead, which does not have this problem. Starting at step $0$:
+\begin{eqnarray}
+\vec{w}_{1/2} &=& \vec{w}_{0} + \frac{1}{2} h \vec{f}(\vec{w}_0, t_0) \cr
+\vec{w}_{1} &=& \vec{w}_{0} + h \vec{f}(\vec{w}_{1/2}, t_{1/2}) \cr
+\vec{w}_{3/2} &=& \vec{w}_{1/2} + h \vec{f}(\vec{w}_{1}, t_{1}) \cr
+\vec{w}_{2} &=& \vec{w}_{1} + h \vec{f}(\vec{w}_{3/2}, t_{3/2}) \cr
+\ldots
+\end{eqnarray}
+There are two final points $w_{n-1/2}$ and $w_{n}$. We can also extrapolate
+$w_{n-1/2}$ to a separate estimate of $w_n$ as follows:
+\begin{equation}
+w_n' = w_{n-1/2} + \frac{1}{2} h \vec{f}(\vec{w}_{n}, t_{n})
+\end{equation}
+We can average the two:
+\begin{equation}
+w_{n, {\rm final}} = \frac{1}{2}\left(w_n + w_n'\right).
+\end{equation}
+It can be shown that this estimate has the desired property that it
+only has even powers of $h$, by using the last step to cancel the odd
+powers of $h$ introduced in the first step.
 
