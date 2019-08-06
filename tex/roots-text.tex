@@ -19,17 +19,30 @@ even ``easy'' in multi-dimensions, because they boil down to solving
 linear systems of equations. What we're interested in here are the
 harder, nonlinear cases.
 
-A simple example is if I have a routine that tells me the position of
-the Moon as a function of time, and I want to know when the Moon is
-going to rise or set next. 
+In the notebook I introduce a simple example. I have a routine that
+tells me the position of the Moon as a function of time, and I want to
+know when the Moon is going to rise or set next.
+
+Newman's book introduces the idea of the {\it relaxation method},
+which sets up a series of operations, which if it converges to a
+stationary point will yield the answer. This involves rearranging the
+equation $f(x)=0$ into the form $x=g(x)$, picking some starting value
+of $x$ and iteratively forming the replacement $x\leftarrow
+g(x)$. Under some conditions, this process converges, but it is not
+guaranteed to; one must prove convergence. I do not recommend this
+method unless you know a lot about the function you are finding the
+root of.
 
 \section{Bracketing}
 
-A critical issue for finding roots is {\it bracketing}: how to find an
-interval which contains the root. Any given interval may have more
-than zero, one, or more roots. In general, if you have a black box
-function, there may be no root anywhere! As an example, if you are at
-the North Pole, moon rise or set may be many days away!
+In more robust methods for finding root, you need to first determine
+some range in which you think the root will be found.
+
+Thus, a critical issue for finding roots is {\it bracketing}: how to
+find an interval which contains the root. Any given interval may have
+more than zero, one, or more roots. In general, if you have a black
+box function, there may be no root anywhere! As an example, if you are
+at the North Pole, moon rise or set may be many days away!
 
 A method that is commonly used is to start with some guess as to the
 bracket, and then just grow it symmetrically by some factor. This may
@@ -193,7 +206,7 @@ some reasonable tolerance, then tune the root using Newton-Raphson if
 the derivatives are available.
 
 Finally, what if we don't have access to the derivatives? You can
-forward-difference the derivative, but then it is usually not better
-to use Newton-Raphson than Brent. You need at least to double your
-function calls to take a derivative, and that means the convergence
-power is $\sqrt{2}$, not 2. 
+forward-difference the derivative (the {\it secant} method), but then
+it is usually not better to use Newton-Raphson than Brent. You need at
+least to double your function calls to take a derivative, and that
+means the convergence power is $\sqrt{2}$, not 2.
