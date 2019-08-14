@@ -45,6 +45,7 @@ ALL= \
 	$(PDFDIR)/pde-answers.pdf \
 	$(PDFDIR)/intro.pdf \
 	$(PDFDIR)/intro-answers.pdf \
+	$(PDFDIR)/project-double-pendulum.pdf \
 	$(PDFDIR)/project-stellar-structure.pdf \
 	$(PDFDIR)/project-psf.pdf \
 	$(PDFDIR)/project-telescope.pdf \

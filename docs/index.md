@@ -37,3 +37,4 @@ Semester projects:
 | [Gravity on a mesh](pdf/project-gravity-mesh.pdf) | 
 | [Point spread function of a telescope](pdf/project-telescope.pdf) | 
 | [Three-body problem](pdf/project-three-body.pdf) | 
+| [Double pendulum](pdf/project-double-pendulum.pdf) | 

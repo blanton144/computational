@@ -1,0 +1,89 @@
+\documentclass[11pt, preprint]{aastex}
+
+\include{computational_defs}
+
+\begin{document}
+
+\title{\bf Computational Physics Project / Double Pendulum}
+
+This project involves the calculation of the trajectory of a double
+pendulum, which is a nonlinear system that can experience chaos. 
+
+You should follow the description of the problem in Exercise 8.15 of
+Newman, but we will answer some different questions. In that exercise,
+the two seqments of the pendulum are both length $l$ and have equal
+masses $m$, and the angles $\theta_1$ and $\theta_2$ are defined so
+that the heights of the pendula are $h_1 = - l \cos\theta_1$ and $h_2
+= - l (\cos\theta_1 + \cos\theta_2)$.
+
+Newman derives the second-order equations of motion using the
+Lagrangian (much easier than using force diagrams):
+\begin{eqnarray}
+2 \ddot\theta_1 + \ddot\theta_2 \cos(\theta_1 - \theta_2) +
+\dot\theta_2^2\sin(\theta_1 - \theta_2) + 2 \frac{g}{l} \sin\theta_1
+&=& 0, \cr
+\ddot\theta_2 + \ddot\theta_1 \cos(\theta_1 - \theta_2) -
+\dot\theta_2^2\sin(\theta_1 - \theta_2) + \frac{g}{l} \sin\theta_2
+&=& 0.
+\end{eqnarray}
+
+One tricky thing with this problem is that $\theta_1$ and $\theta_2$
+are in reality limited between $-\pi$ and $\pi$. Your analysis of the
+results will need to account for this fact (e.g. for the Poincar{\'e}
+section).
+
+\section{Prep work}
+
+\begin{itemize}
+\item Derive the first-order equations of motion on page 400.
+\item Derive the expression for the total energy of the system
+  (i.e. part (a) of the exercise).
+\item What are the four {\it stationary points} of this system and the
+  energies associated with them? They are not all stable!
+\end{itemize}
+
+\section{Creating and testing the integrator}
+
+\begin{itemize}
+\item Using fourth-order Runge-Kutta construct a piece of code that
+  will solve this problem (it is okay to use the implementation from
+  {\tt scipy}). Have it output the time steps to a file (this will be
+  convenient for plotting later)
+\item Create a piece of code that will solve this with the leap-frog
+  method (again with the ability to output the time steps).
+\item Create a piece of code that will create an animation of the
+  results.
+\item Using the initial conditions of part (b) of the exercise,
+  compare the answers of the two integrators for the evolution of
+  $\theta_1$ and $\theta_2$.
+\item With the same initial conditions, test the conservation of
+  energy for each integrator.
+\end{itemize}
+
+\section{Exploring the chaos of the system}
+
+The behavior of the system is hard to characterize in a simple
+way. The usual method to analyze systems like this is through a
+Poincar{\'e} section. To produce such a section, we define a specific
+value of one variable. At the times that that variable reaches that
+value, we evaluate the other variables of the system; the Poincar{\'e}
+section plots all of those values.
+
+\begin{itemize}
+\item Consider a Poincar{\'e} section defined by the conditions that
+  $\theta_1=0$ and $\dot\theta_1>0$; that is, the top pendulum is
+  vertical and moving to the right.  (Note I {\it think}, but am not
+  {\it sure}, that the second condition does not matter much) We will
+  plot $\theta_2$ and $\dot\theta_2$. Because energy is conserved,
+  $\dot\theta_1$ is fully determined for each data point in the plot
+  (its sign is defined). Write a piece of code to analyze your
+  integration output and create such a diagram from some given set of
+  initial conditions.
+ \item Make the Poincar{\'e} section for several different
+   energies. Use a number of different initial conditions of each
+   energy. Use energies just above the energies of the lowest three
+   stationary points, as these illustrate the different regimes of
+   behavior.
+\end{itemize}
+
+\end{document}
