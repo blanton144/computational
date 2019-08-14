@@ -60,14 +60,29 @@ and is 0.6.
 The parameters of the system that are not physical constants are
 $M_\ast$, $\kappa_0$,  and $\mathcal{E}_0$.
 
+\section{Prep work}
+
 \begin{itemize}
 \item Recast the above equations into a form with the minimum number
-  of independent parameters. 
-\item Write the code to integrate the ODE system from the center
-  outwards, given some initial conditions. 
+  of independent, unitless parameters.  You should perform your
+  numerical analysis in these variables, and then scale your solution
+  after the fact to specific physical solutions.
+\item {\bf polytrope solution}
+\end{itemize}
+
+\section{Creating the integrator}
+
+\begin{itemize}
+\item Build an integrator for the ODE system working from the center
+  outwards, given some initial conditions at the center.
 \item Wrap the integration in a multidimensional minimization routine
   that adjusts the central conditions of $T$ and $P$ to fit the outer
   boundary conditions.
+\end{itemize}
+
+\section{Testing the integrator}
+
+\begin{itemize}
 \item Plot $\rho$, $P$, $T$, $L$ and $\mathcal{E}$ as a function of
   enclosed radius for some choice of $M_\ast$.
 \item Given the Solar values of mass and luminosity, can you determine
