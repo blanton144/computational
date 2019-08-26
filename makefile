@@ -68,7 +68,7 @@ $(PDFDIR)/%.pdf: $(TEXDIR)/%.tex
 	mv $(TEXDIR)/$(*F).pdf $(PDFDIR)
 
 $(PDFDIR)/example.pdf: $(TEXDIR)/example.tex $(TEXDIR)/scatter.png
-	cd $(TEXDIR); pdflatex example; pdflatex example; pdflatex example
+	cd $(TEXDIR); pdflatex example; bibtex example; pdflatex example; pdflatex example
 	mv $(TEXDIR)/example.pdf $(PDFDIR)
 
 $(DOCDIR)/example.tex: $(TEXDIR)/example.tex
