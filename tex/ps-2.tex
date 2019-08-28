@@ -14,18 +14,16 @@ You {\it must} label all axes of any plots, including giving the {\it
 
   \item What is the binary representation of the decimal integer 121? 
 
-  \item Write a function in Python which calculates and returns the
-    sum of a NumPy array of numbers by executing a loop which performs
-    a set of additions. Note that you can achieve the same
-    functionality with the {\tt sum()} method of NumPy array
-    objects. Compare the speed of your function vs. {\tt sum()} using
-    {\tt \%timeit}. 
-
   \item Exercise 2.9 of Newman. Note that the physical constants drop
     out so you do not need to worry about them (whenever possible you
     should seek to remove physical constants from the innards of your
-    computations!). Also, you should try to solve this without using
-    an explicit {\tt for} loop.
+    computations!).  Write two versions of the code, one which uses a
+    {\tt for} loop and one which does not.  Use {\tt \%timeit} to
+    determine which is faster.
+
+  \item Exercise 3.7 of Newman.  Note that you can use a NumPy array
+    to perform the iterations for each value of $c$ all at once, which
+    will be much faster than using a {\tt for} loop over $c$.
 
   \item Exercise 4.2 of Newman.
 
