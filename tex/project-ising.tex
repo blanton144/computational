@@ -7,7 +7,8 @@
 \title{\bf Computational Physics Project / 2D Ising Models}
 
 This project focuses on the simulation through Monte Carlo methods of
-2D Ising models for magnetization.
+2D Ising models for magnetization. This project is similar to Exercise
+10.9 in Newman.
 
 These model a magnetic material as a 2D lattice of atoms whose
 magnetic moments can either be up or down. These are thermodynamic
@@ -36,26 +37,53 @@ a function of temperature.  The magnetization can be defined as :
 M = \sum_i s_i
 \end{equation}
 
+It happens that in this case there is a simple analytic form for the
+magnetization as a function of temperature:
+\begin{equation}
+  M(T) = \left\{
+  \begin{array}{ll}
+  0 & T > T_c \cr
+  \frac{(1+z^2)^{1/4} (1-6 z^2 +z^4)^{1/8}}{\sqrt{1-z^2}} & T < T_c
+    \end{array}\right. 
+\end{equation}
+For $kT_c \approx 2.269185 J$ and $z=\exp(-2J/kT)$.
+
+\section{Prep work}
+
 \begin{itemize}
 \item Explain in words why you should find $M\sim 0$ for sufficiently
-  high $T$, and find an extremal $M$ (all spins aligned) for
-  sufficiently low $T$. 
-\item Write into code the Metropolis algorithm found in Section 17.4
-  of Landau. Note that you do {\it not} need to recalculate the full
+  high $T$, and why you should find an extremal $M$ (all spins
+  aligned) for sufficiently low $T$.
+\item Read and briefly explain the Metropolis algorithm described in
+  Newman section 10.3.2. We have not discussed this in class!
+\item Rescale the problem so that you only need one physical constant
+  (which will be a combination of $J$, $k$, and $T$). Below, perform
+  the numerical analysis in those rescaled units.
+\end{itemize}
+
+\section{Writing the code}
+
+\begin{itemize}
+\item Write a piece of code to calculate the total energy of the
+  system (similar to part (a) of Exercise 10.9). 
+\item Write into code the Metropolis algorithm found in section 10.3.2
+  of Newman. Note that you do {\it not} need to recalculate the full
   energy of the system at each trial, since most of it is unchanged
   (i.e. you only need the terms involving the lattice atom you
-  picked).  Think about the scaling of the problem. Does your code
-  need to carry around $J$, $k$, and $T$? Use periodic boundary
-  conditions.
+  picked). Use periodic boundary conditions.
+\end{itemize}
+
+\section{Testing and running the code}
+
+\begin{itemize}
 \item Now initialize your system to start with a fully magnetized (all
   spins aligned, with $s_i = 1$) system, at $T=0$. Raise the
   temperature in small steps, and after each step run the Metropolis
   algorithm for long enough that the energy and magnetization seem to
-  have converged.
-\item Plot the magnetization and energy as a function of
-  temperature. Compare to the analytic solution found in Section
-  17.3.1 of Landau (this will indicate to you how far up in $T$ you
-  need to go).
+  have converged. Use the final conditions of one temperature step as
+  initial conditions for the next temperature step.
+\item Plot the magnetization and energy as a function of temperature
+  and compare the magnetization to the analytic prediction.
 \item What is the physical meaning of the slope of the energy versus
   temperature?  Can you describe in words what this slope means in
   terms of how much work it is to raise the temperature?

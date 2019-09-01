@@ -1,11 +1,16 @@
 \section{Introduction \& tools}
 
 The goals of Computational Physics are to learn the principles of
-using computers to perform calculations in physics. These principles
-include how numbers are represented, and the basic tools for
-calculating special functions, random numbers, linear algebra,
-interpolation, root-finding and optimization, differentiation, 
-integration, and spectral analysis.
+using computers to perform calculations in physics.  For example,
+using computer simulations of the laws of physics enables us to
+calculate (and therefore test) the predictions of the cosmological
+theory of the formation of galaxies; one recent example is from the
+\href{https://vimeo.com/93020014}{EAGLE simulations}.
+
+The principles that underlie these techniques include how numbers are
+represented, and the basic tools for calculating special functions,
+random numbers, linear algebra, interpolation, root-finding and
+optimization, differentiation, integration, and spectral analysis.
 
 It is helpful to understand what we will not be doing:
 \begin{itemize}
@@ -114,9 +119,9 @@ Overleaf for your homeworks, upload the PDF to the homework directory.
 To install Python and Jupyter Notebooks on your computer and enough of
 its packages to function, I recommend the
 \href{https://www.continuum.io/downloads}{\color{red} Anaconda Python
-  3.6 (or later) distribution}. Other packages can be installed as
-described in the book. Key for all science done with Python is the
-NumPy package.
+  3.6 (or later) distribution}. Other packages can be also be
+installed using Anaconda's {\tt conda} utility or {\tt pip}. Key for
+all science done with Python is the NumPy package.
 
 I will illustrate on the projector how a Jupyter notebook works and
 some of the basic features of Python.
@@ -219,9 +224,9 @@ the number of bits. Please note that these definitions of single- and
 double-precision are {\it mostly} standard these days but you may run
 into older definitions at times.
 
-The book makes a big point about all modern computational physics
-relying entirely on 64-bit precision. This reveals a limitation in
-these authors' experience: there are plenty of contexts where 32-bit
+Many books claim that all modern computational physics relies entirely
+on 64-bit precision. Such statements reveal a limitation in the
+authors' experience: there are plenty of contexts where 32-bit
 precision is sufficient and 64-bit precision would be wasteful of
 computing time, I/O time, or memory. You cannot escape the use of
 judgment in determining whether or not to use high precision or not!
