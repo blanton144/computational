@@ -46,6 +46,7 @@ ALL= \
 	$(PDFDIR)/intro.pdf \
 	$(PDFDIR)/intro-answers.pdf \
 	$(PDFDIR)/project-double-pendulum.pdf \
+	$(PDFDIR)/project-soliton.pdf \
 	$(PDFDIR)/project-stellar-structure.pdf \
 	$(PDFDIR)/project-psf.pdf \
 	$(PDFDIR)/project-telescope.pdf \
