@@ -1,0 +1,135 @@
+\documentclass[11pt, preprint]{aastex}
+
+\include{computational_defs}
+
+\begin{document}
+
+\title{\bf Computational Physics Project / Solitons}
+
+This project focuses on one-dimensional waves, as one might find in
+shallow water in a narrow canal (once a practical situation, but even
+now a useful idealized approximation). Much of the discussion here
+comes from the computational physics textbook of Landau, P{\'a}ez, \&
+Bordeianu (not {\it the} Landau).
+
+The equation governing this situation is the Kortweg \& de Vries
+(1895) equation:
+\begin{equation}
+\label{eq:soliton}
+\frac{\partial u(x,t)}{\partial t} + \epsilon u(x,t) \frac{\partial
+  u(x,t)}{\partial x} + \mu \frac{\partial^3 u(x,t)}{\partial x^3} = 0
+\end{equation}
+where $u$ is the height of the water, $x$ is the direction of
+propagation, and $t$ is time. The second term is a nonlinear advection
+term that makes a wave propagate; roughly speaking, the speed of
+propagation increases with the height of the wave. The third term is a
+dispersive term; roughly speaking, gradients in the height cause the
+wave to spread out.
+
+\section{Prep work}
+
+Before trying to solve this problem numerically, it is worthwhile to
+consider some related problems and analytic solutions. 
+
+\begin{itemize}
+\item First, consider the simpler problem:
+  \begin{equation}
+   \frac{\partial u(x,t)}{\partial t} + \epsilon \frac{\partial
+     u(x,t)}{\partial x} = 0
+  \end{equation}
+This is the classic {\it advection} equation. Show that any function
+of the form
+   \begin{equation}
+     u(x,t) = f(x- \epsilon t) 
+   \end{equation}
+is a solution. What is the interpretation of this form of solution?
+What is the interpretation of $\epsilon$ in this case?
+\item Given the previous result, make a qualitative prediction
+  regarding what happens in the nonlinear, but non-dispersive, case,
+  where $\mu = 0$ in Equation \ref{eq:soliton}.
+\item It so happens that there are solutions of the form 
+   \begin{equation}
+     u(x,t) = f(x- c t) 
+   \end{equation}
+   for the full Equation \ref{eq:soliton}, but that unlike the
+   advection equation, not {\it any} function of that form is a
+   solution. Show that if $\xi = x - c t$, then these solutions must
+   satisfy the ordinary differential equation:
+   \begin{equation}
+      - c \frac{\partial u}{\partial \xi} + \epsilon u \frac{\partial
+        u}{\partial \xi} + \mu \frac{\partial^3 u}{\partial xi^3} = 0.
+   \end{equation}
+ \item Further show that a solution to this equation is:
+   \begin{equation}
+    u(x,t) = - \frac{c}{2} \sech^2\left[\frac{1}{2} \sqrt{c} \left(x-
+      ct - \xi_0\right) \right],
+   \end{equation}
+   where $\xi_0$ is a constant representing an initial phase.  Plot
+   this solution, which is known as a soliton. Can you interpret
+   qualitatively why this solution exists?
+\end{itemize}
+
+\section{Designing the code}
+
+We will use a finite difference technique. You will need to choose
+$\Delta x$ and $\Delta t$. We will refer to steps in time as $j$ and
+steps in space as $i$.
+
+\begin{itemize}
+\item What are the first-order central difference approximations for
+  $\partial u/\partial t$ and $\partial u/\partial x$?
+\item Expand $u(x,t)$ in a Taylor series in $x$ around $x_i$ to third
+  order, at fixed time $t$.  For the four points $x_i - 2 \Delta x$,
+  $x_i - \Delta x$, $x+\Delta x$ and $x+2 \Delta x$, you have the
+  values $u_{i-2,j}$, $u_{i-1,j}$, $u_{i+1, j}$ and $u_{i+2, j}$.  You
+  should be able to solve this set of equations for $\partial^3 u /
+  \partial x^3$ at $x=x_i$.
+\item Combine the above results into an evolution scheme for this set
+  of equations, where you use where needed:
+\begin{equation}
+ u(x_i, t_j) = \frac{u_{i-1, j} + u_{i,j} + u_{i+1,j}}{3}
+\end{equation}
+\item Can you determine the relationship between $\Delta x$ and
+  $\Delta t$ necessary for linear stability of this scheme?
+\item To get started, you need two time steps. Write how you do this
+  with a forward difference in time instead of a central difference.
+\end{itemize}
+
+The above equations do not handle the boundary conditions. Thus, in
+the very first time step, $u_{1,2}$, $u_{2,2}$, $u_{N-1, 2}$, and
+$u_{N, 2}$ are not determined. In the implementation below, you will
+assume fixed values of $u_{1, j}$ and $u_N, j$ and a zero derivative
+(i.e. for the purposes of the finite difference that $u_{0, j} =
+u_{1,j}$ and $u_{N+1, j} = u_{N,j}$).
+
+\section{Testing and running the code}
+
+\begin{itemize}
+\item Write an implementation of the finite difference solution to
+  these equations.
+\item Set $\mu = 0$, and make the second term linear
+  (i.e. without the prefactor $u$). This is just the advection
+  equation. Show that your code successfully advects any initial
+  waveform. Use boundary conditions of zero, and make the grid big
+  enough that your test stays away from the boundary.
+\item Set $\mu = 0$, but use the nonlinear second term. This
+  special case is known as {\it Burgers' equation}. Show what happens
+  to an initially Gaussian wave and interpret it in the context of
+  what you thought would happen in the prep work section. Use boundary
+  conditions of zero again.
+\item For non-zero $\mu$ and $\epsilon$, set initial conditions of a
+  soliton wave. Show that it propagates as expected. Use boundary
+  conditions of zero again.
+\item For make initial conditions of two soliton waves, one taller
+  than and ``behind'' the second one. What happens? Use boundary
+  conditions of zero again.
+\item Finally, try initial conditions of:
+  \begin{equation}
+    u(x, t=0) = \frac{1}{2} \left[1 -
+      \tanh\left(\frac{x-x_0}{\sigma}\right)\right].
+  \end{equation}
+  Use boundary conditions of $u=1$ on the left and $u=0$ on the
+  right. Watch what happens and interpret it.
+\end{itemize}
+
+\end{document}
