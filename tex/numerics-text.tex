@@ -1,3 +1,5 @@
+\title{Numerics}
+
 \section{Errors}
 
 We have run into numerical errors already in our discussion of the
@@ -48,25 +50,20 @@ relatively smaller number. This is problematic because the finite
 precision of the large numbers means their remainder is, relatively
 speaking, lower precision.
 
-For example, take the calculation in the book: $a = b - c$. 
+For example, take the calculation $a = b - c$. 
 Each number carries some fractional error $\epsilon$:
 \begin{equation}
-a_c = b_c - c_c = b(1+\epsilon_b) - c(1+\epsilon_c)
+a_c = b_c - c_c = (b+\epsilon_b) - (c+\epsilon_c)
 \end{equation}
 This means that:
 \begin{equation}
-\epsilon_a = \frac{a_c}{a} - 1 = \frac{b}{a} \epsilon_b -
-\frac{c}{a}\epsilon_c
+\epsilon_a = \frac{a_c} - a = \epsilon_b - \epsilon_c
 \end{equation}
 These two terms don't necessarily cancel, and half the time will
 compound each other. So if $b/a$ and $c/a$ are large, $\epsilon_a$ can
-be very large. We investigate in the notebook the case of the
-roots of the quadratic equation.
+be very large. 
 
 \section{Error propagation}
-
-Note that the discussion in 3.1.3 in the book is very confused about
-error propagation. I want to clarify this situation.
 
 Let me write the error in $a$ as $\epsilon_a = a_c - a$, and similarly
 for other variables.  I show in the notebook what the distribution of
@@ -118,13 +115,13 @@ the square root of the variance.
 When I add, say, $a_c$ and $b_c$, then I can evaluate variance in the
 result as follows:
 \begin{eqnarray}
-  \left[\delta(a+b)\right]^2 &=& \left\langle \left[\epsilon_a +
+  \left[\delta_{(a+b)}\right]^2 &=& \left\langle \left[\epsilon_a +
     \epsilon_b\right]^2 \right\rangle \cr
     &\approx& \left\langle \left[\epsilon_a^2 + \epsilon_b^2 + 2
       \epsilon_a \epsilon_b \right] \right\rangle \cr
     &=& \left\langle \left[\epsilon_a^2 + \epsilon_b^2 \right]
     \right\rangle\cr
-    &=& \delta a^2 + \delta b^2
+    &=& \delta_a^2 + \delta_b^2
 \end{eqnarray}
 Where, very importantly, we use the fact that $\epsilon_a$ and
 $\epsilon_b$ are (probably) statistically uncorrelated.
