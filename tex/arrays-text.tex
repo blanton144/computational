@@ -1,3 +1,5 @@
+\title{Arrays}
+
 \section{Why we need arrays of numbers}
 
 Last time we discussed data types, in the context of single numbers.
@@ -57,13 +59,13 @@ If the
 shape of the array is $(P, Q)$, then the address of element $(i,j)$,
 in Python denoted {\tt{a[i ,j]}} becomes:
 \begin{equation}
-  {\tt a[i, j]} = {\tt a[0]} + N_{\rm byte} \times (i \times P + j)
+  {\tt a[i, j]} = {\tt a[0]} + N_{\rm byte} \times (i \times Q + j)
 \end{equation}
 
 Another thing that tends to differ among languages is how what the
 ordering of $(i, j)$ implies about which numbers are next to each
-other in memory; that is, whether I need to write $i\times P +j$ or $i
-+ j\times Q$ in the above equation.
+other in memory; that is, whether I need to write $i\times Q +j$ or $j
++ j\times P$ in the above equation.
 
 There is a lot of confusing documentation out there about ``rows'' and
 ``columns.'' In 2D arrays the ``row'' is indicated by the first index
