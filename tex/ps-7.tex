@@ -28,15 +28,11 @@ You {\it must} label all axes of all plots, including giving the {\it
   to account for dissipation. 
   \begin{enumerate}
     \item Consider the case that there is a dissipative term on the
-      RHS of Equation 6.50 with an amplitude $-\gamma \xi_i$. By
-      considering the case that there is only one mass, convince
-      yourself that the solution amplitudes $x_i$ in this case have to
-      be complex.
-    \item Alter the code in {\tt springs.py} so that it uses the {\tt
-      inv} function in {\tt numpy.linalg} instead of performing the
-      inverse itself.
-    \item How does the imaginary component of $x_i$ vary with
-      position and $\gamma$?
+      RHS of Equation 6.50 with an amplitude $-\gamma \dot\xi_i$.
+      Alter the code in {\tt springs.py} so that it uses the {\tt inv}
+      function in {\tt numpy.linalg} instead of performing the inverse
+      itself.
+    \item How does $x_i$ vary with position and $\gamma$?
   \end{enumerate}
 \end{enumerate}
 
