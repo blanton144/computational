@@ -31,6 +31,8 @@ Problem sets:
 | [PS 5](pdf/ps-5.pdf) | 
 | [PS 6](pdf/ps-6.pdf) | 
 | [PS 7](pdf/ps-7.pdf) | 
+| [PS 8](pdf/ps-8.pdf) | 
+| [PS 9](pdf/ps-9.pdf) | 
 
 Semester projects:
 
