@@ -95,7 +95,7 @@ But $\mat{Q}\cdot\mat{R} = (\mat{R}\cdot\mat{Q})^T$, so if one of
 these matrices is diagonal, to commute, the other has to be too (in
 detail this is only true if the diagonal elements are distinct). 
 
-This means that if the $\lambda_i$ are all distinct, then each
+This means that if the $\kappa_i$ are all distinct, then each
 $\vec{x}_{R,i}$ is orthogonal to $\vec{x}_{L,i}$. You can of course
 define the norms of the eigenvectors to make them orthonormal. 
 
@@ -217,7 +217,7 @@ u(x, t) = v(t) w(x)
 \end{equation}
 and find:
 \begin{equation}
-\rho(x) \ddot{v}(t) w(x) - v(t) \left(p(x) w'(x)\right)' - q(x)v(t) w(x) = 0
+- \rho(x) \ddot{v}(t) w(x) + v(t) \left(p(x) w'(x)\right)' + q(x)v(t) w(x) = 0
 \end{equation}
 and we can rearrange to find:
 \begin{equation}
@@ -225,38 +225,38 @@ and we can rearrange to find:
 w'(x)\right)' + \frac{q(x)}{\rho(x)}
 \end{equation}
 Since this holds always for all $x$ and $t$, it must be a constant,
-which we will call $\lambda$. 
+which we will call $-\kappa$. 
 
 This leads to a simple answer for $v(t)$:
 \begin{equation}
-\ddot{v} = - \lambda v
+\ddot{v} = - \kappa v
 \end{equation}
 where, because of some foresight regarding solutions to the right-hand
-side that can satisfy the boundary conditions, we assume $\lambda>0$.
+side that can satisfy the boundary conditions, we assume $\kappa>0$.
 
 \noindent {\bf What are solutions for $v$?}
 
 \begin{answer}
 \begin{equation}
-v = a \cos(\sqrt{\lambda} t) + b \sin(\sqrt{\lambda} t)
+v = a \cos(\sqrt{\kappa} t) + b \sin(\sqrt{\kappa} t)
 \end{equation}
 
 The consequence of this is that whatever pattern is established for
-$w(x)$ corresponding to $\lambda$, this will oscillate in
+$w(x)$ corresponding to $\kappa$, this will oscillate in
 time. Because the equation doesn't have any first order term in time,
 and no nonlinear terms, there is no dissipation so in this model it
 oscillates forever.
 
-There in general will be an infinite number of possible $\lambda$
+There in general will be an infinite number of possible $\kappa$
 values, each with a specific pattern $w(x)$ it corresponds to, and as
-$\lambda$ grows, the period decreases. This is what you are familiar
+$\kappa$ grows, the period decreases. This is what you are familiar
 with regarding waves.
 \end{answer}
 
 The spatial equation is:
 \begin{equation}
-\frac{1}{\rho(x)} \left[\left(p(x) w'(x)\right)' + q(x) w(x)\right] =
--\lambda w(x)
+- \frac{1}{\rho(x)} \left[\left(p(x) w'(x)\right)' + q(x) w(x)\right] =
+\kappa w(x)
 \end{equation}
 This can be thought of as ``linear differential operator on $w(x)$
 equals scalar times $w(x)$.'' Sounds a tiny bit like an eigenvalue
@@ -272,8 +272,8 @@ linear operator.
 
 If we determine the eigenfunctions, then a solution becomes:
 \begin{equation}
-u(x,t) = \sum_{k} w_k(x) \left[ a_k\, \cos(\sqrt{\lambda_k} t) + b_k\,
-  \sin(\sqrt{\lambda} t) \right]
+u(x,t) = \sum_{k} w_k(x) \left[ a_k\, \cos(\sqrt{\kappa_k} t) + b_k\,
+  \sin(\sqrt{\kappa_k} t) \right]
 \end{equation}
 where $a_k$ and $b_k$ are determined by the initial conditions
 ($u(x, t=0)$ and $\dot{u}(x, t=0)$).
@@ -281,33 +281,33 @@ where $a_k$ and $b_k$ are determined by the initial conditions
 For constant $\rho$, $p$, and $q$, we can simplify the equation. For
 simplicity I'll use units where $\rho = p =1$.
 \begin{equation}
-- w'' + q w = \lambda w
+w'' + q w = - \kappa w
 \end{equation}
 or 
 \begin{equation}
-w'' = (q - \lambda) w
+w'' = (q - \kappa) w
 \end{equation}
 which yields:
 \begin{equation}
-w = A \exp\left[\sqrt{(q-\lambda)} x\right]
+w = A \exp\left[\sqrt{(q- kappa)} x\right]
 \end{equation}
 
-\noindent {\bf What happens for $\lambda < q$ and $\lambda>q$?}
+\noindent {\bf What happens for $\kappa < q$ and $\kappa>q$?}
 
 \begin{answer}
-For $\lambda < q$, the solution is exponential, and to meet the
-boundary conditions it must be zero. So if your string is springy, it
-can't support low frequency modes.
+For $\kappa < q$ (low frequency), the solution is exponential, and to
+meet the boundary conditions it must be zero. So if your string is
+springy, it can't support low frequency modes.
 
-For $\lambda > q$, this is oscillatory, with shorter wavelengths for
-higher $\lambda$, as you expect.
+For $\kappa > q$ (high frequency), this is oscillatory, with shorter
+wavelengths for higher $\kappa$, as you expect.
 \end{answer}
 
 \noindent {\bf What is the dispersion relation for this system?}
 
 \begin{answer}
-The angular frequency squared is $\omega^2 = (2\pi)^2 \lambda$, and the
-wavenumber squared is $k^2 = (2\pi)^2 (\lambda - q)$. So we can write:
+The angular frequency squared is $\omega^2 = (2\pi)^2 \kappa$, and the
+wavenumber squared is $k^2 = (2\pi)^2 (\kappa - q)$. So we can write:
 \begin{equation}
 k^2 = \omega^2 - (2\pi)^2 q
 \end{equation}
@@ -347,7 +347,7 @@ If we call $\vec{w} = \{w(x_1), w(x_2), \ldots, w(x_N)\}$, and call
 $\vec{r} = \{q(x_1)/\rho(x_1), \ldots, q(x_N)/\rho(x_N)$,
 this leads to the following matrix equation:
 \begin{equation}
-\mat{M}\cdot \vec{w} + \vec{r}\cdot{\mat{I}}\vec{w} = \lambda \vec{w}
+\mat{M}\cdot \vec{w} + \vec{r}\cdot{\mat{I}}\vec{w} = \kappa \vec{w}
 \end{equation}
 where:
 \begin{equation}
