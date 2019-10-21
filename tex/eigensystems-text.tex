@@ -195,8 +195,10 @@ data with a low-dimensional model.
 
 Eigensystems are also useful in the analysis of many dynamical
 problems. One particular example is waves on a string. I take the
-description of this example from notes of Peter Arbenz of ETH
-Z\"urich.
+description of this example from notes of Peter Arbenz of ETH Z\"urich
+(note that that discuss, in the February 20, 2018 version of Chapter 1
+of his lecture notes on eigensystems, has a sign error in Equation 1.8
+and some of the following equations).
 
 For small displacements, the differential equation for the 1-D problem
 of a wave on a string is:
@@ -204,12 +206,14 @@ of a wave on a string is:
 - \rho(x) \frac{\partial^2 u}{\partial t^2}
 + \frac{\partial }{\partial x}\left(p(x) \frac{\partial u}{\partial
   x}\right)
-+ q(x) u(x, t) = 0
+- q(x) u(x, t) = 0
 \end{equation}
 with $u$ being the displacement at position $x$, $t$ being time,
 $\rho$ being the mass density, $p$ being related to the elasticity of
-the string, and $q$ being the spring-like force. We assume $u=0$ at
-the boundaries ($x=0$ and $x=1$).
+the string, and $q$ being the spring-like force. The second term says
+that a negative second derivative pulls the string down (to lower $u$)
+and a positive one pulls it up. The third term is a Hooke's law type
+spring force. We assume $u=0$ at the boundaries ($x=0$ and $x=1$).
 
 We can separate variables:
 \begin{equation}
@@ -217,12 +221,12 @@ u(x, t) = v(t) w(x)
 \end{equation}
 and find:
 \begin{equation}
-- \rho(x) \ddot{v}(t) w(x) + v(t) \left(p(x) w'(x)\right)' + q(x)v(t) w(x) = 0
+- \rho(x) \ddot{v}(t) w(x) + v(t) \left(p(x) w'(x)\right)' - q(x)v(t) w(x) = 0
 \end{equation}
 and we can rearrange to find:
 \begin{equation}
 \frac{\ddot{v}(t)}{v(t)} = \frac{1}{\rho(x) w(x)}\left(p(x)
-w'(x)\right)' + \frac{q(x)}{\rho(x)}
+w'(x)\right)' - \frac{q(x)}{\rho(x)}
 \end{equation}
 Since this holds always for all $x$ and $t$, it must be a constant,
 which we will call $-\kappa$. 
@@ -255,7 +259,7 @@ with regarding waves.
 
 The spatial equation is:
 \begin{equation}
-- \frac{1}{\rho(x)} \left[\left(p(x) w'(x)\right)' + q(x) w(x)\right] =
+\frac{1}{\rho(x)} \left[- \left(p(x) w'(x)\right)' + q(x) w(x)\right] =
 \kappa w(x)
 \end{equation}
 This can be thought of as ``linear differential operator on $w(x)$
@@ -281,7 +285,7 @@ where $a_k$ and $b_k$ are determined by the initial conditions
 For constant $\rho$, $p$, and $q$, we can simplify the equation. For
 simplicity I'll use units where $\rho = p =1$.
 \begin{equation}
-w'' + q w = - \kappa w
+w'' - q w = - \kappa w
 \end{equation}
 or 
 \begin{equation}
@@ -289,7 +293,7 @@ w'' = (q - \kappa) w
 \end{equation}
 which yields:
 \begin{equation}
-w = A \exp\left[\sqrt{(q- kappa)} x\right]
+w = A \exp\left[\sqrt{(q- \kappa)} x\right]
 \end{equation}
 
 \noindent {\bf What happens for $\kappa < q$ and $\kappa>q$?}
@@ -306,12 +310,17 @@ wavelengths for higher $\kappa$, as you expect.
 \noindent {\bf What is the dispersion relation for this system?}
 
 \begin{answer}
-The angular frequency squared is $\omega^2 = (2\pi)^2 \kappa$, and the
-wavenumber squared is $k^2 = (2\pi)^2 (\kappa - q)$. So we can write:
+In time, the angular frequency squared is $\omega^2 =
+(2\pi)^2 \kappa$, and in space the wavenumber squared is $k^2 =
+(2\pi)^2 (\kappa - q)$. So we can write:
 \begin{equation}
-k^2 = \omega^2 - (2\pi)^2 q
+k^2 = \omega^2 - q
 \end{equation}
-If $q=0$, this is just the ordinary dispersion relation for waves.
+If $q=0$, this is just the ordinary dispersion relation for waves. For
+non-zero $q$ this means that the fundamantal mode in space corresponds
+to a higher frequency than it otherwise would. It also will mean that
+the boundary conditions in space, which restrict $k$ to harmonics in
+space, do not correspond to harmonics in time.
 \end{answer}
 
 The reason to do this numerically is if $q(x)$, $p(x)$, or $\rho(x)$
@@ -337,33 +346,36 @@ and then we can write:
   &=& \frac{1}{h}\left[g(x_{i+1/2}) - g(x_{i-1/2})\right] \cr
   &=& \frac{1}{h}\left[p(x_{i+1/2}) \frac{w(x_{i+1}) - w(x_i)}{h}
     - p(x_{i-1/2}) \frac{w(x_{i}) - w(x_{i-1})}{h}\right] \cr
-  &=& \frac{1}{h^2}\left[ - p(x_{i+1/2}) w(x_{i-1})
-    + \left(p(x_{i-1/2}) + p(x_{i+1/2})\right) w(x_i)
-    - p(x_{i+1/2}) w(x_{i+1})\right]
+  &=& \frac{1}{h^2}\left[ p(x_{i+1/2}) w(x_{i-1})
+    - \left(p(x_{i-1/2}) + p(x_{i+1/2})\right) w(x_i)
+    + p(x_{i+1/2}) w(x_{i+1})\right]
 \end{eqnarray}
 and 
 
-If we call $\vec{w} = \{w(x_1), w(x_2), \ldots, w(x_N)\}$, and call
-$\vec{r} = \{q(x_1)/\rho(x_1), \ldots, q(x_N)/\rho(x_N)$,
+If we call $\vec{w} = \{w(x_1), w(x_2), \ldots, w(x_N)\}$, and define
+a matrix $\mathbf{r}$:
+\begin{equation}
+r_{ij} = \delta_{ij} \frac{q(x_i)}{\rho(x_i)},
+\end{equation}
 this leads to the following matrix equation:
 \begin{equation}
-\mat{M}\cdot \vec{w} + \vec{r}\cdot{\mat{I}}\vec{w} = \kappa \vec{w}
+\left(\mat{r} - \mat{M}\right)\cdot\vec{w} = \kappa \vec{w}
 \end{equation}
 where:
 \begin{equation}
   \mat{M} = \frac{1}{h^2} \left(\begin{array}{cccccc}
-    \frac{p_{1/2} + p_{3/2}}{\rho_1} & - \frac{p_{3/2}}{\rho_1} & 0 & \ldots & \ldots & 0 \cr
-    \frac{- p_{3/2}}{\rho_2} & \frac{p_{3/2} + p_{5/2}}{\rho_2} & -\frac{p_{5/2}}{\rho_2} & 0 & \ldots & 0 \cr
-    0 & \frac{- p_{5/2}}{\rho_3} & \frac{p_{5/2} + p_{7/2}}{\rho_3} & -\frac{p_{7/2}}{\rho_3} & 0 & \ldots \cr
+    - \frac{p_{1/2} + p_{3/2}}{\rho_1} & \frac{p_{3/2}}{\rho_1} & 0 & \ldots & \ldots & 0 \cr
+    \frac{p_{3/2}}{\rho_2} & - \frac{p_{3/2} + p_{5/2}}{\rho_2} & \frac{p_{5/2}}{\rho_2} & 0 & \ldots & 0 \cr
+    0 & \frac{p_{5/2}}{\rho_3} & - \frac{p_{5/2} + p_{7/2}}{\rho_3} & \frac{p_{7/2}}{\rho_3} & 0 & \ldots \cr
     \ldots & \ldots & \ldots & \ldots & \ldots & \ldots \cr
-    0 & \ldots & 0 & 0 & \frac{- p_{N-1/2}}{\rho_N}  & \frac{p_{N-1/2} + p_{N+1/2} }{\rho_N}
+    0 & \ldots & 0 & 0 & \frac{p_{N-1/2}}{\rho_N}  & - \frac{p_{N-1/2} + p_{N+1/2} }{\rho_N}
 \end{array}\right)
 \end{equation}
 
 Thus, we have converted this problem to a matrix eigenproblem!  Where
 we need to find the eigenvectors and eigenvalues of:
 \begin{equation}
-\mat{A} = \mat{M} + \vec{q}\cdot\mat{I}
+\mat{A} = \mat{r} - \mat{M}
 \end{equation}
 Note that while the real problem has an infinite number of
 eigenvalues, obviously this problem only has $N$ eigenvalues. Also
