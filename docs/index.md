@@ -33,6 +33,8 @@ Problem sets:
 | [PS 7](pdf/ps-7.pdf) | 
 | [PS 8](pdf/ps-8.pdf) | 
 | [PS 9](pdf/ps-9.pdf) | 
+| [PS 10](pdf/ps-10.pdf) | 
+| [PS 11](pdf/ps-11.pdf) | 
 
 Semester projects:
 
